@@ -1,0 +1,102 @@
+{
+  "schema_version": "3.1.0",
+  "instance_id": "ANY_BAY_HANDOVER_MICRO",
+  "layout": {
+    "block_id": "B1",
+    "bays": 6,
+    "rows": 1,
+    "tiers": 4,
+    "handshake_bay": 3
+  },
+  "motion": {
+    "gantry_seconds_per_bay": 1.0,
+    "trolley_seconds_per_row": 1.0,
+    "hoist_seconds_per_tier": 0.5,
+    "pickup_seconds": 0.1,
+    "drop_seconds": 0.1
+  },
+  "physical_rules": {
+    "minimum_crane_separation_bays": 1.0,
+    "maximum_handovers_per_job": 1
+  },
+  "cranes": [
+    {
+      "id": "C_SEA",
+      "side": "SEASIDE",
+      "initial_position": {"bay": 0, "row": 1}
+    },
+    {
+      "id": "C_LAND",
+      "side": "LANDSIDE",
+      "initial_position": {"bay": 7, "row": 1}
+    }
+  ],
+  "transfer_slots": [
+    {
+      "id": "H_ROW_1",
+      "position": {"bay": 3, "row": 1},
+      "capacity": 1,
+      "enabled": true
+    },
+    {
+      "id": "T_BAY_2_ROW_1",
+      "position": {"bay": 2, "row": 1},
+      "capacity": 1,
+      "enabled": true
+    }
+  ],
+  "initial_state": {
+    "current_time": 0.0,
+    "stacks": [
+      {
+        "block_id": "B1",
+        "bay": 6,
+        "row": 1,
+        "containers": ["CONT_OUT_FAR"]
+      }
+    ],
+    "containers": [
+      {
+        "container_id": "CONT_OUT_FAR",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "B1",
+          "bay": 6,
+          "row": 1,
+          "tier": 1
+        },
+        "target_slot": null
+      }
+    ],
+    "cranes": [
+      {
+        "crane_id": "C_SEA",
+        "position": {"bay": 0, "row": 1},
+        "carrying_container": null,
+        "available_time": 0.0
+      },
+      {
+        "crane_id": "C_LAND",
+        "position": {"bay": 7, "row": 1},
+        "carrying_container": null,
+        "available_time": 0.0
+      }
+    ],
+    "transfer_slots": [
+      {"slot_id": "H_ROW_1", "containers": []},
+      {"slot_id": "T_BAY_2_ROW_1", "containers": []}
+    ]
+  },
+  "jobs": [
+    {
+      "id": "JOB_OUT_FAR",
+      "container_id": "CONT_OUT_FAR",
+      "direction": "OUTBOUND",
+      "origin": {"bay": 6, "row": 1},
+      "destination": {"bay": 0, "row": 1},
+      "final_slot": null,
+      "release_time": 0.0,
+      "agv_ready_time": 0.0
+    }
+  ]
+}

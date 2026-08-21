@@ -1,0 +1,65 @@
+{
+  "schema_version": "1.0.0",
+  "benchmarks": [
+    {
+      "id": "BALANCED_LOCAL_4",
+      "instance_file": "01_balanced_local_4jobs.json",
+      "job_count": 4,
+      "feature": "BALANCED_LOCAL_NO_HANDOVER",
+      "description": "해측 local 2개와 육측 local 2개로 구성된 인계 불필요 기준 사례",
+      "existing_job_ids": ["JOB_LOCAL_IN_SEA", "JOB_LOCAL_OUT_LAND"],
+      "new_job_ids": ["JOB_LOCAL_OUT_SEA", "JOB_LOCAL_IN_LAND"],
+      "decision_time": 5.0,
+      "expected_complete_policies": ["NO_SHARING", "HANDSHAKE_AREA", "ANY_BAY"],
+      "expected_infeasible_policies": []
+    },
+    {
+      "id": "HANDSHAKE_CROSS_4",
+      "instance_file": "02_handshake_cross_4jobs.json",
+      "job_count": 4,
+      "feature": "EDGE_TO_EDGE_DIRECT_OR_HANDOVER",
+      "description": "외부 대기점 0·9와 실제 서비스 bay 1·8을 분리하여 직접 운반과 인계 운반을 모두 허용하는 사례",
+      "existing_job_ids": ["JOB_CROSS_OUT_1", "JOB_GATE_SEA_TO_LAND_1"],
+      "new_job_ids": ["JOB_CROSS_OUT_2", "JOB_GATE_SEA_TO_LAND_2"],
+      "decision_time": 8.0,
+      "expected_complete_policies": ["NO_SHARING", "HANDSHAKE_AREA", "ANY_BAY"],
+      "expected_infeasible_policies": []
+    },
+    {
+      "id": "ANY_BAY_ADVANTAGE_4",
+      "instance_file": "03_any_bay_advantage_4jobs.json",
+      "job_count": 4,
+      "feature": "ALTERNATIVE_TRANSFER_BAY",
+      "description": "핵심 횡단작업에서 지정 H보다 bay 1 인계가 빠른 위치 선택 사례",
+      "existing_job_ids": ["JOB_ANY_OUT_1"],
+      "new_job_ids": ["JOB_ANY_OUT_2", "JOB_ANY_OUT_3", "JOB_ANY_OUT_4"],
+      "decision_time": 6.0,
+      "expected_complete_policies": ["NO_SHARING", "HANDSHAKE_AREA", "ANY_BAY"],
+      "expected_infeasible_policies": []
+    },
+    {
+      "id": "APPEND_BLOCKER_4",
+      "instance_file": "04_append_blocker_4jobs.json",
+      "job_count": 4,
+      "feature": "EXISTING_INBOUND_BLOCKS_NEW_OUTBOUND",
+      "description": "기존 수입 적치가 신규 수출 컨테이너 위를 막아 strict append에서 reshuffle이 필요한 사례",
+      "existing_job_ids": ["JOB_PLACE_BLOCKER_1", "JOB_PLACE_BLOCKER_2"],
+      "new_job_ids": ["JOB_RETRIEVE_BLOCKED_1", "JOB_RETRIEVE_BLOCKED_2"],
+      "decision_time": 10.0,
+      "expected_complete_policies": ["NO_SHARING", "HANDSHAKE_AREA", "ANY_BAY"],
+      "expected_infeasible_policies": []
+    },
+    {
+      "id": "MIXED_RESHUFFLE_6",
+      "instance_file": "05_mixed_reshuffle_6jobs.json",
+      "job_count": 6,
+      "feature": "MIXED_DIRECTION_WITH_UNSCHEDULED_BLOCKER",
+      "description": "수입·수출, local·cross 작업과 비작업 blocker를 함께 포함한 통합 사례",
+      "existing_job_ids": ["JOB_MIX_IN_LOCAL", "JOB_MIX_OUT_LAND", "JOB_MIX_OUT_CROSS"],
+      "new_job_ids": ["JOB_MIX_OUT_LOCAL", "JOB_MIX_IN_CROSS", "JOB_MIX_IN_MID"],
+      "decision_time": 12.0,
+      "expected_complete_policies": ["NO_SHARING", "HANDSHAKE_AREA", "ANY_BAY"],
+      "expected_infeasible_policies": []
+    }
+  ]
+}
