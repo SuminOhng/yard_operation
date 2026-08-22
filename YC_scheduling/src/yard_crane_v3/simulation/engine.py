@@ -16,7 +16,7 @@ from ..model import (
     TransferSlotSpec,
     validate_instance,
 )
-from ..policy import PolicyConstraints
+from ..policy import CooperationPolicy, PolicyConstraints
 from ..schedule import (
     CandidateSchedule,
     OperationPurpose,
@@ -212,8 +212,11 @@ def _validate_operation_start(
         fail("POSITION_DISCONTINUITY", "operation starts away from crane", start, index, operation)
     if start < crane.available_time - TOL:
         fail("CRANE_NOT_AVAILABLE", "crane is not available", start, index, operation)
-    if not _position_inside(instance, operation.start_position) or not _position_inside(
-        instance, operation.end_position
+    allow_relief = constraints.policy is CooperationPolicy.NO_SHARING
+    if not _position_inside(
+        instance, operation.start_position, allow_relief=allow_relief
+    ) or not _position_inside(
+        instance, operation.end_position, allow_relief=allow_relief
     ):
         fail("POSITION_OUT_OF_BOUNDS", "operation leaves the layout", start, index, operation)
 
@@ -801,9 +804,21 @@ def _reserved_virtual_slot(state, operation_index: int) -> Slot | None:
     )
 
 
-def _position_inside(instance, position: Position) -> bool:
+def _position_inside(
+    instance,
+    position: Position,
+    *,
+    allow_relief: bool = False,
+) -> bool:
+    relief_bays = {
+        instance.layout.seaside_parking_bay - 1,
+        instance.layout.landside_parking_bay + 1,
+    }
     return (
-        instance.layout.is_on_crane_rail(position.bay)
+        (
+            instance.layout.is_on_crane_rail(position.bay)
+            or (allow_relief and position.bay in relief_bays)
+        )
         and 1 <= position.row <= instance.layout.rows
     )
 

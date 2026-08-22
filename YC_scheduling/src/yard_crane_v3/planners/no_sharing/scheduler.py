@@ -22,6 +22,7 @@ from ...schedule import (
     OperationType,
     ScheduledOperation,
 )
+from ...simulation import first_crane_conflict
 from ...timing import TimeModel
 from ...validator import validate_schedule
 from ..common import PlannerInfeasibleError, append_blocker_reshuffles
@@ -33,6 +34,12 @@ class JobRegion(str, Enum):
     CROSS_REGION = "CROSS_REGION"
 
 
+class _IdleActionKind(str, Enum):
+    PARK_ONLY = "PARK_ONLY"
+    PREPOSITION = "PREPOSITION"
+    LOCAL_JOB = "LOCAL_JOB"
+
+
 @dataclass(slots=True)
 class _PlanningState:
     stacks: dict[StackKey, list[str]]
@@ -41,6 +48,23 @@ class _PlanningState:
     crane_times: dict[str, float]
     crane_positions: dict[str, Position]
     operations: list[ScheduledOperation]
+
+
+@dataclass(slots=True)
+class _CrossTrial:
+    state: _PlanningState
+    worker: str
+    idle_action_kind: _IdleActionKind
+    makespan: float
+    next_origin_distance: float
+    completed_idle_job_id: str | None = None
+
+
+@dataclass(frozen=True, slots=True)
+class _IdleAction:
+    kind: _IdleActionKind
+    job: Job | None = None
+    destination: Position | None = None
 
 
 def classify_job(
@@ -69,7 +93,7 @@ def build_no_sharing_schedule(
     """Build a conservative schedule using both cranes without handovers.
 
     Local jobs run concurrently in separated zones.  Cross-region jobs run in
-    a protected phase: the non-working crane parks at its outside access bay.
+    a protected phase: the non-working crane parks outside the job corridor.
     Blocking containers are moved to the nearest safe, non-reserved stack.
     """
 
@@ -102,34 +126,51 @@ def build_no_sharing_schedule(
     separation = max(
         1, math.ceil(instance.physical_rules.minimum_crane_separation_bays)
     )
-    sea_local_bays = range(
-        instance.layout.first_work_bay,
-        instance.layout.handshake_bay + 1,
-    )
-    land_local_bays = range(
-        instance.layout.handshake_bay + separation,
-        instance.layout.last_work_bay + 1,
-    )
+    local_bays = {
+        JobRegion.SEA_LOCAL: range(
+            instance.layout.first_work_bay,
+            instance.layout.handshake_bay + 1,
+        ),
+        JobRegion.LAND_LOCAL: range(
+            instance.layout.handshake_bay + separation,
+            instance.layout.last_work_bay + 1,
+        ),
+    }
+
+    for index, job in enumerate(cross):
+        _append_cross_job(
+            instance,
+            state,
+            timing,
+            job,
+            sea.id,
+            land.id,
+            local,
+            local_bays,
+            cross[index + 1 :],
+            reserved_final_stacks,
+        )
     for job in local[JobRegion.SEA_LOCAL]:
+        if cross:
+            _prepare_for_leftover_local_job(
+                instance, state, timing, sea.id, land.id, job, sea.id
+            )
         _append_job(
-            instance, state, timing, sea.id, job, sea_local_bays,
+            instance, state, timing, sea.id, job,
+            local_bays[JobRegion.SEA_LOCAL],
             reserved_final_stacks,
         )
     for job in local[JobRegion.LAND_LOCAL]:
+        if cross:
+            _prepare_for_leftover_local_job(
+                instance, state, timing, land.id, sea.id, job, sea.id
+            )
         _append_job(
-            instance, state, timing, land.id, job, land_local_bays,
+            instance, state, timing, land.id, job,
+            local_bays[JobRegion.LAND_LOCAL],
             reserved_final_stacks,
         )
-
-    for job in cross:
-        worker = _cross_worker(instance, state, timing, job, sea.id, land.id)
-        other = land.id if worker == sea.id else sea.id
-        _park_for_cross_job(instance, state, timing, worker, other)
-        safe_bays = _cross_reshuffle_bays(instance, worker, sea.id)
-        _append_job(
-            instance, state, timing, worker, job, safe_bays,
-            reserved_final_stacks,
-        )
+    _normalize_relief_crane_positions(instance, state, timing, sea.id, land.id)
 
     schedule = CandidateSchedule(
         instance.instance_id,
@@ -254,6 +295,397 @@ def _append_job(
     )
 
 
+def _append_cross_job(
+    instance: StaticSchedulingInstance,
+    state: _PlanningState,
+    timing: TimeModel,
+    job: Job,
+    sea_id: str,
+    land_id: str,
+    local_jobs: dict[JobRegion, list[Job]],
+    local_bays: dict[JobRegion, range],
+    remaining_cross_jobs: list[Job],
+    reserved_final_stacks: set[StackKey],
+) -> None:
+    trials: list[_CrossTrial] = []
+    for worker in (sea_id, land_id):
+        other = land_id if worker == sea_id else sea_id
+        for idle_action in _idle_actions_for_cross_job(
+            instance,
+            state,
+            timing,
+            other,
+            sea_id,
+            local_jobs,
+            remaining_cross_jobs,
+        ):
+            trial_state = _clone_planning_state(state)
+            try:
+                _append_cross_trial(
+                    instance,
+                    trial_state,
+                    timing,
+                    worker,
+                    other,
+                    job,
+                    idle_action,
+                    sea_id,
+                    local_bays,
+                    reserved_final_stacks,
+                )
+            except PlannerInfeasibleError:
+                continue
+            if _has_crane_conflict(instance, trial_state):
+                continue
+            trials.append(
+                _CrossTrial(
+                    state=trial_state,
+                    worker=worker,
+                    idle_action_kind=idle_action.kind,
+                    makespan=max(trial_state.crane_times.values()),
+                    next_origin_distance=_next_origin_distance(
+                        trial_state, other, local_jobs, remaining_cross_jobs
+                    ),
+                    completed_idle_job_id=(
+                        idle_action.job.id
+                        if idle_action.kind is _IdleActionKind.LOCAL_JOB
+                        and idle_action.job is not None
+                        else None
+                    ),
+                )
+            )
+    if not trials:
+        raise PlannerInfeasibleError(
+            f"job {job.id!r} has no feasible no-sharing direct worker"
+        )
+    chosen = min(
+        trials,
+        key=lambda trial: (
+            0 if trial.idle_action_kind is _IdleActionKind.LOCAL_JOB else 1,
+            trial.makespan,
+            trial.next_origin_distance,
+            trial.worker,
+        ),
+    )
+    _replace_planning_state(state, chosen.state)
+    if chosen.completed_idle_job_id is not None:
+        _remove_local_job(local_jobs, chosen.completed_idle_job_id)
+
+
+def _append_cross_trial(
+    instance: StaticSchedulingInstance,
+    state: _PlanningState,
+    timing: TimeModel,
+    worker: str,
+    other: str,
+    job: Job,
+    idle_action: _IdleAction,
+    sea_id: str,
+    local_bays: dict[JobRegion, range],
+    reserved_final_stacks: set[StackKey],
+) -> None:
+    _align_cross_phase(state)
+    safe_bays = _cross_reshuffle_bays(instance, worker, sea_id)
+    if idle_action.kind is _IdleActionKind.PARK_ONLY:
+        _park_other_for_cross_job(instance, state, timing, worker, other, job)
+        _append_job(
+            instance,
+            state,
+            timing,
+            worker,
+            job,
+            safe_bays,
+            reserved_final_stacks,
+        )
+        return
+
+    phase_start = max(state.crane_times.values())
+    state.crane_times[worker] = phase_start
+    state.crane_times[other] = phase_start
+    _append_job(
+        instance,
+        state,
+        timing,
+        worker,
+        job,
+        safe_bays,
+        reserved_final_stacks,
+    )
+    if idle_action.kind is _IdleActionKind.PREPOSITION:
+        if idle_action.destination is None:
+            raise PlannerInfeasibleError("preposition action needs destination")
+        _append_move(
+            state,
+            timing,
+            other,
+            OperationType.MOVE_EMPTY,
+            idle_action.destination,
+        )
+    elif idle_action.kind is _IdleActionKind.LOCAL_JOB:
+        if idle_action.job is None:
+            raise PlannerInfeasibleError("local idle action needs a job")
+        region = classify_job(instance, idle_action.job)
+        if region not in local_bays:
+            raise PlannerInfeasibleError("idle local action needs a local job")
+        _append_job(
+            instance,
+            state,
+            timing,
+            other,
+            idle_action.job,
+            local_bays[region],
+            reserved_final_stacks,
+        )
+        _park_other_for_cross_job(
+            instance, state, timing, worker, other, job,
+            wait_for_parking=False,
+        )
+    else:
+        raise PlannerInfeasibleError(
+            f"unsupported idle action {idle_action.kind.value}"
+        )
+
+
+def _align_cross_phase(state: _PlanningState) -> None:
+    phase_start = max(state.crane_times.values())
+    for crane_id in state.crane_times:
+        state.crane_times[crane_id] = max(
+            state.crane_times[crane_id], phase_start
+        )
+
+
+def _idle_actions_for_cross_job(
+    instance: StaticSchedulingInstance,
+    state: _PlanningState,
+    timing: TimeModel,
+    idle_crane_id: str,
+    sea_id: str,
+    local_jobs: dict[JobRegion, list[Job]],
+    remaining_cross_jobs: list[Job],
+) -> tuple[_IdleAction, ...]:
+    actions: list[_IdleAction] = [_IdleAction(_IdleActionKind.PARK_ONLY)]
+    idle_region = _local_region_for_crane(idle_crane_id, sea_id)
+    for job in local_jobs[idle_region][:3]:
+        actions.append(_IdleAction(_IdleActionKind.LOCAL_JOB, job=job))
+    for target in _preposition_targets(
+        instance, state, timing, idle_crane_id, sea_id, local_jobs,
+        remaining_cross_jobs,
+    ):
+        actions.append(
+            _IdleAction(_IdleActionKind.PREPOSITION, destination=target)
+        )
+    return tuple(actions)
+
+
+def _preposition_targets(
+    instance: StaticSchedulingInstance,
+    state: _PlanningState,
+    timing: TimeModel,
+    idle_crane_id: str,
+    sea_id: str,
+    local_jobs: dict[JobRegion, list[Job]],
+    remaining_cross_jobs: list[Job],
+) -> tuple[Position, ...]:
+    seen: set[Position] = set()
+    targets: list[Position] = []
+    idle_region = _local_region_for_crane(idle_crane_id, sea_id)
+    candidates = [job.origin for job in local_jobs[idle_region][:2]]
+    candidates.extend(job.origin for job in remaining_cross_jobs[:2])
+    for target in candidates:
+        if target in seen or target == state.crane_positions[idle_crane_id]:
+            continue
+        seen.add(target)
+        targets.append(target)
+    current = state.crane_positions[idle_crane_id]
+    return tuple(
+        sorted(
+            targets,
+            key=lambda target: timing.travel_seconds(current, target),
+        )[:3]
+    )
+
+
+def _local_region_for_crane(crane_id: str, sea_id: str) -> JobRegion:
+    if crane_id == sea_id:
+        return JobRegion.SEA_LOCAL
+    return JobRegion.LAND_LOCAL
+
+
+def _remove_local_job(
+    local_jobs: dict[JobRegion, list[Job]],
+    job_id: str,
+) -> None:
+    for jobs in local_jobs.values():
+        for index, job in enumerate(jobs):
+            if job.id == job_id:
+                del jobs[index]
+                return
+
+
+def _next_origin_distance(
+    state: _PlanningState,
+    crane_id: str,
+    local_jobs: dict[JobRegion, list[Job]],
+    remaining_cross_jobs: list[Job],
+) -> float:
+    position = state.crane_positions[crane_id]
+    origins = [
+        job.origin
+        for jobs in local_jobs.values()
+        for job in jobs
+    ]
+    origins.extend(job.origin for job in remaining_cross_jobs)
+    if not origins:
+        return 0.0
+    return min(
+        abs(position.bay - origin.bay) + abs(position.row - origin.row)
+        for origin in origins
+    )
+
+
+def _has_crane_conflict(
+    instance: StaticSchedulingInstance,
+    state: _PlanningState,
+) -> bool:
+    schedule = CandidateSchedule(
+        instance.instance_id,
+        CooperationPolicy.NO_SHARING,
+        tuple(
+            sorted(
+                state.operations,
+                key=lambda operation: (
+                    operation.start_time,
+                    operation.end_time,
+                    operation.crane_id,
+                ),
+            )
+        ),
+    )
+    return first_crane_conflict(instance, schedule) is not None
+
+
+def _normalize_relief_crane_positions(
+    instance: StaticSchedulingInstance,
+    state: _PlanningState,
+    timing: TimeModel,
+    sea_id: str,
+    land_id: str,
+) -> None:
+    separation = max(
+        1, math.ceil(instance.physical_rules.minimum_crane_separation_bays)
+    )
+    sea_parking = instance.layout.seaside_parking_bay
+    land_parking = instance.layout.landside_parking_bay
+    sea_position = state.crane_positions[sea_id]
+    land_position = state.crane_positions[land_id]
+    if sea_position.bay < sea_parking:
+        minimum_land_bay = sea_parking + separation
+        if land_position.bay < minimum_land_bay:
+            _append_move(
+                state,
+                timing,
+                land_id,
+                OperationType.MOVE_EMPTY,
+                Position(minimum_land_bay, land_position.row),
+            )
+        state.crane_times[sea_id] = max(
+            state.crane_times[sea_id], state.crane_times[land_id]
+        )
+        _append_move(
+            state,
+            timing,
+            sea_id,
+            OperationType.MOVE_EMPTY,
+            Position(sea_parking, sea_position.row),
+        )
+    sea_position = state.crane_positions[sea_id]
+    land_position = state.crane_positions[land_id]
+    if land_position.bay > land_parking:
+        maximum_sea_bay = land_parking - separation
+        if sea_position.bay > maximum_sea_bay:
+            _append_move(
+                state,
+                timing,
+                sea_id,
+                OperationType.MOVE_EMPTY,
+                Position(maximum_sea_bay, sea_position.row),
+            )
+        state.crane_times[land_id] = max(
+            state.crane_times[land_id], state.crane_times[sea_id]
+        )
+        _append_move(
+            state,
+            timing,
+            land_id,
+            OperationType.MOVE_EMPTY,
+            Position(land_parking, land_position.row),
+        )
+
+
+def _prepare_for_leftover_local_job(
+    instance: StaticSchedulingInstance,
+    state: _PlanningState,
+    timing: TimeModel,
+    worker: str,
+    other: str,
+    job: Job,
+    sea_id: str,
+) -> None:
+    separation = max(
+        1, math.ceil(instance.physical_rules.minimum_crane_separation_bays)
+    )
+    if worker == sea_id:
+        required_other_bay = instance.layout.handshake_bay + separation
+        other_position = state.crane_positions[other]
+        if other_position.bay < required_other_bay:
+            _append_move(
+                state,
+                timing,
+                other,
+                OperationType.MOVE_EMPTY,
+                Position(required_other_bay, other_position.row),
+            )
+    else:
+        required_other_bay = instance.layout.handshake_bay
+        other_position = state.crane_positions[other]
+        if other_position.bay > required_other_bay:
+            _append_move(
+                state,
+                timing,
+                other,
+                OperationType.MOVE_EMPTY,
+                Position(required_other_bay, other_position.row),
+            )
+    state.crane_times[worker] = max(
+        state.crane_times[worker],
+        state.crane_times[other],
+        job.ready_time,
+    )
+
+
+def _clone_planning_state(state: _PlanningState) -> _PlanningState:
+    return _PlanningState(
+        stacks={key: list(stack) for key, stack in state.stacks.items()},
+        container_slots=dict(state.container_slots),
+        container_statuses=dict(state.container_statuses),
+        crane_times=dict(state.crane_times),
+        crane_positions=dict(state.crane_positions),
+        operations=list(state.operations),
+    )
+
+
+def _replace_planning_state(
+    state: _PlanningState,
+    replacement: _PlanningState,
+) -> None:
+    state.stacks = replacement.stacks
+    state.container_slots = replacement.container_slots
+    state.container_statuses = replacement.container_statuses
+    state.crane_times = replacement.crane_times
+    state.crane_positions = replacement.crane_positions
+    state.operations = replacement.operations
+
+
 def _append_move(
     state: _PlanningState,
     timing: TimeModel,
@@ -317,48 +749,21 @@ def _append_handling(
     state.crane_times[crane_id] += duration
 
 
-def _cross_worker(
-    instance: StaticSchedulingInstance,
-    state: _PlanningState,
-    timing: TimeModel,
-    job: Job,
-    sea_id: str,
-    land_id: str,
-) -> str:
-    sea_gate = instance.layout.seaside_parking_bay
-    land_gate = instance.layout.landside_parking_bay
-    endpoints = {job.origin.bay, job.destination.bay}
-    if sea_gate in endpoints and land_gate in endpoints:
-        raise PlannerInfeasibleError(
-            f"job {job.id!r} spans both outside gates and needs cooperation"
-        )
-    if sea_gate in endpoints:
-        return sea_id
-    if land_gate in endpoints:
-        return land_id
-    sea_cost = timing.travel_seconds(state.crane_positions[sea_id], job.origin)
-    land_cost = timing.travel_seconds(state.crane_positions[land_id], job.origin)
-    return sea_id if sea_cost <= land_cost else land_id
-
-
-def _park_for_cross_job(
+def _park_other_for_cross_job(
     instance: StaticSchedulingInstance,
     state: _PlanningState,
     timing: TimeModel,
     worker: str,
     other: str,
+    job: Job,
+    *,
+    wait_for_parking: bool = True,
 ) -> None:
-    phase_start = max(state.crane_times.values())
-    for crane_id in state.crane_times:
-        state.crane_times[crane_id] = max(
-            state.crane_times[crane_id], phase_start
+    parking_bay = _parking_bay_for_cross_job(instance, other, job)
+    if parking_bay is None:
+        raise PlannerInfeasibleError(
+            f"crane {other!r} cannot park safely for job {job.id!r}"
         )
-    other_spec = instance.cranes_by_id[other]
-    parking_bay = (
-        instance.layout.seaside_parking_bay
-        if other_spec.side is CraneSide.SEASIDE
-        else instance.layout.landside_parking_bay
-    )
     _append_move(
         state,
         timing,
@@ -366,10 +771,35 @@ def _park_for_cross_job(
         OperationType.MOVE_EMPTY,
         Position(parking_bay, state.crane_positions[other].row),
     )
-    # The worker waits until the other crane has reached the protected bay.
-    state.crane_times[worker] = max(
-        state.crane_times[worker], state.crane_times[other]
+    if wait_for_parking:
+        state.crane_times[worker] = max(
+            state.crane_times[worker], state.crane_times[other]
+        )
+
+
+def _parking_bay_for_cross_job(
+    instance: StaticSchedulingInstance,
+    other: str,
+    job: Job,
+) -> int | None:
+    other_spec = instance.cranes_by_id[other]
+    separation = max(
+        1, math.ceil(instance.physical_rules.minimum_crane_separation_bays)
     )
+    endpoints = {job.origin.bay, job.destination.bay}
+    if other_spec.side is CraneSide.SEASIDE:
+        parking_bay = instance.layout.seaside_parking_bay
+        if parking_bay not in endpoints:
+            return parking_bay
+        if separation == 1:
+            return parking_bay - 1
+        return None
+    parking_bay = instance.layout.landside_parking_bay
+    if parking_bay not in endpoints:
+        return parking_bay
+    if separation == 1:
+        return parking_bay + 1
+    return None
 
 
 def _cross_reshuffle_bays(

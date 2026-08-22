@@ -83,10 +83,13 @@ def find_reshuffle_target(
     allowed_bays: Iterable[int],
     reserved_final_stacks: set[StackKey],
 ) -> Slot:
-    """Choose the nearest available stack, then prefer lower stack height."""
+    """Prefer trolley-only reshuffles, then fall back to the nearest bay."""
 
     allowed = set(allowed_bays)
-    candidates: list[tuple[float, int, int, int, StackKey]] = []
+    same_bay_candidates: list[tuple[float, int, int, int, StackKey]] = []
+    fallback_candidates: list[
+        tuple[int, float, int, int, int, int, StackKey]
+    ] = []
     for key, stack in state.stacks.items():
         capacity = instance.yard.stacks_by_key[key].capacity
         if (
@@ -96,20 +99,38 @@ def find_reshuffle_target(
             or len(stack) >= capacity
         ):
             continue
-        candidates.append(
-            (
-                timing.travel_seconds(source.position, key.position),
-                len(stack),
-                key.bay,
-                key.row,
-                key,
+        travel_seconds = timing.travel_seconds(source.position, key.position)
+        row_distance = abs(key.row - source.row)
+        if key.bay == source.bay:
+            same_bay_candidates.append(
+                (
+                    travel_seconds,
+                    len(stack),
+                    row_distance,
+                    key.row,
+                    key,
+                )
             )
-        )
-    if not candidates:
+        else:
+            fallback_candidates.append(
+                (
+                    abs(key.bay - source.bay),
+                    travel_seconds,
+                    len(stack),
+                    row_distance,
+                    key.bay,
+                    key.row,
+                    key,
+                )
+            )
+    if same_bay_candidates:
+        key = min(same_bay_candidates)[-1]
+    elif fallback_candidates:
+        key = min(fallback_candidates)[-1]
+    else:
         raise PlannerInfeasibleError(
             f"no safe reshuffle stack is available for {source!r}"
         )
-    key = min(candidates)[-1]
     return Slot(key.block_id, key.bay, key.row, len(state.stacks[key]) + 1)
 
 
