@@ -102,7 +102,7 @@ StaticScheduleVisualization
 보간한다. 컨테이너 상태는 공통 Simulator의 operation trace와 state delta만
 사용한다. HTML에서 pickup, transfer, stacking 물리규칙을 다시 판단하지 않는다.
 따라서 Gantt, 리플레이와 감사 JSON의 일정 출처가 같다. 컨테이너의 작업 방향과
-실제 사용된 인계점 종류(`FIXED_BUFFER` 또는 `VIRTUAL_STACK`)도 감사 JSON에
+실제 사용된 인계점 종류(`FIXED_BUFFER`, `STACK_BACKED`, `VIRTUAL_STACK`)도 감사 JSON에
 기록한다. JSON schema version은 `2.2.0`이다. 리플레이는 후보 전체가 아니라
 검증 일정에서 실제 사용된 인계점만 표시한다.
 

@@ -741,6 +741,7 @@ h2 { margin: 0 0 12px; font-size: 1.05rem; }
     }));
     usedTransferPoints(policy).forEach(point => {
       const virtual = point.kind === "VIRTUAL_STACK";
+      const stackBacked = virtual || point.kind === "STACK_BACKED";
       const marker = svgNode("rect", {
         x: x(point.position.bay) - 7, y: y(point.position.row) - 7,
         width: 14, height: 14, rx: virtual ? 0 : 2,
@@ -754,7 +755,9 @@ h2 { margin: 0 0 12px; font-size: 1.05rem; }
       }).join(" / ");
       title.textContent = virtual
         ? `${point.slot_id} · Bay ${point.position.bay}, Row ${point.position.row} · ANY 임시 stack 인계점 · capacity ${point.capacity}${usage ? ` · ${usage}` : ""}`
-        : `${point.slot_id} · Bay ${point.position.bay}, Row ${point.position.row} · 고정 transfer buffer · capacity ${point.capacity}${usage ? ` · ${usage}` : ""}`;
+        : stackBacked
+          ? `${point.slot_id} · Bay ${point.position.bay}, Row ${point.position.row} · 실제 stack 상단 H 인계점 · capacity ${point.capacity}${usage ? ` · ${usage}` : ""}`
+          : `${point.slot_id} · Bay ${point.position.bay}, Row ${point.position.row} · 고정 transfer buffer · capacity ${point.capacity}${usage ? ` · ${usage}` : ""}`;
       marker.appendChild(title);
       root.appendChild(marker);
     });

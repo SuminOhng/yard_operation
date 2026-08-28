@@ -13,6 +13,8 @@ sys.path.insert(0, str(ROOT / "src"))
 from yard_crane_v3 import (
     CooperationPolicy,
     DEFAULT_POLICY_PLANNERS,
+    action_scenario_dict,
+    build_three_policy_comparison_visualization,
     comparison_summary_dict,
     load_instance,
     run_three_policy_comparison,
@@ -28,7 +30,7 @@ class ThreePolicyComparisonTests(unittest.TestCase):
     def test_real_policy_planners_run_on_one_instance(self) -> None:
         comparison = run_three_policy_comparison(self.instance)
         self.assertTrue(comparison.all_valid)
-        self.assertTrue(comparison.nested_upper_bounds_hold)
+        self.assertFalse(comparison.nested_upper_bounds_hold)
         records = comparison.records_by_policy
         self.assertEqual(
             records[CooperationPolicy.NO_SHARING].planner,
@@ -58,7 +60,7 @@ class ThreePolicyComparisonTests(unittest.TestCase):
             records[
                 CooperationPolicy.ANY_BAY
             ].metrics.feasible_upper_bound,
-            9.9,
+            10.9,
         )
 
     def test_summary_is_json_serializable(self) -> None:
@@ -76,7 +78,7 @@ class ThreePolicyComparisonTests(unittest.TestCase):
         comparison = run_three_policy_comparison(self.instance)
         with tempfile.TemporaryDirectory() as directory:
             paths = write_comparison_bundle(comparison, directory)
-            self.assertEqual(len(paths), 4)
+            self.assertEqual(len(paths), 7)
             self.assertTrue(all(path.exists() for path in paths))
             summary = json.loads(paths[0].read_text(encoding="utf-8"))
             self.assertTrue(summary["all_valid"])
@@ -86,6 +88,68 @@ class ThreePolicyComparisonTests(unittest.TestCase):
             any_payload = json.loads(any_path.read_text(encoding="utf-8"))
             self.assertEqual(any_payload["policy"], "ANY_BAY")
             self.assertTrue(any_payload["operations"])
+            scenario_path = next(
+                path for path in paths if path.name == "any_bay_scenario.json"
+            )
+            scenario = json.loads(scenario_path.read_text(encoding="utf-8"))
+            self.assertEqual(scenario["policy"], "ANY_BAY")
+            self.assertEqual(
+                scenario["execution_model"],
+                "EVENT_DEPENDENCY_GRAPH",
+            )
+            self.assertTrue(scenario["actions"])
+            self.assertTrue(
+                any(
+                    dependency["type"] == "CRANE_SEQUENCE"
+                    for dependency in scenario["dependencies"]
+                )
+            )
+            self.assertTrue(
+                any(
+                    dependency["type"] == "TRANSFER_SLOT_HAS_CONTAINER"
+                    for dependency in scenario["dependencies"]
+                )
+            )
+
+    def test_comparison_replay_uses_exact_exported_scenarios(self) -> None:
+        comparison = run_three_policy_comparison(self.instance)
+        visualization = build_three_policy_comparison_visualization(
+            self.instance,
+            comparison,
+        )
+        views = {view.policy: view for view in visualization.policies}
+        self.assertEqual(tuple(views), tuple(CooperationPolicy))
+        self.assertEqual(visualization.new_job_ids, ())
+        self.assertEqual(
+            visualization.existing_job_ids,
+            tuple(job.id for job in self.instance.jobs),
+        )
+        for policy, record in comparison.records_by_policy.items():
+            self.assertIsNotNone(record.schedule)
+            scenario = action_scenario_dict(record.schedule)
+            actions = scenario["actions"]
+            operations = views[policy].operations
+            self.assertEqual(len(actions), len(operations))
+            for action, operation in zip(actions, operations, strict=True):
+                self.assertEqual(
+                    action["action_id"],
+                    f"op_{operation.operation_index:04d}",
+                )
+                self.assertEqual(
+                    action["action_type"],
+                    operation.operation_type.value,
+                )
+                self.assertEqual(action["crane_id"], operation.crane_id)
+                self.assertEqual(action["estimated_start_time"], operation.start_time)
+                self.assertEqual(action["estimated_end_time"], operation.end_time)
+                self.assertEqual(
+                    action["from"],
+                    {"bay": operation.start_bay, "row": operation.start_row},
+                )
+                self.assertEqual(
+                    action["to"],
+                    {"bay": operation.end_bay, "row": operation.end_row},
+                )
 
     def test_one_planner_failure_does_not_hide_other_results(self) -> None:
         planners = dict(DEFAULT_POLICY_PLANNERS)

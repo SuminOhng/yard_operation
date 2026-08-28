@@ -143,6 +143,11 @@ from .schedule import (
     OperationType,
     ScheduledOperation,
 )
+from .scenario import (
+    ACTION_SCENARIO_SCHEMA_VERSION,
+    action_scenario_dict,
+    write_action_scenario,
+)
 from .simulation import (
     CraneConflict,
     OperationTrace,
@@ -168,6 +173,7 @@ from .visualization import (
     VisualizationOperation,
     build_policy_schedule_visualization,
     build_static_schedule_visualization,
+    build_three_policy_comparison_visualization,
     render_schedule_visualization_html,
     visualization_dict,
     write_schedule_visualization_bundle,
@@ -175,6 +181,7 @@ from .visualization import (
 )
 
 __all__ = [
+    "ACTION_SCENARIO_SCHEMA_VERSION",
     "BOUND_ARTIFACT_SCHEMA_VERSION",
     "BATCH_SUMMARY_SCHEMA_VERSION",
     "BatchBundlePaths",
@@ -273,6 +280,7 @@ __all__ = [
     "build_regular_yard",
     "build_policy_schedule_visualization",
     "build_static_schedule_visualization",
+    "build_three_policy_comparison_visualization",
     "build_explicit_route_schedule",
     "build_left_shifted_candidate",
     "branch_on_first_conflict",
@@ -324,12 +332,14 @@ __all__ = [
     "TimingRepairResult",
     "timing_constraint_signature",
     "allowed_route_modes",
+    "action_scenario_dict",
     "validate_instance",
     "validate_policy_lattice",
     "validate_schedule",
     "virtual_transfer_slots",
     "visualization_dict",
     "write_comparison_bundle",
+    "write_action_scenario",
     "write_bound_calculation",
     "write_bound_batch_bundle",
     "write_reference_result",

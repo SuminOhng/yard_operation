@@ -9,6 +9,7 @@ from pathlib import Path
 
 from ..model import Position, Slot
 from ..schedule import ScheduledOperation
+from ..scenario import action_scenario_dict
 from .result import PolicyComparisonRecord, ThreePolicyComparison
 
 
@@ -55,6 +56,15 @@ def write_comparison_bundle(
         path = directory / f"{record.policy.value.lower()}_schedule.json"
         _write_json_atomic(path, policy_artifact_dict(record))
         paths.append(path)
+        if record.schedule is not None:
+            scenario_path = directory / (
+                f"{record.policy.value.lower()}_scenario.json"
+            )
+            _write_json_atomic(
+                scenario_path,
+                action_scenario_dict(record.schedule),
+            )
+            paths.append(scenario_path)
     return tuple(paths)
 
 

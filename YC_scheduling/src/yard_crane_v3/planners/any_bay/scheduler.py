@@ -9,7 +9,6 @@ from ...model import (
     Slot,
     StackKey,
     StaticSchedulingInstance,
-    TransferSlotKind,
     TransferSlotSpec,
 )
 from ...policy import CooperationPolicy, constraints_for
@@ -28,7 +27,6 @@ from ..handshake_area.scheduler import (
     _synchronize,
 )
 from ..pipeline import PipelineTimingResult, repair_pipeline_seed, retreat_from_transfer_boundary
-from ..handshake_area import build_handshake_area_schedule
 from ..no_sharing import JobRegion, classify_job
 
 
@@ -36,7 +34,7 @@ def build_any_bay_schedule(
     instance: StaticSchedulingInstance,
     policy: CooperationPolicy = CooperationPolicy.ANY_BAY,
 ) -> CandidateSchedule:
-    """Return best public ANY_BAY schedule from H fallback and per-job search."""
+    """Return the best public ANY_BAY schedule from per-job transfer search."""
 
     if policy is not CooperationPolicy.ANY_BAY:
         raise ValueError("the any-bay scheduler accepts ANY_BAY only")
@@ -49,32 +47,7 @@ def build_any_bay_schedule(
 def evaluate_any_bay_candidates(
     instance: StaticSchedulingInstance,
 ) -> tuple[PlannerCandidateEvaluation, ...]:
-    candidates: list[PlannerCandidateEvaluation] = []
-    try:
-        handshake_schedule = build_handshake_area_schedule(instance)
-        handshake_schedule = CandidateSchedule(
-            instance.instance_id,
-            CooperationPolicy.ANY_BAY,
-            handshake_schedule.operations,
-        )
-        handshake_validation = validate_schedule(
-            instance,
-            constraints_for(instance, CooperationPolicy.ANY_BAY),
-            handshake_schedule,
-        )
-        candidates.append(
-            PlannerCandidateEvaluation(
-                "HANDSHAKE_FALLBACK",
-                handshake_schedule,
-                handshake_validation,
-            )
-        )
-    except (PlannerInfeasibleError, ValueError) as exc:
-        candidates.append(
-            PlannerCandidateEvaluation("HANDSHAKE_FALLBACK", None, None, str(exc))
-        )
-    candidates.extend(evaluate_per_job_transfer_test_candidates(instance))
-    return tuple(candidates)
+    return evaluate_per_job_transfer_test_candidates(instance)
 
 
 def build_per_job_transfer_test_schedule(
@@ -223,7 +196,7 @@ def _best_all_bay_assignment(
         slots = _transfer_points_at_bay(
             instance,
             bay,
-            transfer_kind=TransferSlotKind.VIRTUAL_STACK,
+            stack_storage_only=True,
         )
         if not slots:
             continue
@@ -275,7 +248,7 @@ def _job_transfer_alternatives(
     points = tuple(
         point
         for point in constraints_for(instance, CooperationPolicy.ANY_BAY).transfer_points
-        if point.enabled and point.kind is TransferSlotKind.VIRTUAL_STACK
+        if point.enabled and point.uses_stack_storage
     )
     alternatives: dict[str, tuple[TransferSlotSpec, ...]] = {}
     for job in instance.jobs:
@@ -380,14 +353,14 @@ def _transfer_points_at_bay(
     instance: StaticSchedulingInstance,
     bay: int,
     *,
-    transfer_kind: TransferSlotKind | None,
+    stack_storage_only: bool,
 ) -> tuple[TransferSlotSpec, ...]:
     return tuple(
         sorted(
             (
                 point
                 for point in constraints_for(instance, CooperationPolicy.ANY_BAY).transfer_points
-                if (transfer_kind is None or point.kind is transfer_kind)
+                if (not stack_storage_only or point.uses_stack_storage)
                 and point.enabled
                 and point.position.bay == bay
             ),
@@ -555,7 +528,7 @@ def _handover_handling_seconds(
     timing: TimeModel,
     transfer: TransferSlotSpec,
 ) -> tuple[float, float]:
-    if transfer.kind is TransferSlotKind.FIXED_BUFFER:
+    if not transfer.uses_stack_storage:
         return timing.drop_seconds(), timing.pickup_seconds()
 
     stack_key = StackKey(
@@ -569,7 +542,7 @@ def _handover_handling_seconds(
     capacity = instance.yard.stacks_by_key[stack_key].capacity
     if tier > capacity:
         raise PlannerInfeasibleError(
-            f"virtual transfer point {transfer.id!r} has no free stack tier"
+            f"stack-backed transfer point {transfer.id!r} has no free stack tier"
         )
     handover_slot = Slot(
         instance.layout.block_id,

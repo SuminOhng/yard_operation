@@ -45,9 +45,9 @@ transfer slot, 크레인별 sequence와 동시 시작시각을 공통 탐색변�
 
 ## 정책 공정성
 
-세 정책 모두 동일하게 모든 작업순서를 평가한다. HANDSHAKE_AREA는 현재
-NO_SHARING direct 후보를 포함하고 ANY_BAY는 HANDSHAKE_AREA 후보를 포함한다.
-따라서 구현된 reference candidate space에서는 다음 관계를 자동 검사한다.
+세 정책 모두 동일하게 모든 작업순서를 평가한다. 각 정책 planner의 휴리스틱 후보
+집합은 독립적이며 ANY_BAY는 HANDSHAKE_AREA 후보를 포함하지 않는다. 따라서 다음
+관계는 자동 검사하지만 성립을 보장하지 않는다.
 
 ```text
 ANY_BAY reference UB

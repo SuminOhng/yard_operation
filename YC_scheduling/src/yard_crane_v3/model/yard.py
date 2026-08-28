@@ -61,6 +61,7 @@ class StackSpec:
 
 class TransferSlotKind(str, Enum):
     FIXED_BUFFER = "FIXED_BUFFER"
+    STACK_BACKED = "STACK_BACKED"
     VIRTUAL_STACK = "VIRTUAL_STACK"
 
 
@@ -74,6 +75,13 @@ class TransferSlotSpec:
     capacity: int
     enabled: bool = True
     kind: TransferSlotKind = TransferSlotKind.FIXED_BUFFER
+
+    @property
+    def uses_stack_storage(self) -> bool:
+        return self.kind in {
+            TransferSlotKind.STACK_BACKED,
+            TransferSlotKind.VIRTUAL_STACK,
+        }
 
 
 @dataclass(frozen=True, slots=True)

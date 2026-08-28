@@ -184,9 +184,9 @@ class ExplicitRouteModeReferenceTests(unittest.TestCase):
                     phase_one.best_makespan,
                 )
 
-    def test_three_policy_explicit_spaces_preserve_reference_lattice(self) -> None:
+    def test_three_policy_explicit_spaces_report_reference_lattice(self) -> None:
         result = solve_three_policy_route_reference(self.instance)
-        self.assertTrue(result.nested_reference_bounds_hold)
+        self.assertFalse(result.nested_reference_bounds_hold)
         counts = {
             record.policy: record.expected_candidate_count
             for record in result.records

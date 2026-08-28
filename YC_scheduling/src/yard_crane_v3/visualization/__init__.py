@@ -3,6 +3,7 @@
 from .adapter import (
     build_policy_schedule_visualization,
     build_static_schedule_visualization,
+    build_three_policy_comparison_visualization,
 )
 from .model import (
     InitialContainerVisualization,
@@ -37,6 +38,7 @@ __all__ = [
     "VisualizationOperation",
     "build_policy_schedule_visualization",
     "build_static_schedule_visualization",
+    "build_three_policy_comparison_visualization",
     "build_single_schedule_visualization",
     "render_schedule_visualization_html",
     "visualization_dict",

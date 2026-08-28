@@ -53,10 +53,10 @@ parking bay가 아니라 transfer bay에서 최소 안전거리만큼 떨어진 
 operation duration, stack capacity, tier, blocker, transfer capacity와 모든 최종
 drop을 검사한다. 이 검사를 통과한 일정만 Upper Bound 후보가 된다.
 
-`FIXED_BUFFER`는 입력에 정의된 독립 buffer다. `VIRTUAL_STACK`은 런타임에 모든
-적격 Bay·Row에 생성되는 논리적 인계점이며, drop부터 pickup까지 해당 일반 stack의
-한 tier를 실제 점유한다. 최종 일정에서 사용하지 않은 가상점은 상태와 화면에
-나타나지 않는다.
+`FIXED_BUFFER`는 입력에 정의된 독립 buffer다. `STACK_BACKED`는 입력에 지정된
+실제 stack 상단을 사용한다. `VIRTUAL_STACK`은 런타임에 생성되는 같은 물리방식의
+논리적 인계점이다. 두 stack 방식 모두 drop부터 pickup까지 다음 빈 tier를 실제
+점유하며 최대 tier와 최상단 pickup 규칙을 적용한다.
 
 ## 후보 평가
 

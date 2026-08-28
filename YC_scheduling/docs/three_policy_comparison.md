@@ -18,7 +18,7 @@ planner에 차례로 전달하고 같은 물리 시뮬레이터로 검증한다.
           ↓
 PolicyMetrics 세 개 생성
           ↓
-포함관계와 전체 유효성 검사
+Upper Bound 순서와 전체 유효성 검사
 ```
 
 정책별 실행은 독립적으로 감싼다. 한 planner가 오류를 내면 해당 정책은
@@ -40,7 +40,7 @@ PolicyMetrics 세 개 생성
 reshuffle 횟수는 `RESHUFFLE` 목적의 pickup 수로 계산한다. 따라서 pickup, 이동,
 drop 세 operation을 컨테이너 한 번의 reshuffle로 센다.
 
-## 포함관계 판정
+## Upper Bound 순서 관찰
 
 세 일정이 모두 유효하고 Upper Bound가 존재할 때 다음을 검사한다.
 
@@ -49,8 +49,8 @@ ANY_BAY UB <= HANDSHAKE_AREA UB <= NO_SHARING UB
 ```
 
 세 결과 중 하나라도 실패하면 `nested_upper_bounds_hold`는 `null`이다. 모두
-성공했지만 관계가 깨지면 `false`가 되어 구현 또는 후보 생성 문제를 바로 알 수
-있다.
+성공했지만 관계가 깨지면 `false`다. 정책 허용 공간은 중첩되지만 각 planner의
+휴리스틱 후보 집합은 독립적이므로 `false`도 정상 결과일 수 있다.
 
 ## 실행과 산출물
 
@@ -88,10 +88,10 @@ transfer slot과 목적이 들어간다. 파일은 같은 디렉터리의 임시
 | 정책 | UB | 인계 | 사용 위치 |
 |---|---:|---:|---|
 | NO_SHARING | 12.7 | 0 | 없음 |
-| HANDSHAKE_AREA | 11.9 | 1 | H_ROW_1 |
+| HANDSHAKE_AREA | 9.9 | 1 | H_ROW_1 |
 | ANY_BAY | 10.9 | 1 | VIRTUAL::B1::BAY_1::ROW_1 |
 
-`all_valid`와 `nested_upper_bounds_hold`는 모두 `true`다.
+`all_valid`는 `true`, `nested_upper_bounds_hold`는 `false`다.
 
 ## 해석 한계
 

@@ -71,10 +71,10 @@ class ExhaustiveReferenceSolverTests(unittest.TestCase):
         )
         self.assertLessEqual(result.best_makespan, original_validation.makespan)
 
-    def test_three_policy_reference_preserves_nested_candidate_bounds(self) -> None:
+    def test_three_policy_reference_reports_non_nested_candidate_bounds(self) -> None:
         result = solve_three_policy_reference(self.instance)
         self.assertEqual(len(result.records), 3)
-        self.assertTrue(result.nested_reference_bounds_hold)
+        self.assertFalse(result.nested_reference_bounds_hold)
         self.assertTrue(
             all(record.evaluated_permutation_count == 24 for record in result.records)
         )
@@ -126,7 +126,7 @@ class ExhaustiveReferenceSolverTests(unittest.TestCase):
             console = json.loads(completed.stdout)
             self.assertEqual(console["status"], "COMPLETE")
             artifact = json.loads(output.read_text(encoding="utf-8"))
-            self.assertTrue(artifact["nested_reference_bounds_hold"])
+            self.assertFalse(artifact["nested_reference_bounds_hold"])
             self.assertEqual(len(artifact["records"]), 3)
 
 

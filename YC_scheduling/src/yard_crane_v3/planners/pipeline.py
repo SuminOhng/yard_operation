@@ -46,7 +46,7 @@ def repair_pipeline_seed(
         seed_schedule,
         TimingConstraint,
         TimingConstraintReason,
-    ) + _transfer_access_constraints(
+    ) + _interleaved_transfer_access_constraints(
         instance,
         seed_schedule,
         TimingConstraint,

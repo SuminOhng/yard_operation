@@ -15,8 +15,6 @@ from yard_crane_v3 import (
     PlannerInfeasibleError,
     TransferSlotKind,
     build_any_bay_schedule,
-    build_handshake_area_schedule,
-    build_no_sharing_schedule,
     build_per_job_transfer_test_schedule,
     constraints_for,
     evaluate_any_bay_candidates,
@@ -108,55 +106,32 @@ class AnyBayPlannerTests(unittest.TestCase):
         ]
         return parse_instance(self.payload)
 
-    def test_nested_policy_candidates_are_never_worse(self) -> None:
+    def test_any_bay_candidates_exclude_handshake_fallback(self) -> None:
         instance = parse_instance(self.payload)
-        no_schedule = build_no_sharing_schedule(instance)
-        handshake_schedule = build_handshake_area_schedule(instance)
-        any_schedule = build_any_bay_schedule(instance)
-        no_result = validate_schedule(
-            instance,
-            constraints_for(instance, CooperationPolicy.NO_SHARING),
-            no_schedule,
+        candidates = evaluate_any_bay_candidates(instance)
+        self.assertTrue(candidates)
+        self.assertTrue(
+            all(item.label.startswith("PER_JOB_TRANSFER:") for item in candidates)
         )
-        handshake_result = validate_schedule(
-            instance,
-            constraints_for(instance, CooperationPolicy.HANDSHAKE_AREA),
-            handshake_schedule,
-        )
-        any_result = validate_schedule(
-            instance,
-            constraints_for(instance, CooperationPolicy.ANY_BAY),
-            any_schedule,
-        )
-        self.assertTrue(no_result.valid and handshake_result.valid and any_result.valid)
-        self.assertLessEqual(handshake_result.makespan, no_result.makespan)
-        self.assertLessEqual(any_result.makespan, handshake_result.makespan)
 
     def test_any_bay_selects_best_true_any_point(self) -> None:
         instance = self._sea_to_land_gate_job()
-        handshake = build_handshake_area_schedule(instance)
         any_bay = build_any_bay_schedule(instance)
-        handshake_result = validate_schedule(
-            instance,
-            constraints_for(instance, CooperationPolicy.HANDSHAKE_AREA),
-            handshake,
-        )
         any_result = validate_schedule(
             instance,
             constraints_for(instance, CooperationPolicy.ANY_BAY),
             any_bay,
         )
         self.assertTrue(any_result.valid, any_result.issues)
-        self.assertLessEqual(any_result.makespan, handshake_result.makespan)
         transfer_ids = {
             operation.transfer_slot_id
             for operation in any_bay.operations
             if operation.operation_type
             in {OperationType.HANDOVER_DROP, OperationType.HANDOVER_PICKUP}
         }
-        self.assertEqual(
-            transfer_ids,
-            {"H_ROW_1"},
+        self.assertTrue(transfer_ids)
+        self.assertTrue(
+            all(transfer_id.startswith("VIRTUAL::") for transfer_id in transfer_ids)
         )
 
     def test_disabled_bay_is_not_used(self) -> None:

@@ -2,7 +2,7 @@
 
 ## 구현 목표
 
-`ANY_BAY`는 직접운반과 지정 H 인계를 모두 포함하면서, 고정 buffer가 없는 모든
+`ANY_BAY` 정책은 직접운반과 지정 H 인계를 허용하면서, 고정 buffer가 없는 모든
 물리적 작업 Bay·Row의 일반 stack top도 한 번의 임시 인계점으로 사용할 수 있는
 정적 scheduler다. 입력 JSON에 가상 slot을 열거하지 않으며 다음 ID를 런타임에
 결정론적으로 생성한다.
@@ -11,9 +11,10 @@
 VIRTUAL::<block>::BAY_<bay>::ROW_<row>
 ```
 
-입력에 이미 정의된 transfer slot은 호환성을 위해 `FIXED_BUFFER`로 유지된다.
-`HANDSHAKE_AREA`는 H bay의 고정 buffer만 사용하고, `ANY_BAY`는 그 고정점들과
-자동 생성된 `VIRTUAL_STACK` 점을 모두 후보로 사용한다.
+kind가 없는 기존 transfer slot은 호환성을 위해 `FIXED_BUFFER`로 유지된다.
+입력에서 `STACK_BACKED`로 지정한 점은 해당 실제 stack 상단을 사용한다. 현재
+`ANY_BAY` planner는 `STACK_BACKED`와 자동 생성된 `VIRTUAL_STACK`을 독립적으로
+탐색하고 고정 buffer를 후보에서 제외한다.
 
 ## 임시 인계점의 물리 의미
 
@@ -34,27 +35,19 @@ top에 컨테이너를 잠시 내려놓고 receiver가 다시 집는 동안만 �
 
 ## 후보 집합
 
-`build_any_bay_schedule()`은 다음 후보를 공통 Simulator로 모두 검증한다.
+`build_any_bay_schedule()`은 다음 순서로 후보를 만들고 공통 Simulator로 검증한다.
 
-1. `NESTED_HANDSHAKE`: HANDSHAKE_AREA의 최선 일정
-2. `BEST_SLOT_PER_JOB`: 작업별 휴리스틱 비용이 가장 작은 고정·가상 인계점
-3. `FIXED_SLOT`: 한 고정·가상 인계점을 전체 일정의 경계로 사용
-4. `PIPELINE_BAY:<bay>`: 한 물리적 bay를 경계로 donor/receiver 작업을 겹침
+1. 각 작업 Bay를 기준으로 stack-backed seed assignment를 만든다.
+2. 작업 경로가 해당 Bay를 지날 때 가장 가까운 Row의 가상점을 배정한다.
+3. 유효한 seed 중 최선을 고른다.
+4. 작업별 상위 2개 stack-backed 점으로 한 번의 greedy local search를 수행한다.
 
-가상점은 origin–destination 사이로 제한하지 않는다. Validator의 정책 가능영역은
-yard 전체이며, 작업 출발지·목적지·두 크레인의 현재위치·stack tier handling 시간을
-합친 비용으로 우선 후보를 정한다. makespan, handover 수, operation 수, 후보 label
-순으로 최선의 유효 일정을 선택한다.
+가상점은 각 작업의 origin–destination Bay 구간 안으로 제한한다. 유효 후보는
+makespan, handover 수, operation 수, 후보 label 순으로 선택한다.
 
-HANDSHAKE_AREA의 검증 일정을 후보에 그대로 포함하므로 휴리스틱 결과도 다음
-관계를 유지한다.
-
-```text
-ANY_BAY makespan <= HANDSHAKE_AREA makespan <= NO_SHARING makespan
-```
-
-이는 정책 feasible set과 구현 후보가 포함된다는 뜻이지 ANY_BAY 전역 최적성을
-인증한다는 뜻은 아니다.
+`HANDSHAKE_AREA` 일정은 `ANY_BAY` 후보에 포함하지 않는다. 정책의 feasible set은
+중첩되지만 현재 휴리스틱 후보 집합은 독립적이므로 정책별 makespan 순서는 보장되지
+않는다.
 
 ## 수입·수출 방향
 
@@ -84,6 +77,6 @@ Bay 1·Row 1의 가상 stack 인계점을 한 번 사용한다. 결과는
 전체 작업순서, 모든 작업별 인계점 조합과 직접/인계 조합을 전역 최적화하지 않는다.
 온라인 신규 도착과 재스케줄링도 이 정적 단계의 범위가 아니다.
 
-`evaluate_any_bay_candidates()`는 nested, serial-point, pipeline 후보와 검증 결과를
-감사용으로 반환한다. 상세 timing repair와 화면 리플레이는
+`evaluate_any_bay_candidates()`는 `PER_JOB_TRANSFER` seed, local-search, final
+후보와 검증 결과를 감사용으로 반환한다. 상세 timing repair와 화면 리플레이는
 `docs/pipeline_handover_and_replay.md`에 설명한다.

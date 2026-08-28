@@ -12,11 +12,10 @@ from ..model import (
     Slot,
     StackKey,
     StaticSchedulingInstance,
-    TransferSlotKind,
     TransferSlotSpec,
     validate_instance,
 )
-from ..policy import CooperationPolicy, PolicyConstraints
+from ..policy import PolicyConstraints
 from ..schedule import (
     CandidateSchedule,
     OperationPurpose,
@@ -212,11 +211,8 @@ def _validate_operation_start(
         fail("POSITION_DISCONTINUITY", "operation starts away from crane", start, index, operation)
     if start < crane.available_time - TOL:
         fail("CRANE_NOT_AVAILABLE", "crane is not available", start, index, operation)
-    allow_relief = constraints.policy is CooperationPolicy.NO_SHARING
-    if not _position_inside(
-        instance, operation.start_position, allow_relief=allow_relief
-    ) or not _position_inside(
-        instance, operation.end_position, allow_relief=allow_relief
+    if not _position_inside(instance, operation.start_position) or not _position_inside(
+        instance, operation.end_position
     ):
         fail("POSITION_OUT_OF_BOUNDS", "operation leaves the layout", start, index, operation)
 
@@ -317,7 +313,7 @@ def _validate_operation_start(
             reserved = state.reserved_transfer_drops.get(slot_id, 0)
             if used + reserved >= transfer.capacity:
                 fail("TRANSFER_CAPACITY", "transfer slot is full", start, index, operation)
-            if transfer.kind is TransferSlotKind.VIRTUAL_STACK:
+            if transfer.uses_stack_storage:
                 target = _next_virtual_stack_slot(
                     state, instance, transfer.position
                 )
@@ -367,7 +363,7 @@ def _validate_operation_start(
             fail("HANDOVER_SLOT_MISMATCH", "container is at another transfer slot", start, index, operation)
         elif (
             transfer is not None
-            and transfer.kind is TransferSlotKind.VIRTUAL_STACK
+            and transfer.uses_stack_storage
             and operation.transfer_slot_id is not None
         ):
             slot_id = operation.transfer_slot_id
@@ -459,7 +455,7 @@ def _expected_duration(
             operation.transfer_slot_id
         )
         slot = None
-        if transfer is not None and transfer.kind is TransferSlotKind.VIRTUAL_STACK:
+        if transfer is not None and transfer.uses_stack_storage:
             if kind is OperationType.HANDOVER_PICKUP:
                 slot = container.current_slot if container is not None else None
             else:
@@ -623,7 +619,7 @@ def _reserve_operation(state, instance, constraints, operation, index) -> None:
         state.ensure_transfer_point(slot_id)
         state.reserved_transfer_drops[slot_id] = state.reserved_transfer_drops.get(slot_id, 0) + 1
         transfer = constraints.transfer_points_by_id[slot_id]
-        if transfer.kind is TransferSlotKind.VIRTUAL_STACK:
+        if transfer.uses_stack_storage:
             target = _next_virtual_stack_slot(
                 state, instance, transfer.position
             )
@@ -691,7 +687,7 @@ def _finish_operation(
         current_slot = None
         if (
             transfer is not None
-            and transfer.kind is TransferSlotKind.VIRTUAL_STACK
+            and transfer.uses_stack_storage
         ):
             current_slot = virtual_target
             state.stacks[current_slot.stack_key].append(container_id)
@@ -712,7 +708,7 @@ def _finish_operation(
         slot_id = operation.transfer_slot_id
         if (
             transfer is not None
-            and transfer.kind is TransferSlotKind.VIRTUAL_STACK
+            and transfer.uses_stack_storage
         ):
             state.stacks[container_before.current_slot.stack_key].pop()
             state.virtual_handover_donors.pop(slot_id, None)
@@ -804,21 +800,9 @@ def _reserved_virtual_slot(state, operation_index: int) -> Slot | None:
     )
 
 
-def _position_inside(
-    instance,
-    position: Position,
-    *,
-    allow_relief: bool = False,
-) -> bool:
-    relief_bays = {
-        instance.layout.seaside_parking_bay - 1,
-        instance.layout.landside_parking_bay + 1,
-    }
+def _position_inside(instance, position: Position) -> bool:
     return (
-        (
-            instance.layout.is_on_crane_rail(position.bay)
-            or (allow_relief and position.bay in relief_bays)
-        )
+        instance.layout.is_on_crane_rail(position.bay)
         and 1 <= position.row <= instance.layout.rows
     )
 

@@ -6,7 +6,8 @@ import math
 from collections.abc import Iterable
 
 from ..bounds import BoundCalculation
-from ..model import ContainerStatus
+from ..comparison import ThreePolicyComparison
+from ..model import ContainerStatus, StaticSchedulingInstance
 from ..planners import (
     PlannerCandidateEvaluation,
     evaluate_any_bay_candidates,
@@ -25,9 +26,91 @@ from .model import (
     TransferSlotVisualization,
     VisualizationOperation,
 )
+from .single_schedule import build_single_schedule_visualization
 
 
 TOLERANCE = 1e-9
+
+
+def build_three_policy_comparison_visualization(
+    instance: StaticSchedulingInstance,
+    comparison: ThreePolicyComparison,
+    *,
+    title: str | None = None,
+) -> StaticScheduleVisualization:
+    """Visualize the exact three schedules exported by one comparison run."""
+
+    if comparison.instance_id != instance.instance_id:
+        raise ValueError("comparison and instance IDs differ")
+    records = comparison.records_by_policy
+    if set(records) != set(CooperationPolicy):
+        raise ValueError("comparison must contain all cooperation policies once")
+
+    single_views: dict[CooperationPolicy, StaticScheduleVisualization] = {}
+    for policy in CooperationPolicy:
+        record = records[policy]
+        if (
+            not record.metrics.valid
+            or record.schedule is None
+            or record.validation is None
+        ):
+            raise ValueError(f"{policy.value} has no valid schedule to visualize")
+        single_views[policy] = build_single_schedule_visualization(
+            instance,
+            record.schedule,
+            record.validation,
+            title=title or instance.instance_id,
+            method=record.planner,
+        )
+
+    policies = tuple(
+        single_views[policy].policies[0]
+        for policy in CooperationPolicy
+    )
+    route_keys = {
+        CooperationPolicy.NO_SHARING: "DIRECT",
+        CooperationPolicy.HANDSHAKE_AREA: "H_HANDOVER",
+        CooperationPolicy.ANY_BAY: "ANY_BAY_HANDOVER",
+    }
+    route_candidates = tuple(
+        RouteCandidateVisualization(
+            route_key=route_keys[policy],
+            policy=policy,
+            method=records[policy].planner,
+            valid=True,
+            makespan=records[policy].metrics.feasible_upper_bound,
+            handover_count=records[policy].metrics.handover_count,
+            operation_count=records[policy].metrics.operation_count,
+            selected=True,
+            error=None,
+        )
+        for policy in CooperationPolicy
+    )
+    base = single_views[CooperationPolicy.NO_SHARING]
+    return StaticScheduleVisualization(
+        instance_id=base.instance_id,
+        title=title or instance.instance_id,
+        block_id=base.block_id,
+        work_bays=base.work_bays,
+        rows=base.rows,
+        tiers=base.tiers,
+        seaside_parking_bay=base.seaside_parking_bay,
+        landside_parking_bay=base.landside_parking_bay,
+        handshake_bay=base.handshake_bay,
+        decision_time=base.decision_time,
+        existing_job_ids=tuple(job.id for job in instance.jobs),
+        new_job_ids=(),
+        shared_time_horizon=max(
+            max(policy.schedule_makespan or 0.0 for policy in policies),
+            1.0,
+        ),
+        minimum_crane_separation_bays=base.minimum_crane_separation_bays,
+        initial_cranes=base.initial_cranes,
+        initial_containers=base.initial_containers,
+        transfer_slots=base.transfer_slots,
+        route_candidates=route_candidates,
+        policies=policies,
+    )
 
 
 def build_policy_schedule_visualization(
@@ -364,7 +447,7 @@ def _route_candidate_visualizations(
         any_items = tuple(
             item
             for item in evaluate_any_bay_candidates(instance)
-            if item.label != "NESTED_HANDSHAKE" and item.handover_count > 0
+            if item.handover_count > 0
         )
         any_bay = _best_route_candidate(
             any_items,

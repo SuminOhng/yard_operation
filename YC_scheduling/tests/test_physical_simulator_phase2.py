@@ -255,6 +255,96 @@ class PhysicalSimulatorPhaseTwoTests(unittest.TestCase):
             ContainerStatus.IN_STACK,
         )
 
+    def test_stack_backed_handover_uses_next_tier_and_preserves_base(self) -> None:
+        payload = json.loads(self.path.read_text(encoding="utf-8"))
+        payload["transfer_slots"][0]["kind"] = "STACK_BACKED"
+        payload["initial_state"]["stacks"].append(
+            {
+                "block_id": "B1",
+                "bay": 3,
+                "row": 1,
+                "containers": ["H_BASE"],
+            }
+        )
+        payload["initial_state"]["containers"].append(
+            {
+                "container_id": "H_BASE",
+                "status": "IN_STACK",
+                "current_slot": {
+                    "block_id": "B1",
+                    "bay": 3,
+                    "row": 1,
+                    "tier": 1,
+                },
+                "target_slot": None,
+            }
+        )
+        instance = self._single_far_inbound_instance_from_payload(payload)
+        p0, p2, p3, p4, p5, p7 = (
+            Position(0, 1),
+            Position(2, 1),
+            Position(3, 1),
+            Position(4, 1),
+            Position(5, 1),
+            Position(7, 1),
+        )
+        schedule = CandidateSchedule(
+            instance.instance_id,
+            CooperationPolicy.HANDSHAKE_AREA,
+            (
+                ScheduledOperation("C_SEA", OperationType.PICKUP, 0, 1, p0, p0, "JOB_IN_NEAR"),
+                ScheduledOperation("C_SEA", OperationType.MOVE_LOADED, 1, 4, p0, p3, "JOB_IN_NEAR"),
+                ScheduledOperation("C_SEA", OperationType.HANDOVER_DROP, 4, 6, p3, p3, "JOB_IN_NEAR", "H_ROW_1", purpose=OperationPurpose.HANDOVER),
+                ScheduledOperation("C_SEA", OperationType.MOVE_EMPTY, 6, 7, p3, p2),
+                ScheduledOperation("C_LAND", OperationType.MOVE_EMPTY, 0, 3, p7, p4),
+                ScheduledOperation("C_LAND", OperationType.WAIT, 3, 7, p4, p4),
+                ScheduledOperation("C_LAND", OperationType.MOVE_EMPTY, 7, 8, p4, p3),
+                ScheduledOperation("C_LAND", OperationType.HANDOVER_PICKUP, 8, 10, p3, p3, "JOB_IN_NEAR", "H_ROW_1", purpose=OperationPurpose.HANDOVER),
+                ScheduledOperation("C_LAND", OperationType.MOVE_LOADED, 10, 12, p3, p5, "JOB_IN_NEAR"),
+                ScheduledOperation("C_LAND", OperationType.FINAL_DROP, 12, 13.5, p5, p5, "JOB_IN_NEAR"),
+            ),
+        )
+
+        result = validate_schedule(
+            instance,
+            constraints_for(instance, CooperationPolicy.HANDSHAKE_AREA),
+            schedule,
+        )
+
+        self.assertTrue(result.valid, result.issues)
+        h_slot = Slot("B1", 3, 1, 2)
+        self.assertEqual(
+            result.simulation.final_state.stacks_by_key[h_slot.stack_key].containers,
+            ("H_BASE",),
+        )
+        drop_delta = result.simulation.operation_traces[2].state_delta
+        pickup_delta = result.simulation.operation_traces[7].state_delta
+        self.assertEqual(drop_delta.container_slot_after, h_slot)
+        self.assertEqual(drop_delta.stack_changes[0].after, ("H_BASE", "CONT_IN_NEAR"))
+        self.assertEqual(pickup_delta.stack_changes[0].after, ("H_BASE",))
+
+    def _single_far_inbound_instance_from_payload(self, payload):
+        instance = parse_instance(payload)
+        inbound = instance.jobs_by_id["JOB_IN_NEAR"]
+        inbound = replace(
+            inbound,
+            destination=Position(5, 1),
+            final_slot=Slot("B1", 5, 1, 1),
+        )
+        containers = tuple(
+            replace(container, target_slot=Slot("B1", 5, 1, 1))
+            if container.container_id == "CONT_IN_NEAR"
+            else container
+            for container in instance.initial_state.containers
+        )
+        instance = replace(
+            instance,
+            jobs=(inbound,),
+            initial_state=replace(instance.initial_state, containers=containers),
+        )
+        validate_instance(instance)
+        return instance
+
     def test_full_transfer_slot_rejects_handover_drop(self) -> None:
         instance = self._single_far_inbound_instance()
         holder = ContainerState(

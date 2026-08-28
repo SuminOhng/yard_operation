@@ -131,6 +131,24 @@ class PhysicalModelPhaseOneTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "unknown fields"):
             parse_instance(payload)
 
+    def test_loader_supports_stack_backed_transfer_and_keeps_old_default(self) -> None:
+        payload = json.loads(self.path.read_text(encoding="utf-8"))
+        payload["transfer_slots"][0]["kind"] = "STACK_BACKED"
+
+        instance = parse_instance(payload)
+
+        points = instance.yard.transfer_slots_by_id
+        self.assertIs(
+            points["H_ROW_1"].kind,
+            TransferSlotKind.STACK_BACKED,
+        )
+        self.assertTrue(points["H_ROW_1"].uses_stack_storage)
+        self.assertIs(
+            points["H_ROW_2"].kind,
+            TransferSlotKind.FIXED_BUFFER,
+        )
+        self.assertFalse(points["H_ROW_2"].uses_stack_storage)
+
     def test_input_transfer_id_cannot_use_reserved_virtual_prefix(self) -> None:
         payload = json.loads(self.path.read_text(encoding="utf-8"))
         original_id = payload["transfer_slots"][0]["id"]

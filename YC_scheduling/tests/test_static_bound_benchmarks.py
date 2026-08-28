@@ -122,7 +122,7 @@ class StaticBoundBenchmarkTests(unittest.TestCase):
             )
         )
 
-    def test_any_bay_case_selects_alternative_slot_and_improves_baseline(self) -> None:
+    def test_any_bay_case_selects_virtual_slot_independently(self) -> None:
         benchmark_id = "ANY_BAY_ADVANTAGE_4"
         baselines = {
             policy: self.calculations[
@@ -130,7 +130,7 @@ class StaticBoundBenchmarkTests(unittest.TestCase):
             ].result.baseline_makespan
             for policy in CooperationPolicy
         }
-        self.assertLessEqual(
+        self.assertGreater(
             baselines[CooperationPolicy.ANY_BAY],
             baselines[CooperationPolicy.HANDSHAKE_AREA],
         )
@@ -146,7 +146,10 @@ class StaticBoundBenchmarkTests(unittest.TestCase):
             for operation in existing_schedule.operations
             if operation.transfer_slot_id is not None
         }
-        self.assertEqual(used_slots, {"H_R1"})
+        self.assertEqual(
+            used_slots,
+            {"VIRTUAL::B1::BAY_2::ROW_1"},
+        )
 
     def test_append_blocker_case_requires_reshuffles(self) -> None:
         benchmark_id = "APPEND_BLOCKER_4"

@@ -41,12 +41,13 @@ src/yard_crane_v3/
 
 - `StaticLayout`: block ID와 bay/row/tier 크기
 - `StackSpec`: stack 주소와 capacity
-- `TransferSlotSpec`: 고정 buffer 또는 런타임 가상 stack 인계점의 위치와 capacity
+- `TransferSlotSpec`: 고정 buffer, 입력 지정 stack 상단 또는 런타임 가상 stack 인계점
 - `YardSpec`: 모든 고정 야드 설비
 
 정규 block의 모든 Bay·Row에는 하나의 `StackSpec`이 생성된다. 입력의
-`TransferSlotSpec`은 기존 고정 buffer로 유지한다. ANY_BAY 실행 시에는 고정
-buffer가 없는 모든 작업 Bay·Row에 `VIRTUAL_STACK` 인계점을 자동 생성한다.
+kind가 생략된 `TransferSlotSpec`은 기존 `FIXED_BUFFER`로 유지한다.
+`STACK_BACKED`는 입력에 지정된 실제 stack 상단을 사용한다. ANY_BAY 실행 시에는
+입력 transfer point가 없는 모든 작업 Bay·Row에 `VIRTUAL_STACK`을 자동 생성한다.
 가상 인계점은 별도 시설이 아니라 그 좌표의 일반 stack top을 일시적으로 사용한다.
 
 ### `model/job.py`

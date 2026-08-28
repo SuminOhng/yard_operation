@@ -326,23 +326,22 @@ build_any_bay_schedule(instance, CooperationPolicy.ANY_BAY)
 
 동작 개요:
 
-1. 먼저 `HANDSHAKE_AREA` 일정을 fallback 후보로 넣는다.
-2. `constraints_for(instance, ANY_BAY)`에서 fixed transfer slot과 virtual transfer slot을 모두 얻는다.
+1. `constraints_for(instance, ANY_BAY)`에서 transfer slot을 얻는다.
+2. 그중 `STACK_BACKED`와 `VIRTUAL_STACK`을 현재 planner의 인계 후보로 사용한다.
 3. 작업별 transfer 후보를 골라 seed schedule을 만든다.
 4. 후보별로 donor/receiver handover operation을 만든다.
 5. 필요한 경우 `repair_pipeline_seed()`가 timing을 보정한다.
 6. 모든 후보를 공통 validator로 검증한다.
 7. 유효 후보 중 `(makespan, handover_count, operation_count, label)` 순으로 가장 좋은 schedule을 선택한다.
 
-`ANY_BAY`는 `HANDSHAKE_AREA` 후보를 포함하므로, 모든 planner가 성공하면 다음 관계를
-기대한다.
+세 정책의 허용 공간은 중첩되지만 현재 planner의 휴리스틱 후보 집합은 독립적이다.
+따라서 다음 관계는 비교기가 관찰하는 지표이며 보장 조건이 아니다.
 
 ```text
 ANY_BAY upper bound <= HANDSHAKE_AREA upper bound <= NO_SHARING upper bound
 ```
 
-이는 “현재 구현된 후보에서 나온 검증된 upper bound”의 포함관계이지, 전역 최적해
-증명은 아니다.
+관계가 깨져도 각 일정이 유효할 수 있다.
 
 ## 공통 schedule 형식
 
@@ -463,15 +462,14 @@ any_bay_schedule.json
 짧은 일정을 찾았다는 뜻이다.
 
 단, 이것은 전역 최적해가 아니라 현재 휴리스틱 planner가 찾은 검증된 upper bound이다.
-따라서 `ANY_BAY`가 가장 좋게 나오는 것은 정책 feasible set과 후보 포함관계 때문에
-기대되는 결과지만, 그 값이 이론적 최적 makespan이라는 뜻은 아니다.
+정책 feasible set이 더 넓어도 제한된 휴리스틱이 더 좋은 일정을 항상 찾는 것은
+아니다.
 
-`nested_upper_bounds_hold=false`이면 다음 중 하나를 의심해야 한다.
+`nested_upper_bounds_hold=false`이면 다음을 확인한다.
 
-1. 상위 정책 planner가 하위 정책 후보를 제대로 포함하지 못했다.
-2. 후보 선택 기준이나 validation 정책 매핑이 잘못되었다.
-3. 어떤 planner가 우연히 너무 제한된 후보만 만들었다.
-4. 입력의 transfer slot 또는 handshake bay 정의가 의도와 다르다.
+1. 독립적인 휴리스틱 후보 제한 때문에 상위 정책 일정이 더 길어졌는지 확인한다.
+2. 후보 선택 기준이나 validation 정책 매핑이 잘못되었는지 확인한다.
+3. 입력의 transfer slot 또는 handshake bay 정의가 의도와 맞는지 확인한다.
 
 `all_valid=false`이면 먼저 정책별 `violation_codes`와 `error`를 확인한다.
 

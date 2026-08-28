@@ -65,7 +65,7 @@ class NoSharingPlannerTests(unittest.TestCase):
         self.assertLess(land_start, sea_end)
         self.assertEqual(validation.handover_count, 0)
 
-    def test_cross_region_job_allows_idle_local_job_before_parking(self) -> None:
+    def test_cross_region_job_runs_with_other_crane_parked(self) -> None:
         instance = parse_instance(self.payload)
         schedule = build_no_sharing_schedule(instance)
         validation = validate_schedule(
@@ -74,141 +74,7 @@ class NoSharingPlannerTests(unittest.TestCase):
             schedule,
         )
         self.assertTrue(validation.valid, validation.issues)
-        self.assertEqual(validation.makespan, 9.5)
-        sea_local = [
-            operation
-            for operation in schedule.operations
-            if operation.job_id == "JOB_IN_NEAR"
-        ]
-        land_cross = [
-            operation
-            for operation in schedule.operations
-            if operation.job_id == "JOB_OUT_FAR"
-        ]
-        self.assertTrue(sea_local)
-        self.assertTrue(land_cross)
-        self.assertLess(
-            min(operation.start_time for operation in sea_local),
-            max(operation.end_time for operation in land_cross),
-        )
-        self.assertTrue(
-            any(
-                operation.crane_id == "C_SEA"
-                and operation.operation_type is OperationType.MOVE_EMPTY
-                and operation.end_position.bay == -1
-                for operation in schedule.operations
-            )
-        )
-        self.assertEqual(validation.handover_count, 0)
-
-    def test_cross_region_export_can_use_landside_crane_directly(self) -> None:
-        instance = parse_instance(self.payload)
-        schedule = build_no_sharing_schedule(instance)
-        validation = validate_schedule(
-            instance,
-            constraints_for(instance, CooperationPolicy.NO_SHARING),
-            schedule,
-        )
-        self.assertTrue(validation.valid, validation.issues)
-        job_operations = [
-            operation
-            for operation in schedule.operations
-            if operation.job_id == "JOB_OUT_FAR"
-        ]
-        self.assertTrue(job_operations)
-        self.assertEqual(
-            {operation.crane_id for operation in job_operations},
-            {"C_LAND"},
-        )
-        self.assertTrue(
-            any(
-                operation.crane_id == "C_SEA"
-                and operation.end_position.bay == -1
-                for operation in schedule.operations
-            )
-        )
-        self.assertEqual(validation.handover_count, 0)
-
-    def test_idle_crane_prepositions_for_upcoming_cross_job(self) -> None:
-        self.payload["initial_state"]["stacks"] = [
-            {
-                "block_id": "B1",
-                "bay": 2,
-                "row": 1,
-                "containers": ["CONT_MID"],
-            },
-            {
-                "block_id": "B1",
-                "bay": 6,
-                "row": 1,
-                "containers": ["CONT_OUT_FAR"],
-            },
-        ]
-        self.payload["initial_state"]["containers"] = [
-            {
-                "container_id": "CONT_MID",
-                "status": "IN_STACK",
-                "current_slot": {
-                    "block_id": "B1",
-                    "bay": 2,
-                    "row": 1,
-                    "tier": 1,
-                },
-                "target_slot": None,
-            },
-            {
-                "container_id": "CONT_OUT_FAR",
-                "status": "IN_STACK",
-                "current_slot": {
-                    "block_id": "B1",
-                    "bay": 6,
-                    "row": 1,
-                    "tier": 1,
-                },
-                "target_slot": None,
-            },
-        ]
-        self.payload["jobs"] = [
-            {
-                "id": "JOB_MID_CROSS",
-                "container_id": "CONT_MID",
-                "direction": "OUTBOUND",
-                "origin": {"bay": 2, "row": 1},
-                "destination": {"bay": 5, "row": 1},
-                "final_slot": None,
-                "release_time": 0.0,
-                "agv_ready_time": 0.0,
-            },
-            {
-                "id": "JOB_OUT_FAR",
-                "container_id": "CONT_OUT_FAR",
-                "direction": "OUTBOUND",
-                "origin": {"bay": 6, "row": 1},
-                "destination": {"bay": 0, "row": 1},
-                "final_slot": None,
-                "release_time": 0.0,
-                "agv_ready_time": 0.0,
-            },
-        ]
-        instance = parse_instance(self.payload)
-        schedule = build_no_sharing_schedule(instance)
-        validation = validate_schedule(
-            instance,
-            constraints_for(instance, CooperationPolicy.NO_SHARING),
-            schedule,
-        )
-        self.assertTrue(validation.valid, validation.issues)
-        self.assertTrue(
-            any(
-                operation.crane_id == "C_LAND"
-                and operation.operation_type is OperationType.MOVE_EMPTY
-                and operation.start_position.bay == 7
-                and operation.end_position.bay == 6
-                and operation.start_time == 0.0
-                and operation.job_id is None
-                for operation in schedule.operations
-            )
-        )
+        self.assertEqual(validation.makespan, 17.0)
         self.assertEqual(validation.handover_count, 0)
 
     def test_blocker_is_automatically_reshuffled(self) -> None:
@@ -247,6 +113,106 @@ class NoSharingPlannerTests(unittest.TestCase):
         )
         self.assertEqual(validation.handover_count, 0)
 
+    def test_landside_idle_crane_pre_reshuffles_future_cross_blocker(self) -> None:
+        self.payload["initial_state"]["stacks"] = [
+            {
+                "block_id": "B1",
+                "bay": 2,
+                "row": 1,
+                "containers": ["CONT_MID"],
+            },
+            {
+                "block_id": "B1",
+                "bay": 6,
+                "row": 1,
+                "containers": ["CONT_OUT_FAR", "BLOCKER_1"],
+            },
+        ]
+        self.payload["initial_state"]["containers"] = [
+            {
+                "container_id": "CONT_MID",
+                "status": "IN_STACK",
+                "current_slot": {
+                    "block_id": "B1",
+                    "bay": 2,
+                    "row": 1,
+                    "tier": 1,
+                },
+                "target_slot": None,
+            },
+            {
+                "container_id": "CONT_OUT_FAR",
+                "status": "IN_STACK",
+                "current_slot": {
+                    "block_id": "B1",
+                    "bay": 6,
+                    "row": 1,
+                    "tier": 1,
+                },
+                "target_slot": None,
+            },
+            {
+                "container_id": "BLOCKER_1",
+                "status": "IN_STACK",
+                "current_slot": {
+                    "block_id": "B1",
+                    "bay": 6,
+                    "row": 1,
+                    "tier": 2,
+                },
+                "target_slot": None,
+            },
+        ]
+        self.payload["jobs"] = [
+            {
+                "id": "JOB_MID_CROSS",
+                "container_id": "CONT_MID",
+                "direction": "OUTBOUND",
+                "origin": {"bay": 2, "row": 1},
+                "destination": {"bay": 5, "row": 1},
+                "final_slot": None,
+                "release_time": 0.0,
+                "agv_ready_time": 0.0,
+            },
+            {
+                "id": "JOB_OUT_FAR",
+                "container_id": "CONT_OUT_FAR",
+                "direction": "OUTBOUND",
+                "origin": {"bay": 6, "row": 1},
+                "destination": {"bay": 0, "row": 1},
+                "final_slot": None,
+                "release_time": 0.0,
+                "agv_ready_time": 0.0,
+            },
+        ]
+        instance = parse_instance(self.payload)
+        schedule = build_no_sharing_schedule(instance)
+        validation = validate_schedule(
+            instance,
+            constraints_for(instance, CooperationPolicy.NO_SHARING),
+            schedule,
+        )
+        self.assertTrue(validation.valid, validation.issues)
+        blocker_reshuffles = [
+            operation
+            for operation in schedule.operations
+            if operation.purpose is OperationPurpose.RESHUFFLE
+            and operation.container_id == "BLOCKER_1"
+        ]
+        self.assertEqual(len(blocker_reshuffles), 3)
+        self.assertTrue(
+            all(operation.crane_id == "C_LAND" for operation in blocker_reshuffles)
+        )
+        self.assertLess(
+            max(operation.end_time for operation in blocker_reshuffles),
+            min(
+                operation.start_time
+                for operation in schedule.operations
+                if operation.job_id == "JOB_OUT_FAR"
+                and operation.operation_type is OperationType.PICKUP
+            ),
+        )
+        self.assertEqual(validation.handover_count, 0)
 
 if __name__ == "__main__":
     unittest.main()

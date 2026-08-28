@@ -22,6 +22,7 @@ from .model import (
     StackState,
     StaticLayout,
     StaticSchedulingInstance,
+    TransferSlotKind,
     TransferSlotSpec,
     TransferSlotState,
     YardState,
@@ -160,6 +161,7 @@ def parse_instance(payload: Any) -> StaticSchedulingInstance:
             raw,
             f"transfer_slots[{index}]",
             {"id", "position", "capacity", "enabled"},
+            {"kind"},
         )
         transfer_specs.append(
             TransferSlotSpec(
@@ -169,6 +171,9 @@ def parse_instance(payload: Any) -> StaticSchedulingInstance:
                 ),
                 capacity=int(item["capacity"]),
                 enabled=bool(item["enabled"]),
+                kind=TransferSlotKind(
+                    item.get("kind", TransferSlotKind.FIXED_BUFFER.value)
+                ),
             )
         )
     yard = build_regular_yard(layout, tuple(transfer_specs))

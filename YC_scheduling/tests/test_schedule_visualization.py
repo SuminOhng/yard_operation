@@ -154,18 +154,21 @@ class StaticScheduleVisualizationTests(unittest.TestCase):
         }
         self.assertEqual(
             used,
-            {("H_ROW_1", "FIXED_BUFFER")},
+            {("VIRTUAL::B1::BAY_1::ROW_1", "VIRTUAL_STACK")},
         )
         handover_drop = next(
             operation for operation in any_bay["operations"]
             if operation["operation_type"] == "HANDOVER_DROP"
-            and operation["transfer_point_kind"] == "FIXED_BUFFER"
+            and operation["transfer_point_kind"] == "VIRTUAL_STACK"
         )
-        self.assertEqual(handover_drop["transfer_slot_id"], "H_ROW_1")
-        self.assertAlmostEqual(any_bay["best_known_upper_bound"], 11.6)
+        self.assertEqual(
+            handover_drop["transfer_slot_id"],
+            "VIRTUAL::B1::BAY_1::ROW_1",
+        )
+        self.assertAlmostEqual(any_bay["best_known_upper_bound"], 12.6)
         self.assertTrue(any_route["selected"])
-        self.assertAlmostEqual(any_route["makespan"], 11.6)
-        self.assertEqual(any_route["method"], "HANDSHAKE_FALLBACK")
+        self.assertAlmostEqual(any_route["makespan"], 12.6)
+        self.assertEqual(any_route["method"], "STRICT_APPEND")
 
     def test_cli_calculates_three_policies_and_writes_bundle(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

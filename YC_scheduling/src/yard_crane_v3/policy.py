@@ -3,12 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from enum import Enum
 
-from .model import (
-    StaticSchedulingInstance,
-    TransferSlotKind,
-    TransferSlotSpec,
-    virtual_transfer_slots,
-)
+from .model import StaticSchedulingInstance, TransferSlotSpec, virtual_transfer_slots
 
 
 class CooperationPolicy(str, Enum):
@@ -51,12 +46,8 @@ def constraints_for(instance: StaticSchedulingInstance, policy: CooperationPolic
 
     maximum = instance.physical_rules.maximum_handovers_per_job
     active_cranes = frozenset(crane.id for crane in instance.cranes)
-    fixed_slots = tuple(
-        slot
-        for slot in instance.yard.transfer_slots
-        if slot.kind is TransferSlotKind.FIXED_BUFFER
-    )
-    enabled_fixed_slots = tuple(slot for slot in fixed_slots if slot.enabled)
+    declared_slots = instance.yard.transfer_slots
+    enabled_declared_slots = tuple(slot for slot in declared_slots if slot.enabled)
     if policy is CooperationPolicy.NO_SHARING:
         return PolicyConstraints(
             policy=policy,
@@ -72,7 +63,7 @@ def constraints_for(instance: StaticSchedulingInstance, policy: CooperationPolic
             direct_transport_allowed=True,
             transfer_points=tuple(
                 slot
-                for slot in enabled_fixed_slots
+                for slot in enabled_declared_slots
                 if slot.position.bay == instance.layout.handshake_bay
             ),
             maximum_handovers_per_job=maximum,
@@ -82,8 +73,8 @@ def constraints_for(instance: StaticSchedulingInstance, policy: CooperationPolic
         active_crane_ids=active_cranes,
         direct_transport_allowed=True,
         transfer_points=(
-            enabled_fixed_slots
-            + virtual_transfer_slots(instance.layout, fixed_slots)
+            enabled_declared_slots
+            + virtual_transfer_slots(instance.layout, declared_slots)
         ),
         maximum_handovers_per_job=maximum,
     )

@@ -30,7 +30,6 @@ from ..common import (
     append_blocker_reshuffles,
 )
 from ..no_sharing import JobRegion, classify_job
-from ..no_sharing import build_no_sharing_schedule
 
 
 @dataclass(slots=True)
@@ -47,12 +46,10 @@ def build_handshake_area_schedule(
     instance: StaticSchedulingInstance,
     policy: CooperationPolicy = CooperationPolicy.HANDSHAKE_AREA,
 ) -> CandidateSchedule:
-    """Return the best valid direct or designated-H candidate found.
+    """Return the best valid designated-H candidate found.
 
-    The direct candidate preserves every schedule available to the current
-    no-sharing heuristic. The handover candidate serves local jobs directly
-    and splits every true cross-region job into donor and receiver legs with
-    exactly one transfer-slot drop/pickup pair.
+    Local jobs run directly. True cross-region jobs are split into donor and
+    receiver legs with exactly one transfer-slot drop/pickup pair.
     """
 
     if policy is not CooperationPolicy.HANDSHAKE_AREA:
@@ -90,27 +87,9 @@ def build_handshake_area_schedule(
 def evaluate_handshake_area_candidates(
     instance: StaticSchedulingInstance,
 ) -> tuple[PlannerCandidateEvaluation, ...]:
-    """Evaluate direct fallback, conservative H, and pipelined H candidates."""
+    """Evaluate conservative H and pipelined H candidates."""
 
     candidates: list[PlannerCandidateEvaluation] = []
-    try:
-        direct = build_no_sharing_schedule(instance)
-        candidates.append(
-            _evaluate_candidate(
-                instance,
-                "DIRECT_FALLBACK",
-                CandidateSchedule(
-                    instance.instance_id,
-                    CooperationPolicy.HANDSHAKE_AREA,
-                    direct.operations,
-                ),
-            )
-        )
-    except (PlannerInfeasibleError, ValueError) as exc:
-        candidates.append(
-            PlannerCandidateEvaluation("DIRECT_FALLBACK", None, None, str(exc))
-        )
-
     try:
         designated = _build_designated_h_schedule(instance)
         candidates.append(
@@ -127,34 +106,42 @@ def evaluate_handshake_area_candidates(
         for order_strategy in ("original", "cross_first", "balanced_interleave"):
             ordered_jobs = _ordered_jobs(instance, order_strategy)
             for split_strategy in ("donor_leg", "receiver_leg"):
-                for slot_heuristic in ("distance", "center"):
-                    label = (
-                        "PIPELINE_H:"
-                        f"{order_strategy}:{split_strategy}:{slot_heuristic}"
-                    )
-                    try:
-                        pipeline = build_handshake_pipeline_schedule(
-                            instance,
-                            jobs=ordered_jobs,
-                            split_strategy=split_strategy,
-                            slot_heuristic=slot_heuristic,
+                for slot_heuristic in ("distance", "center", "rotating_distance"):
+                    for pre_reshuffle_idle in (False, True):
+                        suffix = (
+                            ":idle_pre_reshuffle"
+                            if pre_reshuffle_idle
+                            else ""
                         )
-                        candidates.append(
-                            _evaluate_candidate(
+                        label = (
+                            "PIPELINE_H:"
+                            f"{order_strategy}:{split_strategy}:"
+                            f"{slot_heuristic}{suffix}"
+                        )
+                        try:
+                            pipeline = build_handshake_pipeline_schedule(
                                 instance,
-                                label,
-                                pipeline.schedule,
+                                jobs=ordered_jobs,
+                                split_strategy=split_strategy,
+                                slot_heuristic=slot_heuristic,
+                                pre_reshuffle_idle=pre_reshuffle_idle,
                             )
-                        )
-                    except (PlannerInfeasibleError, ValueError) as exc:
-                        candidates.append(
-                            PlannerCandidateEvaluation(
-                                label,
-                                None,
-                                None,
-                                str(exc),
+                            candidates.append(
+                                _evaluate_candidate(
+                                    instance,
+                                    label,
+                                    pipeline.schedule,
+                                )
                             )
-                        )
+                        except (PlannerInfeasibleError, ValueError) as exc:
+                            candidates.append(
+                                PlannerCandidateEvaluation(
+                                    label,
+                                    None,
+                                    None,
+                                    str(exc),
+                                )
+                            )
     except (PlannerInfeasibleError, ValueError) as exc:
         if not candidates:
             candidates.append(
@@ -395,6 +382,7 @@ def _append_handover_job(
         timing,
         slot_heuristic=slot_heuristic,
         rows=instance.layout.rows,
+        scheduled_operations=tuple(state.operations),
     )
     if not synchronize_receiver:
         _append_move(
@@ -416,6 +404,9 @@ def _append_handover_job(
         reshuffle_bays,
         reserved_final_stacks,
     )
+    handover_drop_seconds, handover_pickup_seconds = (
+        _handover_handling_seconds(instance, state, timing, transfer)
+    )
     _append_move(
         state,
         timing,
@@ -428,7 +419,7 @@ def _append_handover_job(
         state,
         donor_id,
         OperationType.HANDOVER_DROP,
-        timing.drop_seconds(),
+        handover_drop_seconds,
         job_id=job.id,
         transfer_slot_id=transfer.id,
         purpose=OperationPurpose.HANDOVER,
@@ -463,7 +454,7 @@ def _append_handover_job(
         state,
         receiver_id,
         OperationType.HANDOVER_PICKUP,
-        timing.pickup_seconds(),
+        handover_pickup_seconds,
         job_id=job.id,
         transfer_slot_id=transfer.id,
         purpose=OperationPurpose.HANDOVER,
@@ -496,6 +487,37 @@ def _append_handover_job(
     _finish_primary_job(state, job)
 
 
+def _handover_handling_seconds(
+    instance: StaticSchedulingInstance,
+    state: _HandshakePlanningState,
+    timing: TimeModel,
+    transfer: TransferSlotSpec,
+) -> tuple[float, float]:
+    if not transfer.uses_stack_storage:
+        return timing.drop_seconds(), timing.pickup_seconds()
+
+    stack_key = StackKey(
+        instance.layout.block_id,
+        transfer.position.bay,
+        transfer.position.row,
+    )
+    tier = len(state.stacks[stack_key]) + 1
+    if tier > instance.yard.stacks_by_key[stack_key].capacity:
+        raise PlannerInfeasibleError(
+            f"stack-backed transfer point {transfer.id!r} has no free stack tier"
+        )
+    handover_slot = Slot(
+        instance.layout.block_id,
+        transfer.position.bay,
+        transfer.position.row,
+        tier,
+    )
+    return (
+        timing.drop_seconds(handover_slot),
+        timing.pickup_seconds(handover_slot),
+    )
+
+
 def _choose_transfer_slot(
     job: Job,
     transfer_slots: tuple[TransferSlotSpec, ...],
@@ -503,24 +525,35 @@ def _choose_transfer_slot(
     *,
     slot_heuristic: str = "distance",
     rows: int = 1,
+    scheduled_operations: tuple[ScheduledOperation, ...] = (),
 ) -> TransferSlotSpec:
     """Choose an H row by strategy, then deterministic tie breaks."""
 
-    if slot_heuristic not in ("distance", "center"):
+    if slot_heuristic not in ("distance", "center", "rotating_distance"):
         raise PlannerInfeasibleError(
             f"unknown slot heuristic {slot_heuristic!r}"
         )
 
     center_row = (rows + 1) / 2
+    drop_counts = {
+        slot.id: sum(
+            1
+            for operation in scheduled_operations
+            if operation.operation_type is OperationType.HANDOVER_DROP
+            and operation.transfer_slot_id == slot.id
+        )
+        for slot in transfer_slots
+    }
 
     return min(
         transfer_slots,
         key=lambda slot: (
+            drop_counts[slot.id] if slot_heuristic == "rotating_distance" else 0,
             (
                 timing.travel_seconds(job.origin, slot.position)
                 + timing.travel_seconds(slot.position, job.destination)
             )
-            if slot_heuristic == "distance"
+            if slot_heuristic in ("distance", "rotating_distance")
             else abs(slot.position.row - center_row),
             abs(slot.position.row - job.origin.row)
             + abs(slot.position.row - job.destination.row),
