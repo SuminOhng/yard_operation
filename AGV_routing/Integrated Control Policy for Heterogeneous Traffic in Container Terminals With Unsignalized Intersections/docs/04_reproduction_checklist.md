@@ -1,0 +1,134 @@
+# Reproduction checklist
+
+Legend: `[x]` complete, `[ ]` pending, `[!]` blocked by unpublished information or an explicit project decision.
+
+## 1. Source control and provenance
+
+- [x] Record paper title, authors, venue, year, pages, and DOI.
+- [x] Keep the licensed PDF outside Git tracking through `.gitignore`.
+- [x] Separate paper facts from reconstruction assumptions.
+- [ ] Commit this Phase 0 scaffold.
+- [ ] Record every future run's commit SHA and asset hashes.
+
+## 2. Environment
+
+- [!] Select SUMO version; paper does not publish one.
+- [ ] Install SUMO and confirm `sumo --version` and `sumo-gui --version`.
+- [ ] Create Python virtual environment.
+- [ ] Install matching `traci` and `sumolib`.
+- [ ] Add and lock Python dependencies after first end-to-end run.
+- [ ] Save Python, SUMO, OS, and dependency versions with every experiment.
+
+## 3. Network reconstruction
+
+- [x] Record four-by-five grid, 20 intersections, and 54 directed roads.
+- [x] Record 45-300 m road-length range.
+- [x] Record single-lane, longitudinal two-way, and mostly lateral one-way rules.
+- [x] Record two HDV gates and internal CAV-only operating area.
+- [!] Reconstruct exact node coordinates from Fig. 6; original coordinates are unavailable.
+- [!] Reconstruct edge directions and lengths; original edge table is unavailable.
+- [ ] Define conflict-free movements and phases for all intersections.
+- [ ] Validate exactly one active phase per intersection.
+- [ ] Validate all OD pairs are connected.
+- [ ] Save source `.nod.xml`, `.edg.xml`, `.con.xml`, and generation command.
+
+## 4. Vehicle and demand model
+
+- [x] Record CAV maximum speed 14 m/s.
+- [x] Record HDV maximum speed range 9-12 m/s.
+- [x] Record demand levels 1600, 2000, and 2400 vehicles/h.
+- [x] Record HDV alternative-route probability 20%.
+- [x] Record main HDV penetration 10% and sweep 20%, 30%, and 50%.
+- [!] Define five-minute progressive loading process; paper description is incomplete.
+- [!] Choose unpublished acceleration, deceleration, length, gap, and car-following parameters.
+- [ ] Implement deterministic OD generator with explicit seed.
+- [ ] Implement gate-to-internal and internal-to-gate HDV trips.
+- [ ] Implement internal-to-internal CAV trips.
+- [ ] Verify generated demand rate and penetration numerically.
+
+## 5. BP/VTR intersection control
+
+- [x] Transcribe equations (1)-(7).
+- [x] Specify Algorithm 1 and Algorithm 2 interpretation.
+- [!] Select cycle length `T`; paper provides only a 30 s example.
+- [!] Select HDV extension increment `tau_bar`; paper does not provide it.
+- [ ] Implement compatible queue and downstream-capacity units.
+- [ ] Implement phase pressure and weights.
+- [ ] Implement duration allocation and deterministic rounding.
+- [ ] Implement clockwise ring state from previous token holder.
+- [ ] Implement HDV-led priority.
+- [ ] Implement descending-weight ordering for remaining phases.
+- [ ] Implement HDV duration extension.
+- [ ] Implement safety clearance between conflicting phases.
+- [ ] Prove no duplicate station and no overlapping active phase.
+- [ ] Reproduce paper example `{1/3, 1/2, 1/6}`, `T=30`, durations `{10,15,5}`.
+
+## 6. IR-BP CAV routing
+
+- [x] Transcribe equations (8)-(17) and Algorithm 3.
+- [ ] Implement candidate downstream-edge discovery.
+- [ ] Implement travel-time estimate for occupied roads.
+- [!] Define empty-road behavior for equation (8).
+- [!] Define zero-speed floor for equation (8).
+- [ ] Implement pressure weight.
+- [ ] Implement Euclidean heuristic.
+- [ ] Implement cumulative actual-distance cost.
+- [ ] Implement eta eligibility mask.
+- [ ] Implement deterministic tie-breaking.
+- [ ] Implement eta depletion and per-trip lifecycle.
+- [ ] Verify routes remain legal and reach destination.
+- [ ] Verify eta never becomes negative.
+
+## 7. SUMO integration
+
+- [ ] Build one-intersection smoke scenario.
+- [ ] Implement TraCI subscriptions for vehicles, lanes, and signals.
+- [ ] Implement virtual TLS enforcement of VTR phases.
+- [ ] Implement legal CAV route replacement before intersection entry.
+- [ ] Record phase and routing decisions.
+- [ ] Verify fixed seed gives identical decision traces.
+- [ ] Run the full 20-intersection scenario without collision or deadlock.
+
+## 8. Metrics
+
+- [!] Choose and document queue-length-in-meters definition.
+- [ ] Record cumulative network queue length per step.
+- [ ] Record per-trip travel time, distance, waiting time, and speed.
+- [ ] Verify units against paper labels.
+- [ ] Exclude warm-up traffic only through explicit configuration.
+- [ ] Save raw metrics separately from summaries.
+
+## 9. Experiment matrix
+
+- [ ] Eta sweep: 100, 200, 400, 500, 600, 700, 800, 1000.
+- [ ] Demand sweep: 1600, 2000, 2400 vehicles/h at 10% HDV.
+- [ ] HDV sweep: 20%, 30%, 50% at 2000 vehicles/h.
+- [ ] Eight case-study OD scenarios.
+- [ ] Multiple seeds per stochastic scenario.
+- [ ] FX-STR baseline.
+- [ ] MC-BP baseline.
+- [ ] AR-BP baseline.
+- [ ] MCSR-like baseline.
+- [!] Resolve paper's `DSP` versus `MCSR` terminology mismatch.
+
+## 10. Validation and reporting
+
+- [ ] Unit tests for every equation group and edge case.
+- [ ] Integration test for one intersection.
+- [ ] End-to-end deterministic smoke test.
+- [ ] Confirm larger eta tends to reduce queueing and increase distance.
+- [ ] Confirm travel-time response can be non-monotonic.
+- [ ] Compare reconstructed results with Figs. 7-14.
+- [ ] Compare eight cases with Table I.
+- [ ] Report absolute and relative error, seed count, mean, and dispersion.
+- [ ] Label calibrated results as reconstructed, never original.
+- [ ] Document every deviation from the paper.
+
+## 11. Phase 0 completion criteria
+
+- [x] Paper analysis exists.
+- [x] Implementation specification exists.
+- [x] Python/SUMO project boundaries exist.
+- [x] Reproduction checklist exists.
+- [x] Licensed PDF is ignored by the project.
+- [ ] User reviews assumptions before Phase 1 implementation.

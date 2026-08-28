@@ -1,0 +1,52 @@
+[metadata]
+paper_doi = "10.1109/TITS.2025.3560067"
+fidelity = "method-first"
+
+[simulation]
+duration_s = 7200 # Inferred from figure axes; not stated as a parameter.
+random_seed = 1
+
+[network]
+intersections = 20
+directed_roads = 54
+grid_rows = 4
+grid_columns = 5
+lanes_per_road = 1
+minimum_road_length_m = 45
+maximum_road_length_m = 300
+
+[vehicles.cav]
+maximum_speed_mps = 14
+
+[vehicles.hdv]
+minimum_maximum_speed_mps = 9
+maximum_maximum_speed_mps = 12
+alternative_route_probability = 0.20
+
+[demand]
+vehicles_per_hour = 2000
+hdv_penetration = 0.10
+loading_interval_s = 300
+
+[routing]
+initial_eta_m = 500
+tie_break_rule = "stable_edge_id"
+
+[unresolved]
+items = [
+  "simulation.sumo_version",
+  "simulation.step_length_s",
+  "vehicles.acceleration_mps2",
+  "vehicles.deceleration_mps2",
+  "vehicles.length_m",
+  "vehicles.minimum_gap_m",
+  "vehicles.car_follow_model",
+  "demand.loading_process",
+  "control.cycle_length_s",
+  "control.hdv_extension_increment_s",
+  "control.clearance_time_s",
+  "control.duration_resolution_s",
+  "routing.empty_road_rule",
+  "routing.speed_floor_mps",
+  "metrics.queue_length_definition",
+]

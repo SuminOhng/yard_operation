@@ -1,0 +1,26 @@
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.ruff_cache/
+.coverage
+build/
+dist/
+*.egg-info/
+
+# Licensed source paper and local references
+*.pdf
+
+# Generated simulation artifacts
+experiments/outputs/*
+!experiments/outputs/.gitkeep
+sumo/**/tripinfo*.xml
+sumo/**/fcd*.xml
+sumo/**/summary*.xml
+sumo/**/emission*.xml
+
+# Editor and OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
