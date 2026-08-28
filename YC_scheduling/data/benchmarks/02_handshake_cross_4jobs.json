@@ -1,0 +1,114 @@
+{
+  "schema_version": "3.1.0",
+  "instance_id": "BENCH_HANDSHAKE_CROSS_4",
+  "layout": {
+    "block_id": "B1",
+    "bays": 8,
+    "rows": 2,
+    "tiers": 4,
+    "handshake_bay": 4
+  },
+  "motion": {
+    "gantry_seconds_per_bay": 1.0,
+    "trolley_seconds_per_row": 0.5,
+    "hoist_seconds_per_tier": 0.25,
+    "pickup_seconds": 1.0,
+    "drop_seconds": 1.0
+  },
+  "physical_rules": {
+    "minimum_crane_separation_bays": 1.0,
+    "maximum_handovers_per_job": 1
+  },
+  "cranes": [
+    {"id": "C_SEA", "side": "SEASIDE", "initial_position": {"bay": 0, "row": 1}},
+    {"id": "C_LAND", "side": "LANDSIDE", "initial_position": {"bay": 9, "row": 1}}
+  ],
+  "transfer_slots": [
+    {"id": "H_R1", "position": {"bay": 4, "row": 1}, "capacity": 1, "enabled": true},
+    {"id": "H_R2", "position": {"bay": 4, "row": 2}, "capacity": 1, "enabled": true},
+    {"id": "ALT_B6_R1", "position": {"bay": 6, "row": 1}, "capacity": 1, "enabled": true},
+    {"id": "ALT_B6_R2", "position": {"bay": 6, "row": 2}, "capacity": 1, "enabled": true}
+  ],
+  "initial_state": {
+    "current_time": 0.0,
+    "stacks": [],
+    "containers": [
+      {
+        "container_id": "CONT_CROSS_OUT_1",
+        "status": "ON_AGV",
+        "current_slot": null,
+        "target_slot": null
+      },
+      {
+        "container_id": "CONT_GATE_SEA_TO_LAND_1",
+        "status": "ON_AGV",
+        "current_slot": null,
+        "target_slot": null
+      },
+      {
+        "container_id": "CONT_CROSS_OUT_2",
+        "status": "ON_AGV",
+        "current_slot": null,
+        "target_slot": null
+      },
+      {
+        "container_id": "CONT_GATE_SEA_TO_LAND_2",
+        "status": "ON_AGV",
+        "current_slot": null,
+        "target_slot": null
+      }
+    ],
+    "cranes": [
+      {"crane_id": "C_SEA", "position": {"bay": 0, "row": 1}, "carrying_container": null, "available_time": 0.0},
+      {"crane_id": "C_LAND", "position": {"bay": 9, "row": 1}, "carrying_container": null, "available_time": 0.0}
+    ],
+    "transfer_slots": [
+      {"slot_id": "H_R1", "containers": []},
+      {"slot_id": "H_R2", "containers": []},
+      {"slot_id": "ALT_B6_R1", "containers": []},
+      {"slot_id": "ALT_B6_R2", "containers": []}
+    ]
+  },
+  "jobs": [
+    {
+      "id": "JOB_CROSS_OUT_1",
+      "container_id": "CONT_CROSS_OUT_1",
+      "direction": "OUTBOUND",
+      "origin": {"bay": 8, "row": 1},
+      "destination": {"bay": 1, "row": 1},
+      "final_slot": null,
+      "release_time": 0.0,
+      "agv_ready_time": 0.0
+    },
+    {
+      "id": "JOB_GATE_SEA_TO_LAND_1",
+      "container_id": "CONT_GATE_SEA_TO_LAND_1",
+      "direction": "OUTBOUND",
+      "origin": {"bay": 1, "row": 1},
+      "destination": {"bay": 8, "row": 1},
+      "final_slot": null,
+      "release_time": 0.0,
+      "agv_ready_time": 0.0
+    },
+    {
+      "id": "JOB_CROSS_OUT_2",
+      "container_id": "CONT_CROSS_OUT_2",
+      "direction": "OUTBOUND",
+      "origin": {"bay": 8, "row": 2},
+      "destination": {"bay": 1, "row": 2},
+      "final_slot": null,
+      "release_time": 0.0,
+      "agv_ready_time": 0.0
+    },
+    {
+      "id": "JOB_GATE_SEA_TO_LAND_2",
+      "container_id": "CONT_GATE_SEA_TO_LAND_2",
+      "direction": "OUTBOUND",
+      "origin": {"bay": 1, "row": 2},
+      "destination": {"bay": 8, "row": 2},
+      "final_slot": null,
+      "release_time": 0.0,
+      "agv_ready_time": 0.0
+    }
+  ]
+}

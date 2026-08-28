@@ -1,0 +1,236 @@
+{
+  "schema_version": "1.0.0",
+  "set_id": "BLOCKS_22_STACK_H_20X10X6_15OUT5IN",
+  "block_count": 22,
+  "layout": {
+    "bays": 20,
+    "rows": 10,
+    "tiers": 6
+  },
+  "job_mix": {
+    "outbound": 15,
+    "inbound": 5
+  },
+  "instances": [
+    {
+      "block_id": "BLOCK_01",
+      "instance_id": "BLOCK_01_STACK_H_20X10X6_15OUT5IN_RESHUFFLE",
+      "instance_file": "block_01.json",
+      "seed": 20260824,
+      "initial_container_count": 109,
+      "occupied_stack_count": 42,
+      "direct_blocker_count": 14,
+      "background_stack_count": 24
+    },
+    {
+      "block_id": "BLOCK_02",
+      "instance_id": "BLOCK_02_STACK_H_20X10X6_15OUT5IN_RESHUFFLE",
+      "instance_file": "block_02.json",
+      "seed": 20260825,
+      "initial_container_count": 115,
+      "occupied_stack_count": 36,
+      "direct_blocker_count": 12,
+      "background_stack_count": 17
+    },
+    {
+      "block_id": "BLOCK_03",
+      "instance_id": "BLOCK_03_STACK_H_20X10X6_15OUT5IN_RESHUFFLE",
+      "instance_file": "block_03.json",
+      "seed": 20260826,
+      "initial_container_count": 120,
+      "occupied_stack_count": 43,
+      "direct_blocker_count": 10,
+      "background_stack_count": 23
+    },
+    {
+      "block_id": "BLOCK_04",
+      "instance_id": "BLOCK_04_STACK_H_20X10X6_15OUT5IN_RESHUFFLE",
+      "instance_file": "block_04.json",
+      "seed": 20260827,
+      "initial_container_count": 118,
+      "occupied_stack_count": 40,
+      "direct_blocker_count": 11,
+      "background_stack_count": 21
+    },
+    {
+      "block_id": "BLOCK_05",
+      "instance_id": "BLOCK_05_STACK_H_20X10X6_15OUT5IN_RESHUFFLE",
+      "instance_file": "block_05.json",
+      "seed": 20260828,
+      "initial_container_count": 102,
+      "occupied_stack_count": 37,
+      "direct_blocker_count": 13,
+      "background_stack_count": 18
+    },
+    {
+      "block_id": "BLOCK_06",
+      "instance_id": "BLOCK_06_STACK_H_20X10X6_15OUT5IN_RESHUFFLE",
+      "instance_file": "block_06.json",
+      "seed": 20260829,
+      "initial_container_count": 118,
+      "occupied_stack_count": 40,
+      "direct_blocker_count": 10,
+      "background_stack_count": 23
+    },
+    {
+      "block_id": "BLOCK_07",
+      "instance_id": "BLOCK_07_STACK_H_20X10X6_15OUT5IN_RESHUFFLE",
+      "instance_file": "block_07.json",
+      "seed": 20260830,
+      "initial_container_count": 110,
+      "occupied_stack_count": 39,
+      "direct_blocker_count": 14,
+      "background_stack_count": 20
+    },
+    {
+      "block_id": "BLOCK_08",
+      "instance_id": "BLOCK_08_STACK_H_20X10X6_15OUT5IN_RESHUFFLE",
+      "instance_file": "block_08.json",
+      "seed": 20260831,
+      "initial_container_count": 116,
+      "occupied_stack_count": 40,
+      "direct_blocker_count": 13,
+      "background_stack_count": 22
+    },
+    {
+      "block_id": "BLOCK_09",
+      "instance_id": "BLOCK_09_STACK_H_20X10X6_15OUT5IN_RESHUFFLE",
+      "instance_file": "block_09.json",
+      "seed": 20260832,
+      "initial_container_count": 109,
+      "occupied_stack_count": 40,
+      "direct_blocker_count": 10,
+      "background_stack_count": 20
+    },
+    {
+      "block_id": "BLOCK_10",
+      "instance_id": "BLOCK_10_STACK_H_20X10X6_15OUT5IN_RESHUFFLE",
+      "instance_file": "block_10.json",
+      "seed": 20260833,
+      "initial_container_count": 132,
+      "occupied_stack_count": 44,
+      "direct_blocker_count": 14,
+      "background_stack_count": 24
+    },
+    {
+      "block_id": "BLOCK_11",
+      "instance_id": "BLOCK_11_STACK_H_20X10X6_15OUT5IN_RESHUFFLE",
+      "instance_file": "block_11.json",
+      "seed": 20260834,
+      "initial_container_count": 105,
+      "occupied_stack_count": 39,
+      "direct_blocker_count": 15,
+      "background_stack_count": 19
+    },
+    {
+      "block_id": "BLOCK_12",
+      "instance_id": "BLOCK_12_STACK_H_20X10X6_15OUT5IN_RESHUFFLE",
+      "instance_file": "block_12.json",
+      "seed": 20260835,
+      "initial_container_count": 112,
+      "occupied_stack_count": 38,
+      "direct_blocker_count": 12,
+      "background_stack_count": 18
+    },
+    {
+      "block_id": "BLOCK_13",
+      "instance_id": "BLOCK_13_STACK_H_20X10X6_15OUT5IN_RESHUFFLE",
+      "instance_file": "block_13.json",
+      "seed": 20260836,
+      "initial_container_count": 93,
+      "occupied_stack_count": 35,
+      "direct_blocker_count": 15,
+      "background_stack_count": 16
+    },
+    {
+      "block_id": "BLOCK_14",
+      "instance_id": "BLOCK_14_STACK_H_20X10X6_15OUT5IN_RESHUFFLE",
+      "instance_file": "block_14.json",
+      "seed": 20260837,
+      "initial_container_count": 127,
+      "occupied_stack_count": 41,
+      "direct_blocker_count": 11,
+      "background_stack_count": 23
+    },
+    {
+      "block_id": "BLOCK_15",
+      "instance_id": "BLOCK_15_STACK_H_20X10X6_15OUT5IN_RESHUFFLE",
+      "instance_file": "block_15.json",
+      "seed": 20260838,
+      "initial_container_count": 126,
+      "occupied_stack_count": 39,
+      "direct_blocker_count": 12,
+      "background_stack_count": 19
+    },
+    {
+      "block_id": "BLOCK_16",
+      "instance_id": "BLOCK_16_STACK_H_20X10X6_15OUT5IN_RESHUFFLE",
+      "instance_file": "block_16.json",
+      "seed": 20260839,
+      "initial_container_count": 135,
+      "occupied_stack_count": 44,
+      "direct_blocker_count": 14,
+      "background_stack_count": 24
+    },
+    {
+      "block_id": "BLOCK_17",
+      "instance_id": "BLOCK_17_STACK_H_20X10X6_15OUT5IN_RESHUFFLE",
+      "instance_file": "block_17.json",
+      "seed": 20260840,
+      "initial_container_count": 100,
+      "occupied_stack_count": 35,
+      "direct_blocker_count": 10,
+      "background_stack_count": 16
+    },
+    {
+      "block_id": "BLOCK_18",
+      "instance_id": "BLOCK_18_STACK_H_20X10X6_15OUT5IN_RESHUFFLE",
+      "instance_file": "block_18.json",
+      "seed": 20260841,
+      "initial_container_count": 112,
+      "occupied_stack_count": 37,
+      "direct_blocker_count": 12,
+      "background_stack_count": 18
+    },
+    {
+      "block_id": "BLOCK_19",
+      "instance_id": "BLOCK_19_STACK_H_20X10X6_15OUT5IN_RESHUFFLE",
+      "instance_file": "block_19.json",
+      "seed": 20260842,
+      "initial_container_count": 98,
+      "occupied_stack_count": 39,
+      "direct_blocker_count": 11,
+      "background_stack_count": 21
+    },
+    {
+      "block_id": "BLOCK_20",
+      "instance_id": "BLOCK_20_STACK_H_20X10X6_15OUT5IN_RESHUFFLE",
+      "instance_file": "block_20.json",
+      "seed": 20260843,
+      "initial_container_count": 103,
+      "occupied_stack_count": 36,
+      "direct_blocker_count": 9,
+      "background_stack_count": 17
+    },
+    {
+      "block_id": "BLOCK_21",
+      "instance_id": "BLOCK_21_STACK_H_20X10X6_15OUT5IN_RESHUFFLE",
+      "instance_file": "block_21.json",
+      "seed": 20260844,
+      "initial_container_count": 118,
+      "occupied_stack_count": 38,
+      "direct_blocker_count": 15,
+      "background_stack_count": 20
+    },
+    {
+      "block_id": "BLOCK_22",
+      "instance_id": "BLOCK_22_STACK_H_20X10X6_15OUT5IN_RESHUFFLE",
+      "instance_file": "block_22.json",
+      "seed": 20260845,
+      "initial_container_count": 121,
+      "occupied_stack_count": 42,
+      "direct_blocker_count": 12,
+      "background_stack_count": 24
+    }
+  ]
+}

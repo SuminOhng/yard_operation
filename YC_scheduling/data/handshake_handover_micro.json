@@ -1,0 +1,90 @@
+{
+  "schema_version": "3.1.0",
+  "instance_id": "HANDSHAKE_HANDOVER_MICRO",
+  "layout": {
+    "block_id": "B1",
+    "bays": 6,
+    "rows": 2,
+    "tiers": 4,
+    "handshake_bay": 3
+  },
+  "motion": {
+    "gantry_seconds_per_bay": 1.0,
+    "trolley_seconds_per_row": 1.0,
+    "hoist_seconds_per_tier": 0.5,
+    "pickup_seconds": 1.0,
+    "drop_seconds": 1.0
+  },
+  "physical_rules": {
+    "minimum_crane_separation_bays": 1.0,
+    "maximum_handovers_per_job": 1
+  },
+  "cranes": [
+    {
+      "id": "C_SEA",
+      "side": "SEASIDE",
+      "initial_position": {"bay": 0, "row": 1}
+    },
+    {
+      "id": "C_LAND",
+      "side": "LANDSIDE",
+      "initial_position": {"bay": 7, "row": 1}
+    }
+  ],
+  "transfer_slots": [
+    {
+      "id": "H_ROW_1",
+      "position": {"bay": 3, "row": 1},
+      "capacity": 1,
+      "enabled": true
+    },
+    {
+      "id": "H_ROW_2",
+      "position": {"bay": 3, "row": 2},
+      "capacity": 1,
+      "enabled": true
+    }
+  ],
+  "initial_state": {
+    "current_time": 0.0,
+    "stacks": [],
+    "containers": [
+      {
+        "container_id": "CONT_GATE_TO_GATE",
+        "status": "ON_AGV",
+        "current_slot": null,
+        "target_slot": null
+      }
+    ],
+    "cranes": [
+      {
+        "crane_id": "C_SEA",
+        "position": {"bay": 0, "row": 1},
+        "carrying_container": null,
+        "available_time": 0.0
+      },
+      {
+        "crane_id": "C_LAND",
+        "position": {"bay": 7, "row": 1},
+        "carrying_container": null,
+        "available_time": 0.0
+      }
+    ],
+    "transfer_slots": [
+      {"slot_id": "H_ROW_1", "containers": []},
+      {"slot_id": "H_ROW_2", "containers": []}
+    ]
+  },
+  "jobs": [
+    {
+      "id": "JOB_GATE_TO_GATE",
+      "container_id": "CONT_GATE_TO_GATE",
+      "direction": "OUTBOUND",
+      "origin": {"bay": 7, "row": 2},
+      "destination": {"bay": 0, "row": 2},
+      "final_slot": null,
+      "release_time": 0.0,
+      "agv_ready_time": 0.0
+    }
+  ]
+}

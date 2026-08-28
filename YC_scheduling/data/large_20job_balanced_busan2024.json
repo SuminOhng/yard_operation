@@ -1,0 +1,1003 @@
+{
+  "schema_version": "3.1.0",
+  "instance_id": "LARGE_20JOB_BALANCED_BUSAN2024",
+  "layout": {
+    "block_id": "B1",
+    "bays": 20,
+    "rows": 10,
+    "tiers": 6,
+    "handshake_bay": 10
+  },
+  "motion": {
+    "gantry_seconds_per_bay": 3.2,
+    "trolley_seconds_per_row": 2.8,
+    "hoist_seconds_per_tier": 1.4,
+    "pickup_seconds": 12.0,
+    "drop_seconds": 13.5
+  },
+  "physical_rules": {
+    "minimum_crane_separation_bays": 1.0,
+    "maximum_handovers_per_job": 1
+  },
+  "cranes": [
+    {
+      "id": "C_SEA",
+      "side": "SEASIDE",
+      "initial_position": {
+        "bay": 0,
+        "row": 1
+      }
+    },
+    {
+      "id": "C_LAND",
+      "side": "LANDSIDE",
+      "initial_position": {
+        "bay": 21,
+        "row": 10
+      }
+    }
+  ],
+  "transfer_slots": [
+    {
+      "id": "ALT_B6_R1",
+      "position": {
+        "bay": 6,
+        "row": 1
+      },
+      "capacity": 1,
+      "enabled": true
+    },
+    {
+      "id": "ALT_B6_R3",
+      "position": {
+        "bay": 6,
+        "row": 3
+      },
+      "capacity": 1,
+      "enabled": true
+    },
+    {
+      "id": "ALT_B6_R5",
+      "position": {
+        "bay": 6,
+        "row": 5
+      },
+      "capacity": 1,
+      "enabled": true
+    },
+    {
+      "id": "ALT_B6_R7",
+      "position": {
+        "bay": 6,
+        "row": 7
+      },
+      "capacity": 1,
+      "enabled": true
+    },
+    {
+      "id": "ALT_B6_R9",
+      "position": {
+        "bay": 6,
+        "row": 9
+      },
+      "capacity": 1,
+      "enabled": true
+    },
+    {
+      "id": "H_B10_R1",
+      "position": {
+        "bay": 10,
+        "row": 1
+      },
+      "capacity": 1,
+      "enabled": true
+    },
+    {
+      "id": "H_B10_R2",
+      "position": {
+        "bay": 10,
+        "row": 2
+      },
+      "capacity": 1,
+      "enabled": true
+    },
+    {
+      "id": "H_B10_R3",
+      "position": {
+        "bay": 10,
+        "row": 3
+      },
+      "capacity": 1,
+      "enabled": true
+    },
+    {
+      "id": "H_B10_R4",
+      "position": {
+        "bay": 10,
+        "row": 4
+      },
+      "capacity": 1,
+      "enabled": true
+    },
+    {
+      "id": "H_B10_R5",
+      "position": {
+        "bay": 10,
+        "row": 5
+      },
+      "capacity": 1,
+      "enabled": true
+    },
+    {
+      "id": "H_B10_R6",
+      "position": {
+        "bay": 10,
+        "row": 6
+      },
+      "capacity": 1,
+      "enabled": true
+    },
+    {
+      "id": "H_B10_R7",
+      "position": {
+        "bay": 10,
+        "row": 7
+      },
+      "capacity": 1,
+      "enabled": true
+    },
+    {
+      "id": "H_B10_R8",
+      "position": {
+        "bay": 10,
+        "row": 8
+      },
+      "capacity": 1,
+      "enabled": true
+    },
+    {
+      "id": "H_B10_R9",
+      "position": {
+        "bay": 10,
+        "row": 9
+      },
+      "capacity": 1,
+      "enabled": true
+    },
+    {
+      "id": "H_B10_R10",
+      "position": {
+        "bay": 10,
+        "row": 10
+      },
+      "capacity": 1,
+      "enabled": true
+    },
+    {
+      "id": "ALT_B14_R2",
+      "position": {
+        "bay": 14,
+        "row": 2
+      },
+      "capacity": 1,
+      "enabled": true
+    },
+    {
+      "id": "ALT_B14_R4",
+      "position": {
+        "bay": 14,
+        "row": 4
+      },
+      "capacity": 1,
+      "enabled": true
+    },
+    {
+      "id": "ALT_B14_R6",
+      "position": {
+        "bay": 14,
+        "row": 6
+      },
+      "capacity": 1,
+      "enabled": true
+    },
+    {
+      "id": "ALT_B14_R8",
+      "position": {
+        "bay": 14,
+        "row": 8
+      },
+      "capacity": 1,
+      "enabled": true
+    },
+    {
+      "id": "ALT_B14_R10",
+      "position": {
+        "bay": 14,
+        "row": 10
+      },
+      "capacity": 1,
+      "enabled": true
+    }
+  ],
+  "initial_state": {
+    "current_time": 0.0,
+    "stacks": [
+      {
+        "block_id": "B1",
+        "bay": 2,
+        "row": 1,
+        "containers": [
+          "CONT_EXP_01"
+        ]
+      },
+      {
+        "block_id": "B1",
+        "bay": 3,
+        "row": 2,
+        "containers": [
+          "CONT_EXP_02"
+        ]
+      },
+      {
+        "block_id": "B1",
+        "bay": 4,
+        "row": 3,
+        "containers": [
+          "CONT_EXP_03"
+        ]
+      },
+      {
+        "block_id": "B1",
+        "bay": 5,
+        "row": 4,
+        "containers": [
+          "CONT_EXP_04"
+        ]
+      },
+      {
+        "block_id": "B1",
+        "bay": 6,
+        "row": 5,
+        "containers": [
+          "CONT_EXP_05"
+        ]
+      },
+      {
+        "block_id": "B1",
+        "bay": 15,
+        "row": 6,
+        "containers": [
+          "CONT_EXP_06"
+        ]
+      },
+      {
+        "block_id": "B1",
+        "bay": 16,
+        "row": 7,
+        "containers": [
+          "CONT_EXP_07"
+        ]
+      },
+      {
+        "block_id": "B1",
+        "bay": 18,
+        "row": 8,
+        "containers": [
+          "CONT_EXP_08"
+        ]
+      },
+      {
+        "block_id": "B1",
+        "bay": 19,
+        "row": 9,
+        "containers": [
+          "CONT_EXP_09"
+        ]
+      },
+      {
+        "block_id": "B1",
+        "bay": 20,
+        "row": 10,
+        "containers": [
+          "CONT_EXP_10"
+        ]
+      }
+    ],
+    "containers": [
+      {
+        "container_id": "CONT_EXP_01",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "B1",
+          "bay": 2,
+          "row": 1,
+          "tier": 1
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "CONT_EXP_02",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "B1",
+          "bay": 3,
+          "row": 2,
+          "tier": 1
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "CONT_EXP_03",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "B1",
+          "bay": 4,
+          "row": 3,
+          "tier": 1
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "CONT_EXP_04",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "B1",
+          "bay": 5,
+          "row": 4,
+          "tier": 1
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "CONT_EXP_05",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "B1",
+          "bay": 6,
+          "row": 5,
+          "tier": 1
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "CONT_EXP_06",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "B1",
+          "bay": 15,
+          "row": 6,
+          "tier": 1
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "CONT_EXP_07",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "B1",
+          "bay": 16,
+          "row": 7,
+          "tier": 1
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "CONT_EXP_08",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "B1",
+          "bay": 18,
+          "row": 8,
+          "tier": 1
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "CONT_EXP_09",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "B1",
+          "bay": 19,
+          "row": 9,
+          "tier": 1
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "CONT_EXP_10",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "B1",
+          "bay": 20,
+          "row": 10,
+          "tier": 1
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "CONT_IMP_01",
+        "status": "ON_AGV",
+        "current_slot": null,
+        "target_slot": {
+          "block_id": "B1",
+          "bay": 2,
+          "row": 10,
+          "tier": 1
+        }
+      },
+      {
+        "container_id": "CONT_IMP_02",
+        "status": "ON_AGV",
+        "current_slot": null,
+        "target_slot": {
+          "block_id": "B1",
+          "bay": 3,
+          "row": 9,
+          "tier": 1
+        }
+      },
+      {
+        "container_id": "CONT_IMP_03",
+        "status": "ON_AGV",
+        "current_slot": null,
+        "target_slot": {
+          "block_id": "B1",
+          "bay": 4,
+          "row": 8,
+          "tier": 1
+        }
+      },
+      {
+        "container_id": "CONT_IMP_04",
+        "status": "ON_AGV",
+        "current_slot": null,
+        "target_slot": {
+          "block_id": "B1",
+          "bay": 5,
+          "row": 7,
+          "tier": 1
+        }
+      },
+      {
+        "container_id": "CONT_IMP_05",
+        "status": "ON_AGV",
+        "current_slot": null,
+        "target_slot": {
+          "block_id": "B1",
+          "bay": 6,
+          "row": 6,
+          "tier": 1
+        }
+      },
+      {
+        "container_id": "CONT_IMP_06",
+        "status": "ON_AGV",
+        "current_slot": null,
+        "target_slot": {
+          "block_id": "B1",
+          "bay": 15,
+          "row": 5,
+          "tier": 1
+        }
+      },
+      {
+        "container_id": "CONT_IMP_07",
+        "status": "ON_AGV",
+        "current_slot": null,
+        "target_slot": {
+          "block_id": "B1",
+          "bay": 16,
+          "row": 4,
+          "tier": 1
+        }
+      },
+      {
+        "container_id": "CONT_IMP_08",
+        "status": "ON_AGV",
+        "current_slot": null,
+        "target_slot": {
+          "block_id": "B1",
+          "bay": 18,
+          "row": 3,
+          "tier": 1
+        }
+      },
+      {
+        "container_id": "CONT_IMP_09",
+        "status": "ON_AGV",
+        "current_slot": null,
+        "target_slot": {
+          "block_id": "B1",
+          "bay": 19,
+          "row": 2,
+          "tier": 1
+        }
+      },
+      {
+        "container_id": "CONT_IMP_10",
+        "status": "ON_AGV",
+        "current_slot": null,
+        "target_slot": {
+          "block_id": "B1",
+          "bay": 20,
+          "row": 1,
+          "tier": 1
+        }
+      }
+    ],
+    "cranes": [
+      {
+        "crane_id": "C_SEA",
+        "position": {
+          "bay": 0,
+          "row": 1
+        },
+        "carrying_container": null,
+        "available_time": 0.0
+      },
+      {
+        "crane_id": "C_LAND",
+        "position": {
+          "bay": 21,
+          "row": 10
+        },
+        "carrying_container": null,
+        "available_time": 0.0
+      }
+    ],
+    "transfer_slots": [
+      {
+        "slot_id": "ALT_B6_R1",
+        "containers": []
+      },
+      {
+        "slot_id": "ALT_B6_R3",
+        "containers": []
+      },
+      {
+        "slot_id": "ALT_B6_R5",
+        "containers": []
+      },
+      {
+        "slot_id": "ALT_B6_R7",
+        "containers": []
+      },
+      {
+        "slot_id": "ALT_B6_R9",
+        "containers": []
+      },
+      {
+        "slot_id": "H_B10_R1",
+        "containers": []
+      },
+      {
+        "slot_id": "H_B10_R2",
+        "containers": []
+      },
+      {
+        "slot_id": "H_B10_R3",
+        "containers": []
+      },
+      {
+        "slot_id": "H_B10_R4",
+        "containers": []
+      },
+      {
+        "slot_id": "H_B10_R5",
+        "containers": []
+      },
+      {
+        "slot_id": "H_B10_R6",
+        "containers": []
+      },
+      {
+        "slot_id": "H_B10_R7",
+        "containers": []
+      },
+      {
+        "slot_id": "H_B10_R8",
+        "containers": []
+      },
+      {
+        "slot_id": "H_B10_R9",
+        "containers": []
+      },
+      {
+        "slot_id": "H_B10_R10",
+        "containers": []
+      },
+      {
+        "slot_id": "ALT_B14_R2",
+        "containers": []
+      },
+      {
+        "slot_id": "ALT_B14_R4",
+        "containers": []
+      },
+      {
+        "slot_id": "ALT_B14_R6",
+        "containers": []
+      },
+      {
+        "slot_id": "ALT_B14_R8",
+        "containers": []
+      },
+      {
+        "slot_id": "ALT_B14_R10",
+        "containers": []
+      }
+    ]
+  },
+  "jobs": [
+    {
+      "id": "JOB_EXP_01",
+      "container_id": "CONT_EXP_01",
+      "direction": "OUTBOUND",
+      "origin": {
+        "bay": 2,
+        "row": 1
+      },
+      "destination": {
+        "bay": 0,
+        "row": 1
+      },
+      "final_slot": null,
+      "release_time": 0.0,
+      "agv_ready_time": 0.0
+    },
+    {
+      "id": "JOB_EXP_02",
+      "container_id": "CONT_EXP_02",
+      "direction": "OUTBOUND",
+      "origin": {
+        "bay": 3,
+        "row": 2
+      },
+      "destination": {
+        "bay": 0,
+        "row": 2
+      },
+      "final_slot": null,
+      "release_time": 0.0,
+      "agv_ready_time": 0.0
+    },
+    {
+      "id": "JOB_EXP_03",
+      "container_id": "CONT_EXP_03",
+      "direction": "OUTBOUND",
+      "origin": {
+        "bay": 4,
+        "row": 3
+      },
+      "destination": {
+        "bay": 0,
+        "row": 3
+      },
+      "final_slot": null,
+      "release_time": 0.0,
+      "agv_ready_time": 0.0
+    },
+    {
+      "id": "JOB_EXP_04",
+      "container_id": "CONT_EXP_04",
+      "direction": "OUTBOUND",
+      "origin": {
+        "bay": 5,
+        "row": 4
+      },
+      "destination": {
+        "bay": 0,
+        "row": 4
+      },
+      "final_slot": null,
+      "release_time": 0.0,
+      "agv_ready_time": 0.0
+    },
+    {
+      "id": "JOB_EXP_05",
+      "container_id": "CONT_EXP_05",
+      "direction": "OUTBOUND",
+      "origin": {
+        "bay": 6,
+        "row": 5
+      },
+      "destination": {
+        "bay": 0,
+        "row": 5
+      },
+      "final_slot": null,
+      "release_time": 0.0,
+      "agv_ready_time": 0.0
+    },
+    {
+      "id": "JOB_EXP_06",
+      "container_id": "CONT_EXP_06",
+      "direction": "OUTBOUND",
+      "origin": {
+        "bay": 15,
+        "row": 6
+      },
+      "destination": {
+        "bay": 0,
+        "row": 6
+      },
+      "final_slot": null,
+      "release_time": 0.0,
+      "agv_ready_time": 0.0
+    },
+    {
+      "id": "JOB_EXP_07",
+      "container_id": "CONT_EXP_07",
+      "direction": "OUTBOUND",
+      "origin": {
+        "bay": 16,
+        "row": 7
+      },
+      "destination": {
+        "bay": 0,
+        "row": 7
+      },
+      "final_slot": null,
+      "release_time": 0.0,
+      "agv_ready_time": 0.0
+    },
+    {
+      "id": "JOB_EXP_08",
+      "container_id": "CONT_EXP_08",
+      "direction": "OUTBOUND",
+      "origin": {
+        "bay": 18,
+        "row": 8
+      },
+      "destination": {
+        "bay": 0,
+        "row": 8
+      },
+      "final_slot": null,
+      "release_time": 0.0,
+      "agv_ready_time": 0.0
+    },
+    {
+      "id": "JOB_EXP_09",
+      "container_id": "CONT_EXP_09",
+      "direction": "OUTBOUND",
+      "origin": {
+        "bay": 19,
+        "row": 9
+      },
+      "destination": {
+        "bay": 0,
+        "row": 9
+      },
+      "final_slot": null,
+      "release_time": 0.0,
+      "agv_ready_time": 0.0
+    },
+    {
+      "id": "JOB_EXP_10",
+      "container_id": "CONT_EXP_10",
+      "direction": "OUTBOUND",
+      "origin": {
+        "bay": 20,
+        "row": 10
+      },
+      "destination": {
+        "bay": 0,
+        "row": 10
+      },
+      "final_slot": null,
+      "release_time": 0.0,
+      "agv_ready_time": 0.0
+    },
+    {
+      "id": "JOB_IMP_01",
+      "container_id": "CONT_IMP_01",
+      "direction": "INBOUND",
+      "origin": {
+        "bay": 0,
+        "row": 10
+      },
+      "destination": {
+        "bay": 2,
+        "row": 10
+      },
+      "final_slot": {
+        "block_id": "B1",
+        "bay": 2,
+        "row": 10,
+        "tier": 1
+      },
+      "release_time": 0.0,
+      "agv_ready_time": 0.0
+    },
+    {
+      "id": "JOB_IMP_02",
+      "container_id": "CONT_IMP_02",
+      "direction": "INBOUND",
+      "origin": {
+        "bay": 0,
+        "row": 9
+      },
+      "destination": {
+        "bay": 3,
+        "row": 9
+      },
+      "final_slot": {
+        "block_id": "B1",
+        "bay": 3,
+        "row": 9,
+        "tier": 1
+      },
+      "release_time": 0.0,
+      "agv_ready_time": 0.0
+    },
+    {
+      "id": "JOB_IMP_03",
+      "container_id": "CONT_IMP_03",
+      "direction": "INBOUND",
+      "origin": {
+        "bay": 0,
+        "row": 8
+      },
+      "destination": {
+        "bay": 4,
+        "row": 8
+      },
+      "final_slot": {
+        "block_id": "B1",
+        "bay": 4,
+        "row": 8,
+        "tier": 1
+      },
+      "release_time": 0.0,
+      "agv_ready_time": 0.0
+    },
+    {
+      "id": "JOB_IMP_04",
+      "container_id": "CONT_IMP_04",
+      "direction": "INBOUND",
+      "origin": {
+        "bay": 0,
+        "row": 7
+      },
+      "destination": {
+        "bay": 5,
+        "row": 7
+      },
+      "final_slot": {
+        "block_id": "B1",
+        "bay": 5,
+        "row": 7,
+        "tier": 1
+      },
+      "release_time": 0.0,
+      "agv_ready_time": 0.0
+    },
+    {
+      "id": "JOB_IMP_05",
+      "container_id": "CONT_IMP_05",
+      "direction": "INBOUND",
+      "origin": {
+        "bay": 0,
+        "row": 6
+      },
+      "destination": {
+        "bay": 6,
+        "row": 6
+      },
+      "final_slot": {
+        "block_id": "B1",
+        "bay": 6,
+        "row": 6,
+        "tier": 1
+      },
+      "release_time": 0.0,
+      "agv_ready_time": 0.0
+    },
+    {
+      "id": "JOB_IMP_06",
+      "container_id": "CONT_IMP_06",
+      "direction": "INBOUND",
+      "origin": {
+        "bay": 0,
+        "row": 5
+      },
+      "destination": {
+        "bay": 15,
+        "row": 5
+      },
+      "final_slot": {
+        "block_id": "B1",
+        "bay": 15,
+        "row": 5,
+        "tier": 1
+      },
+      "release_time": 0.0,
+      "agv_ready_time": 0.0
+    },
+    {
+      "id": "JOB_IMP_07",
+      "container_id": "CONT_IMP_07",
+      "direction": "INBOUND",
+      "origin": {
+        "bay": 0,
+        "row": 4
+      },
+      "destination": {
+        "bay": 16,
+        "row": 4
+      },
+      "final_slot": {
+        "block_id": "B1",
+        "bay": 16,
+        "row": 4,
+        "tier": 1
+      },
+      "release_time": 0.0,
+      "agv_ready_time": 0.0
+    },
+    {
+      "id": "JOB_IMP_08",
+      "container_id": "CONT_IMP_08",
+      "direction": "INBOUND",
+      "origin": {
+        "bay": 0,
+        "row": 3
+      },
+      "destination": {
+        "bay": 18,
+        "row": 3
+      },
+      "final_slot": {
+        "block_id": "B1",
+        "bay": 18,
+        "row": 3,
+        "tier": 1
+      },
+      "release_time": 0.0,
+      "agv_ready_time": 0.0
+    },
+    {
+      "id": "JOB_IMP_09",
+      "container_id": "CONT_IMP_09",
+      "direction": "INBOUND",
+      "origin": {
+        "bay": 0,
+        "row": 2
+      },
+      "destination": {
+        "bay": 19,
+        "row": 2
+      },
+      "final_slot": {
+        "block_id": "B1",
+        "bay": 19,
+        "row": 2,
+        "tier": 1
+      },
+      "release_time": 0.0,
+      "agv_ready_time": 0.0
+    },
+    {
+      "id": "JOB_IMP_10",
+      "container_id": "CONT_IMP_10",
+      "direction": "INBOUND",
+      "origin": {
+        "bay": 0,
+        "row": 1
+      },
+      "destination": {
+        "bay": 20,
+        "row": 1
+      },
+      "final_slot": {
+        "block_id": "B1",
+        "bay": 20,
+        "row": 1,
+        "tier": 1
+      },
+      "release_time": 0.0,
+      "agv_ready_time": 0.0
+    }
+  ]
+}

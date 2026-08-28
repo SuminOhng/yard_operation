@@ -1,0 +1,2336 @@
+{
+  "schema_version": "3.1.0",
+  "instance_id": "BLOCK_03_20X10X6_15OUT5IN_RESHUFFLE",
+  "layout": {
+    "block_id": "BLOCK_03",
+    "bays": 20,
+    "rows": 10,
+    "tiers": 6,
+    "handshake_bay": 10
+  },
+  "motion": {
+    "gantry_seconds_per_bay": 3.2,
+    "trolley_seconds_per_row": 2.8,
+    "hoist_seconds_per_tier": 1.4,
+    "pickup_seconds": 12.0,
+    "drop_seconds": 13.5
+  },
+  "physical_rules": {
+    "minimum_crane_separation_bays": 1.0,
+    "maximum_handovers_per_job": 1
+  },
+  "cranes": [
+    {
+      "id": "C_SEA",
+      "side": "SEASIDE",
+      "initial_position": {
+        "bay": 0,
+        "row": 1
+      }
+    },
+    {
+      "id": "C_LAND",
+      "side": "LANDSIDE",
+      "initial_position": {
+        "bay": 21,
+        "row": 10
+      }
+    }
+  ],
+  "transfer_slots": [
+    {
+      "id": "H_B10_R1",
+      "position": {
+        "bay": 10,
+        "row": 1
+      },
+      "capacity": 1,
+      "enabled": true
+    },
+    {
+      "id": "H_B10_R2",
+      "position": {
+        "bay": 10,
+        "row": 2
+      },
+      "capacity": 1,
+      "enabled": true
+    },
+    {
+      "id": "H_B10_R3",
+      "position": {
+        "bay": 10,
+        "row": 3
+      },
+      "capacity": 1,
+      "enabled": true
+    },
+    {
+      "id": "H_B10_R4",
+      "position": {
+        "bay": 10,
+        "row": 4
+      },
+      "capacity": 1,
+      "enabled": true
+    },
+    {
+      "id": "H_B10_R5",
+      "position": {
+        "bay": 10,
+        "row": 5
+      },
+      "capacity": 1,
+      "enabled": true
+    },
+    {
+      "id": "H_B10_R6",
+      "position": {
+        "bay": 10,
+        "row": 6
+      },
+      "capacity": 1,
+      "enabled": true
+    },
+    {
+      "id": "H_B10_R7",
+      "position": {
+        "bay": 10,
+        "row": 7
+      },
+      "capacity": 1,
+      "enabled": true
+    },
+    {
+      "id": "H_B10_R8",
+      "position": {
+        "bay": 10,
+        "row": 8
+      },
+      "capacity": 1,
+      "enabled": true
+    },
+    {
+      "id": "H_B10_R9",
+      "position": {
+        "bay": 10,
+        "row": 9
+      },
+      "capacity": 1,
+      "enabled": true
+    },
+    {
+      "id": "H_B10_R10",
+      "position": {
+        "bay": 10,
+        "row": 10
+      },
+      "capacity": 1,
+      "enabled": true
+    },
+    {
+      "id": "ALT_B6_R1",
+      "position": {
+        "bay": 6,
+        "row": 1
+      },
+      "capacity": 1,
+      "enabled": true
+    },
+    {
+      "id": "ALT_B6_R3",
+      "position": {
+        "bay": 6,
+        "row": 3
+      },
+      "capacity": 1,
+      "enabled": true
+    },
+    {
+      "id": "ALT_B14_R2",
+      "position": {
+        "bay": 14,
+        "row": 2
+      },
+      "capacity": 1,
+      "enabled": true
+    },
+    {
+      "id": "ALT_B14_R4",
+      "position": {
+        "bay": 14,
+        "row": 4
+      },
+      "capacity": 1,
+      "enabled": true
+    }
+  ],
+  "initial_state": {
+    "current_time": 0.0,
+    "stacks": [
+      {
+        "block_id": "BLOCK_03",
+        "bay": 1,
+        "row": 2,
+        "containers": [
+          "B03_BACKGROUND_19_T1",
+          "B03_BACKGROUND_19_T2",
+          "B03_BACKGROUND_19_T3"
+        ]
+      },
+      {
+        "block_id": "BLOCK_03",
+        "bay": 1,
+        "row": 6,
+        "containers": [
+          "B03_CONT_OUT_04",
+          "B03_BLOCKER_OUT_04_1"
+        ]
+      },
+      {
+        "block_id": "BLOCK_03",
+        "bay": 1,
+        "row": 7,
+        "containers": [
+          "B03_BACKGROUND_14_T1",
+          "B03_BACKGROUND_14_T2",
+          "B03_BACKGROUND_14_T3"
+        ]
+      },
+      {
+        "block_id": "BLOCK_03",
+        "bay": 1,
+        "row": 10,
+        "containers": [
+          "B03_SUP_OUT_05_T1",
+          "B03_SUP_OUT_05_T2",
+          "B03_CONT_OUT_05"
+        ]
+      },
+      {
+        "block_id": "BLOCK_03",
+        "bay": 2,
+        "row": 4,
+        "containers": [
+          "B03_SUP_IN_03_T1",
+          "B03_SUP_IN_03_T2",
+          "B03_SUP_IN_03_T3"
+        ]
+      },
+      {
+        "block_id": "BLOCK_03",
+        "bay": 3,
+        "row": 4,
+        "containers": [
+          "B03_BACKGROUND_06_T1",
+          "B03_BACKGROUND_06_T2",
+          "B03_BACKGROUND_06_T3",
+          "B03_BACKGROUND_06_T4"
+        ]
+      },
+      {
+        "block_id": "BLOCK_03",
+        "bay": 3,
+        "row": 10,
+        "containers": [
+          "B03_SUP_IN_01_T1"
+        ]
+      },
+      {
+        "block_id": "BLOCK_03",
+        "bay": 4,
+        "row": 3,
+        "containers": [
+          "B03_SUP_IN_05_T1",
+          "B03_SUP_IN_05_T2"
+        ]
+      },
+      {
+        "block_id": "BLOCK_03",
+        "bay": 4,
+        "row": 4,
+        "containers": [
+          "B03_BACKGROUND_02_T1",
+          "B03_BACKGROUND_02_T2",
+          "B03_BACKGROUND_02_T3",
+          "B03_BACKGROUND_02_T4"
+        ]
+      },
+      {
+        "block_id": "BLOCK_03",
+        "bay": 4,
+        "row": 8,
+        "containers": [
+          "B03_BACKGROUND_08_T1"
+        ]
+      },
+      {
+        "block_id": "BLOCK_03",
+        "bay": 4,
+        "row": 10,
+        "containers": [
+          "B03_SUP_OUT_07_T1",
+          "B03_SUP_OUT_07_T2",
+          "B03_CONT_OUT_07",
+          "B03_BLOCKER_OUT_07_1"
+        ]
+      },
+      {
+        "block_id": "BLOCK_03",
+        "bay": 5,
+        "row": 10,
+        "containers": [
+          "B03_BACKGROUND_20_T1",
+          "B03_BACKGROUND_20_T2"
+        ]
+      },
+      {
+        "block_id": "BLOCK_03",
+        "bay": 6,
+        "row": 8,
+        "containers": [
+          "B03_SUP_IN_04_T1",
+          "B03_SUP_IN_04_T2",
+          "B03_SUP_IN_04_T3"
+        ]
+      },
+      {
+        "block_id": "BLOCK_03",
+        "bay": 7,
+        "row": 1,
+        "containers": [
+          "B03_CONT_OUT_01",
+          "B03_BLOCKER_OUT_01_1",
+          "B03_BLOCKER_OUT_01_2"
+        ]
+      },
+      {
+        "block_id": "BLOCK_03",
+        "bay": 7,
+        "row": 5,
+        "containers": [
+          "B03_BACKGROUND_23_T1",
+          "B03_BACKGROUND_23_T2",
+          "B03_BACKGROUND_23_T3"
+        ]
+      },
+      {
+        "block_id": "BLOCK_03",
+        "bay": 7,
+        "row": 8,
+        "containers": [
+          "B03_BACKGROUND_11_T1",
+          "B03_BACKGROUND_11_T2"
+        ]
+      },
+      {
+        "block_id": "BLOCK_03",
+        "bay": 7,
+        "row": 9,
+        "containers": [
+          "B03_SUP_OUT_02_T1",
+          "B03_SUP_OUT_02_T2",
+          "B03_SUP_OUT_02_T3",
+          "B03_CONT_OUT_02"
+        ]
+      },
+      {
+        "block_id": "BLOCK_03",
+        "bay": 8,
+        "row": 8,
+        "containers": [
+          "B03_CONT_OUT_03",
+          "B03_BLOCKER_OUT_03_1",
+          "B03_BLOCKER_OUT_03_2"
+        ]
+      },
+      {
+        "block_id": "BLOCK_03",
+        "bay": 9,
+        "row": 1,
+        "containers": [
+          "B03_CONT_OUT_06"
+        ]
+      },
+      {
+        "block_id": "BLOCK_03",
+        "bay": 9,
+        "row": 8,
+        "containers": [
+          "B03_BACKGROUND_18_T1",
+          "B03_BACKGROUND_18_T2",
+          "B03_BACKGROUND_18_T3",
+          "B03_BACKGROUND_18_T4"
+        ]
+      },
+      {
+        "block_id": "BLOCK_03",
+        "bay": 10,
+        "row": 3,
+        "containers": [
+          "B03_SUP_OUT_08_T1",
+          "B03_CONT_OUT_08",
+          "B03_BLOCKER_OUT_08_1",
+          "B03_BLOCKER_OUT_08_2"
+        ]
+      },
+      {
+        "block_id": "BLOCK_03",
+        "bay": 11,
+        "row": 10,
+        "containers": [
+          "B03_SUP_OUT_15_T1",
+          "B03_SUP_OUT_15_T2",
+          "B03_SUP_OUT_15_T3",
+          "B03_CONT_OUT_15"
+        ]
+      },
+      {
+        "block_id": "BLOCK_03",
+        "bay": 12,
+        "row": 5,
+        "containers": [
+          "B03_SUP_OUT_13_T1",
+          "B03_SUP_OUT_13_T2",
+          "B03_CONT_OUT_13"
+        ]
+      },
+      {
+        "block_id": "BLOCK_03",
+        "bay": 12,
+        "row": 6,
+        "containers": [
+          "B03_BACKGROUND_09_T1",
+          "B03_BACKGROUND_09_T2",
+          "B03_BACKGROUND_09_T3"
+        ]
+      },
+      {
+        "block_id": "BLOCK_03",
+        "bay": 12,
+        "row": 7,
+        "containers": [
+          "B03_SUP_OUT_12_T1",
+          "B03_CONT_OUT_12"
+        ]
+      },
+      {
+        "block_id": "BLOCK_03",
+        "bay": 12,
+        "row": 10,
+        "containers": [
+          "B03_SUP_OUT_09_T1",
+          "B03_SUP_OUT_09_T2",
+          "B03_CONT_OUT_09"
+        ]
+      },
+      {
+        "block_id": "BLOCK_03",
+        "bay": 13,
+        "row": 6,
+        "containers": [
+          "B03_BACKGROUND_03_T1",
+          "B03_BACKGROUND_03_T2"
+        ]
+      },
+      {
+        "block_id": "BLOCK_03",
+        "bay": 13,
+        "row": 7,
+        "containers": [
+          "B03_SUP_OUT_11_T1",
+          "B03_SUP_OUT_11_T2",
+          "B03_CONT_OUT_11"
+        ]
+      },
+      {
+        "block_id": "BLOCK_03",
+        "bay": 14,
+        "row": 2,
+        "containers": [
+          "B03_BACKGROUND_15_T1"
+        ]
+      },
+      {
+        "block_id": "BLOCK_03",
+        "bay": 14,
+        "row": 5,
+        "containers": [
+          "B03_BACKGROUND_10_T1"
+        ]
+      },
+      {
+        "block_id": "BLOCK_03",
+        "bay": 15,
+        "row": 4,
+        "containers": [
+          "B03_BACKGROUND_01_T1",
+          "B03_BACKGROUND_01_T2",
+          "B03_BACKGROUND_01_T3",
+          "B03_BACKGROUND_01_T4"
+        ]
+      },
+      {
+        "block_id": "BLOCK_03",
+        "bay": 15,
+        "row": 7,
+        "containers": [
+          "B03_BACKGROUND_17_T1",
+          "B03_BACKGROUND_17_T2"
+        ]
+      },
+      {
+        "block_id": "BLOCK_03",
+        "bay": 15,
+        "row": 10,
+        "containers": [
+          "B03_BACKGROUND_12_T1"
+        ]
+      },
+      {
+        "block_id": "BLOCK_03",
+        "bay": 16,
+        "row": 1,
+        "containers": [
+          "B03_SUP_OUT_14_T1",
+          "B03_CONT_OUT_14"
+        ]
+      },
+      {
+        "block_id": "BLOCK_03",
+        "bay": 16,
+        "row": 7,
+        "containers": [
+          "B03_BACKGROUND_16_T1",
+          "B03_BACKGROUND_16_T2",
+          "B03_BACKGROUND_16_T3",
+          "B03_BACKGROUND_16_T4"
+        ]
+      },
+      {
+        "block_id": "BLOCK_03",
+        "bay": 17,
+        "row": 1,
+        "containers": [
+          "B03_BACKGROUND_13_T1",
+          "B03_BACKGROUND_13_T2"
+        ]
+      },
+      {
+        "block_id": "BLOCK_03",
+        "bay": 17,
+        "row": 6,
+        "containers": [
+          "B03_SUP_OUT_10_T1",
+          "B03_SUP_OUT_10_T2",
+          "B03_SUP_OUT_10_T3",
+          "B03_CONT_OUT_10",
+          "B03_BLOCKER_OUT_10_1",
+          "B03_BLOCKER_OUT_10_2"
+        ]
+      },
+      {
+        "block_id": "BLOCK_03",
+        "bay": 18,
+        "row": 1,
+        "containers": [
+          "B03_BACKGROUND_22_T1"
+        ]
+      },
+      {
+        "block_id": "BLOCK_03",
+        "bay": 18,
+        "row": 6,
+        "containers": [
+          "B03_BACKGROUND_04_T1",
+          "B03_BACKGROUND_04_T2",
+          "B03_BACKGROUND_04_T3"
+        ]
+      },
+      {
+        "block_id": "BLOCK_03",
+        "bay": 18,
+        "row": 8,
+        "containers": [
+          "B03_SUP_IN_02_T1"
+        ]
+      },
+      {
+        "block_id": "BLOCK_03",
+        "bay": 19,
+        "row": 2,
+        "containers": [
+          "B03_BACKGROUND_21_T1",
+          "B03_BACKGROUND_21_T2",
+          "B03_BACKGROUND_21_T3",
+          "B03_BACKGROUND_21_T4"
+        ]
+      },
+      {
+        "block_id": "BLOCK_03",
+        "bay": 20,
+        "row": 2,
+        "containers": [
+          "B03_BACKGROUND_05_T1"
+        ]
+      },
+      {
+        "block_id": "BLOCK_03",
+        "bay": 20,
+        "row": 4,
+        "containers": [
+          "B03_BACKGROUND_07_T1",
+          "B03_BACKGROUND_07_T2",
+          "B03_BACKGROUND_07_T3"
+        ]
+      }
+    ],
+    "containers": [
+      {
+        "container_id": "B03_BACKGROUND_19_T1",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 1,
+          "row": 2,
+          "tier": 1
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_BACKGROUND_19_T2",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 1,
+          "row": 2,
+          "tier": 2
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_BACKGROUND_19_T3",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 1,
+          "row": 2,
+          "tier": 3
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_CONT_OUT_04",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 1,
+          "row": 6,
+          "tier": 1
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_BLOCKER_OUT_04_1",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 1,
+          "row": 6,
+          "tier": 2
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_BACKGROUND_14_T1",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 1,
+          "row": 7,
+          "tier": 1
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_BACKGROUND_14_T2",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 1,
+          "row": 7,
+          "tier": 2
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_BACKGROUND_14_T3",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 1,
+          "row": 7,
+          "tier": 3
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_SUP_OUT_05_T1",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 1,
+          "row": 10,
+          "tier": 1
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_SUP_OUT_05_T2",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 1,
+          "row": 10,
+          "tier": 2
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_CONT_OUT_05",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 1,
+          "row": 10,
+          "tier": 3
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_SUP_IN_03_T1",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 2,
+          "row": 4,
+          "tier": 1
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_SUP_IN_03_T2",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 2,
+          "row": 4,
+          "tier": 2
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_SUP_IN_03_T3",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 2,
+          "row": 4,
+          "tier": 3
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_BACKGROUND_06_T1",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 3,
+          "row": 4,
+          "tier": 1
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_BACKGROUND_06_T2",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 3,
+          "row": 4,
+          "tier": 2
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_BACKGROUND_06_T3",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 3,
+          "row": 4,
+          "tier": 3
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_BACKGROUND_06_T4",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 3,
+          "row": 4,
+          "tier": 4
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_SUP_IN_01_T1",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 3,
+          "row": 10,
+          "tier": 1
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_SUP_IN_05_T1",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 4,
+          "row": 3,
+          "tier": 1
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_SUP_IN_05_T2",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 4,
+          "row": 3,
+          "tier": 2
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_BACKGROUND_02_T1",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 4,
+          "row": 4,
+          "tier": 1
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_BACKGROUND_02_T2",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 4,
+          "row": 4,
+          "tier": 2
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_BACKGROUND_02_T3",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 4,
+          "row": 4,
+          "tier": 3
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_BACKGROUND_02_T4",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 4,
+          "row": 4,
+          "tier": 4
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_BACKGROUND_08_T1",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 4,
+          "row": 8,
+          "tier": 1
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_SUP_OUT_07_T1",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 4,
+          "row": 10,
+          "tier": 1
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_SUP_OUT_07_T2",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 4,
+          "row": 10,
+          "tier": 2
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_CONT_OUT_07",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 4,
+          "row": 10,
+          "tier": 3
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_BLOCKER_OUT_07_1",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 4,
+          "row": 10,
+          "tier": 4
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_BACKGROUND_20_T1",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 5,
+          "row": 10,
+          "tier": 1
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_BACKGROUND_20_T2",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 5,
+          "row": 10,
+          "tier": 2
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_SUP_IN_04_T1",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 6,
+          "row": 8,
+          "tier": 1
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_SUP_IN_04_T2",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 6,
+          "row": 8,
+          "tier": 2
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_SUP_IN_04_T3",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 6,
+          "row": 8,
+          "tier": 3
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_CONT_OUT_01",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 7,
+          "row": 1,
+          "tier": 1
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_BLOCKER_OUT_01_1",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 7,
+          "row": 1,
+          "tier": 2
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_BLOCKER_OUT_01_2",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 7,
+          "row": 1,
+          "tier": 3
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_BACKGROUND_23_T1",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 7,
+          "row": 5,
+          "tier": 1
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_BACKGROUND_23_T2",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 7,
+          "row": 5,
+          "tier": 2
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_BACKGROUND_23_T3",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 7,
+          "row": 5,
+          "tier": 3
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_BACKGROUND_11_T1",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 7,
+          "row": 8,
+          "tier": 1
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_BACKGROUND_11_T2",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 7,
+          "row": 8,
+          "tier": 2
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_SUP_OUT_02_T1",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 7,
+          "row": 9,
+          "tier": 1
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_SUP_OUT_02_T2",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 7,
+          "row": 9,
+          "tier": 2
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_SUP_OUT_02_T3",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 7,
+          "row": 9,
+          "tier": 3
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_CONT_OUT_02",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 7,
+          "row": 9,
+          "tier": 4
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_CONT_OUT_03",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 8,
+          "row": 8,
+          "tier": 1
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_BLOCKER_OUT_03_1",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 8,
+          "row": 8,
+          "tier": 2
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_BLOCKER_OUT_03_2",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 8,
+          "row": 8,
+          "tier": 3
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_CONT_OUT_06",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 9,
+          "row": 1,
+          "tier": 1
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_BACKGROUND_18_T1",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 9,
+          "row": 8,
+          "tier": 1
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_BACKGROUND_18_T2",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 9,
+          "row": 8,
+          "tier": 2
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_BACKGROUND_18_T3",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 9,
+          "row": 8,
+          "tier": 3
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_BACKGROUND_18_T4",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 9,
+          "row": 8,
+          "tier": 4
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_SUP_OUT_08_T1",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 10,
+          "row": 3,
+          "tier": 1
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_CONT_OUT_08",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 10,
+          "row": 3,
+          "tier": 2
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_BLOCKER_OUT_08_1",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 10,
+          "row": 3,
+          "tier": 3
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_BLOCKER_OUT_08_2",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 10,
+          "row": 3,
+          "tier": 4
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_SUP_OUT_15_T1",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 11,
+          "row": 10,
+          "tier": 1
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_SUP_OUT_15_T2",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 11,
+          "row": 10,
+          "tier": 2
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_SUP_OUT_15_T3",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 11,
+          "row": 10,
+          "tier": 3
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_CONT_OUT_15",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 11,
+          "row": 10,
+          "tier": 4
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_SUP_OUT_13_T1",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 12,
+          "row": 5,
+          "tier": 1
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_SUP_OUT_13_T2",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 12,
+          "row": 5,
+          "tier": 2
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_CONT_OUT_13",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 12,
+          "row": 5,
+          "tier": 3
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_BACKGROUND_09_T1",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 12,
+          "row": 6,
+          "tier": 1
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_BACKGROUND_09_T2",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 12,
+          "row": 6,
+          "tier": 2
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_BACKGROUND_09_T3",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 12,
+          "row": 6,
+          "tier": 3
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_SUP_OUT_12_T1",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 12,
+          "row": 7,
+          "tier": 1
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_CONT_OUT_12",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 12,
+          "row": 7,
+          "tier": 2
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_SUP_OUT_09_T1",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 12,
+          "row": 10,
+          "tier": 1
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_SUP_OUT_09_T2",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 12,
+          "row": 10,
+          "tier": 2
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_CONT_OUT_09",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 12,
+          "row": 10,
+          "tier": 3
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_BACKGROUND_03_T1",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 13,
+          "row": 6,
+          "tier": 1
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_BACKGROUND_03_T2",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 13,
+          "row": 6,
+          "tier": 2
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_SUP_OUT_11_T1",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 13,
+          "row": 7,
+          "tier": 1
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_SUP_OUT_11_T2",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 13,
+          "row": 7,
+          "tier": 2
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_CONT_OUT_11",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 13,
+          "row": 7,
+          "tier": 3
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_BACKGROUND_15_T1",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 14,
+          "row": 2,
+          "tier": 1
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_BACKGROUND_10_T1",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 14,
+          "row": 5,
+          "tier": 1
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_BACKGROUND_01_T1",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 15,
+          "row": 4,
+          "tier": 1
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_BACKGROUND_01_T2",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 15,
+          "row": 4,
+          "tier": 2
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_BACKGROUND_01_T3",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 15,
+          "row": 4,
+          "tier": 3
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_BACKGROUND_01_T4",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 15,
+          "row": 4,
+          "tier": 4
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_BACKGROUND_17_T1",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 15,
+          "row": 7,
+          "tier": 1
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_BACKGROUND_17_T2",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 15,
+          "row": 7,
+          "tier": 2
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_BACKGROUND_12_T1",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 15,
+          "row": 10,
+          "tier": 1
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_SUP_OUT_14_T1",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 16,
+          "row": 1,
+          "tier": 1
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_CONT_OUT_14",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 16,
+          "row": 1,
+          "tier": 2
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_BACKGROUND_16_T1",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 16,
+          "row": 7,
+          "tier": 1
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_BACKGROUND_16_T2",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 16,
+          "row": 7,
+          "tier": 2
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_BACKGROUND_16_T3",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 16,
+          "row": 7,
+          "tier": 3
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_BACKGROUND_16_T4",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 16,
+          "row": 7,
+          "tier": 4
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_BACKGROUND_13_T1",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 17,
+          "row": 1,
+          "tier": 1
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_BACKGROUND_13_T2",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 17,
+          "row": 1,
+          "tier": 2
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_SUP_OUT_10_T1",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 17,
+          "row": 6,
+          "tier": 1
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_SUP_OUT_10_T2",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 17,
+          "row": 6,
+          "tier": 2
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_SUP_OUT_10_T3",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 17,
+          "row": 6,
+          "tier": 3
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_CONT_OUT_10",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 17,
+          "row": 6,
+          "tier": 4
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_BLOCKER_OUT_10_1",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 17,
+          "row": 6,
+          "tier": 5
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_BLOCKER_OUT_10_2",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 17,
+          "row": 6,
+          "tier": 6
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_BACKGROUND_22_T1",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 18,
+          "row": 1,
+          "tier": 1
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_BACKGROUND_04_T1",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 18,
+          "row": 6,
+          "tier": 1
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_BACKGROUND_04_T2",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 18,
+          "row": 6,
+          "tier": 2
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_BACKGROUND_04_T3",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 18,
+          "row": 6,
+          "tier": 3
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_SUP_IN_02_T1",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 18,
+          "row": 8,
+          "tier": 1
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_BACKGROUND_21_T1",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 19,
+          "row": 2,
+          "tier": 1
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_BACKGROUND_21_T2",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 19,
+          "row": 2,
+          "tier": 2
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_BACKGROUND_21_T3",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 19,
+          "row": 2,
+          "tier": 3
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_BACKGROUND_21_T4",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 19,
+          "row": 2,
+          "tier": 4
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_BACKGROUND_05_T1",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 20,
+          "row": 2,
+          "tier": 1
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_BACKGROUND_07_T1",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 20,
+          "row": 4,
+          "tier": 1
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_BACKGROUND_07_T2",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 20,
+          "row": 4,
+          "tier": 2
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_BACKGROUND_07_T3",
+        "status": "IN_STACK",
+        "current_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 20,
+          "row": 4,
+          "tier": 3
+        },
+        "target_slot": null
+      },
+      {
+        "container_id": "B03_CONT_IN_02",
+        "status": "ON_AGV",
+        "current_slot": null,
+        "target_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 18,
+          "row": 8,
+          "tier": 2
+        }
+      },
+      {
+        "container_id": "B03_CONT_IN_04",
+        "status": "ON_AGV",
+        "current_slot": null,
+        "target_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 6,
+          "row": 8,
+          "tier": 4
+        }
+      },
+      {
+        "container_id": "B03_CONT_IN_03",
+        "status": "ON_AGV",
+        "current_slot": null,
+        "target_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 2,
+          "row": 4,
+          "tier": 4
+        }
+      },
+      {
+        "container_id": "B03_CONT_IN_05",
+        "status": "ON_AGV",
+        "current_slot": null,
+        "target_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 4,
+          "row": 3,
+          "tier": 3
+        }
+      },
+      {
+        "container_id": "B03_CONT_IN_01",
+        "status": "ON_AGV",
+        "current_slot": null,
+        "target_slot": {
+          "block_id": "BLOCK_03",
+          "bay": 3,
+          "row": 10,
+          "tier": 2
+        }
+      }
+    ],
+    "cranes": [
+      {
+        "crane_id": "C_SEA",
+        "position": {
+          "bay": 0,
+          "row": 1
+        },
+        "carrying_container": null,
+        "available_time": 0.0
+      },
+      {
+        "crane_id": "C_LAND",
+        "position": {
+          "bay": 21,
+          "row": 10
+        },
+        "carrying_container": null,
+        "available_time": 0.0
+      }
+    ],
+    "transfer_slots": [
+      {
+        "slot_id": "H_B10_R1",
+        "containers": []
+      },
+      {
+        "slot_id": "H_B10_R2",
+        "containers": []
+      },
+      {
+        "slot_id": "H_B10_R3",
+        "containers": []
+      },
+      {
+        "slot_id": "H_B10_R4",
+        "containers": []
+      },
+      {
+        "slot_id": "H_B10_R5",
+        "containers": []
+      },
+      {
+        "slot_id": "H_B10_R6",
+        "containers": []
+      },
+      {
+        "slot_id": "H_B10_R7",
+        "containers": []
+      },
+      {
+        "slot_id": "H_B10_R8",
+        "containers": []
+      },
+      {
+        "slot_id": "H_B10_R9",
+        "containers": []
+      },
+      {
+        "slot_id": "H_B10_R10",
+        "containers": []
+      },
+      {
+        "slot_id": "ALT_B6_R1",
+        "containers": []
+      },
+      {
+        "slot_id": "ALT_B6_R3",
+        "containers": []
+      },
+      {
+        "slot_id": "ALT_B14_R2",
+        "containers": []
+      },
+      {
+        "slot_id": "ALT_B14_R4",
+        "containers": []
+      }
+    ]
+  },
+  "jobs": [
+    {
+      "id": "B03_JOB_OUT_07",
+      "container_id": "B03_CONT_OUT_07",
+      "direction": "OUTBOUND",
+      "origin": {
+        "bay": 4,
+        "row": 10
+      },
+      "destination": {
+        "bay": 0,
+        "row": 10
+      },
+      "final_slot": null,
+      "release_time": 0.0,
+      "agv_ready_time": 0.0
+    },
+    {
+      "id": "B03_JOB_OUT_08",
+      "container_id": "B03_CONT_OUT_08",
+      "direction": "OUTBOUND",
+      "origin": {
+        "bay": 10,
+        "row": 3
+      },
+      "destination": {
+        "bay": 0,
+        "row": 3
+      },
+      "final_slot": null,
+      "release_time": 0.0,
+      "agv_ready_time": 0.0
+    },
+    {
+      "id": "B03_JOB_OUT_14",
+      "container_id": "B03_CONT_OUT_14",
+      "direction": "OUTBOUND",
+      "origin": {
+        "bay": 16,
+        "row": 1
+      },
+      "destination": {
+        "bay": 0,
+        "row": 1
+      },
+      "final_slot": null,
+      "release_time": 0.0,
+      "agv_ready_time": 0.0
+    },
+    {
+      "id": "B03_JOB_OUT_04",
+      "container_id": "B03_CONT_OUT_04",
+      "direction": "OUTBOUND",
+      "origin": {
+        "bay": 1,
+        "row": 6
+      },
+      "destination": {
+        "bay": 0,
+        "row": 6
+      },
+      "final_slot": null,
+      "release_time": 0.0,
+      "agv_ready_time": 0.0
+    },
+    {
+      "id": "B03_JOB_OUT_03",
+      "container_id": "B03_CONT_OUT_03",
+      "direction": "OUTBOUND",
+      "origin": {
+        "bay": 8,
+        "row": 8
+      },
+      "destination": {
+        "bay": 0,
+        "row": 8
+      },
+      "final_slot": null,
+      "release_time": 0.0,
+      "agv_ready_time": 0.0
+    },
+    {
+      "id": "B03_JOB_OUT_12",
+      "container_id": "B03_CONT_OUT_12",
+      "direction": "OUTBOUND",
+      "origin": {
+        "bay": 12,
+        "row": 7
+      },
+      "destination": {
+        "bay": 0,
+        "row": 7
+      },
+      "final_slot": null,
+      "release_time": 0.0,
+      "agv_ready_time": 0.0
+    },
+    {
+      "id": "B03_JOB_OUT_15",
+      "container_id": "B03_CONT_OUT_15",
+      "direction": "OUTBOUND",
+      "origin": {
+        "bay": 11,
+        "row": 10
+      },
+      "destination": {
+        "bay": 0,
+        "row": 10
+      },
+      "final_slot": null,
+      "release_time": 0.0,
+      "agv_ready_time": 0.0
+    },
+    {
+      "id": "B03_JOB_OUT_05",
+      "container_id": "B03_CONT_OUT_05",
+      "direction": "OUTBOUND",
+      "origin": {
+        "bay": 1,
+        "row": 10
+      },
+      "destination": {
+        "bay": 0,
+        "row": 10
+      },
+      "final_slot": null,
+      "release_time": 0.0,
+      "agv_ready_time": 0.0
+    },
+    {
+      "id": "B03_JOB_OUT_01",
+      "container_id": "B03_CONT_OUT_01",
+      "direction": "OUTBOUND",
+      "origin": {
+        "bay": 7,
+        "row": 1
+      },
+      "destination": {
+        "bay": 0,
+        "row": 1
+      },
+      "final_slot": null,
+      "release_time": 0.0,
+      "agv_ready_time": 0.0
+    },
+    {
+      "id": "B03_JOB_OUT_06",
+      "container_id": "B03_CONT_OUT_06",
+      "direction": "OUTBOUND",
+      "origin": {
+        "bay": 9,
+        "row": 1
+      },
+      "destination": {
+        "bay": 0,
+        "row": 1
+      },
+      "final_slot": null,
+      "release_time": 0.0,
+      "agv_ready_time": 0.0
+    },
+    {
+      "id": "B03_JOB_OUT_09",
+      "container_id": "B03_CONT_OUT_09",
+      "direction": "OUTBOUND",
+      "origin": {
+        "bay": 12,
+        "row": 10
+      },
+      "destination": {
+        "bay": 0,
+        "row": 10
+      },
+      "final_slot": null,
+      "release_time": 0.0,
+      "agv_ready_time": 0.0
+    },
+    {
+      "id": "B03_JOB_OUT_10",
+      "container_id": "B03_CONT_OUT_10",
+      "direction": "OUTBOUND",
+      "origin": {
+        "bay": 17,
+        "row": 6
+      },
+      "destination": {
+        "bay": 0,
+        "row": 6
+      },
+      "final_slot": null,
+      "release_time": 0.0,
+      "agv_ready_time": 0.0
+    },
+    {
+      "id": "B03_JOB_OUT_02",
+      "container_id": "B03_CONT_OUT_02",
+      "direction": "OUTBOUND",
+      "origin": {
+        "bay": 7,
+        "row": 9
+      },
+      "destination": {
+        "bay": 0,
+        "row": 9
+      },
+      "final_slot": null,
+      "release_time": 0.0,
+      "agv_ready_time": 0.0
+    },
+    {
+      "id": "B03_JOB_OUT_13",
+      "container_id": "B03_CONT_OUT_13",
+      "direction": "OUTBOUND",
+      "origin": {
+        "bay": 12,
+        "row": 5
+      },
+      "destination": {
+        "bay": 0,
+        "row": 5
+      },
+      "final_slot": null,
+      "release_time": 0.0,
+      "agv_ready_time": 0.0
+    },
+    {
+      "id": "B03_JOB_OUT_11",
+      "container_id": "B03_CONT_OUT_11",
+      "direction": "OUTBOUND",
+      "origin": {
+        "bay": 13,
+        "row": 7
+      },
+      "destination": {
+        "bay": 0,
+        "row": 7
+      },
+      "final_slot": null,
+      "release_time": 0.0,
+      "agv_ready_time": 0.0
+    },
+    {
+      "id": "B03_JOB_IN_02",
+      "container_id": "B03_CONT_IN_02",
+      "direction": "INBOUND",
+      "origin": {
+        "bay": 0,
+        "row": 8
+      },
+      "destination": {
+        "bay": 18,
+        "row": 8
+      },
+      "final_slot": {
+        "block_id": "BLOCK_03",
+        "bay": 18,
+        "row": 8,
+        "tier": 2
+      },
+      "release_time": 0.0,
+      "agv_ready_time": 0.0
+    },
+    {
+      "id": "B03_JOB_IN_04",
+      "container_id": "B03_CONT_IN_04",
+      "direction": "INBOUND",
+      "origin": {
+        "bay": 0,
+        "row": 8
+      },
+      "destination": {
+        "bay": 6,
+        "row": 8
+      },
+      "final_slot": {
+        "block_id": "BLOCK_03",
+        "bay": 6,
+        "row": 8,
+        "tier": 4
+      },
+      "release_time": 0.0,
+      "agv_ready_time": 0.0
+    },
+    {
+      "id": "B03_JOB_IN_03",
+      "container_id": "B03_CONT_IN_03",
+      "direction": "INBOUND",
+      "origin": {
+        "bay": 0,
+        "row": 4
+      },
+      "destination": {
+        "bay": 2,
+        "row": 4
+      },
+      "final_slot": {
+        "block_id": "BLOCK_03",
+        "bay": 2,
+        "row": 4,
+        "tier": 4
+      },
+      "release_time": 0.0,
+      "agv_ready_time": 0.0
+    },
+    {
+      "id": "B03_JOB_IN_05",
+      "container_id": "B03_CONT_IN_05",
+      "direction": "INBOUND",
+      "origin": {
+        "bay": 0,
+        "row": 3
+      },
+      "destination": {
+        "bay": 4,
+        "row": 3
+      },
+      "final_slot": {
+        "block_id": "BLOCK_03",
+        "bay": 4,
+        "row": 3,
+        "tier": 3
+      },
+      "release_time": 0.0,
+      "agv_ready_time": 0.0
+    },
+    {
+      "id": "B03_JOB_IN_01",
+      "container_id": "B03_CONT_IN_01",
+      "direction": "INBOUND",
+      "origin": {
+        "bay": 0,
+        "row": 10
+      },
+      "destination": {
+        "bay": 3,
+        "row": 10
+      },
+      "final_slot": {
+        "block_id": "BLOCK_03",
+        "bay": 3,
+        "row": 10,
+        "tier": 2
+      },
+      "release_time": 0.0,
+      "agv_ready_time": 0.0
+    }
+  ]
+}
