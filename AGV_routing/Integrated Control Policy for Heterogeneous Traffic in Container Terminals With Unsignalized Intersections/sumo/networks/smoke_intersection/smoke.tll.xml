@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tlLogics xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:noNamespaceSchemaLocation="https://sumo.dlr.de/xsd/tllogic_file.xsd">
+    <tlLogic id="junction" type="static" programID="smoke" offset="0">
+        <phase duration="180" state="rr" name="bootstrap_all_red"/>
+    </tlLogic>
+    <connection from="w_in" to="e_out" fromLane="0" toLane="0" tl="junction" linkIndex="0"/>
+    <connection from="s_in" to="n_out" fromLane="0" toLane="0" tl="junction" linkIndex="1"/>
+</tlLogics>

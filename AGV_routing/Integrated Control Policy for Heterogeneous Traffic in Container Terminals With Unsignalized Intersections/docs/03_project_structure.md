@@ -15,7 +15,8 @@
 |   |-- 03_project_structure.md
 |   |-- 04_reproduction_checklist.md
 |   |-- 05_phase1_assumptions.md
-|   `-- 06_environment.md
+|   |-- 06_environment.md
+|   `-- 07_traci_smoke.md
 |-- experiments/
 |   |-- configs/
 |   |   |-- README.md
@@ -40,8 +41,11 @@
 |       |   |-- irbp.py
 |       |   `-- travel_time.py
 |       `-- simulation/
-|           `-- __init__.py
+|           |-- __init__.py
+|           `-- traci_smoke.py
 |-- scripts/
+|   |-- build_smoke_network.py
+|   |-- run_sumo_smoke.py
 |   `-- verify_environment.py
 |-- sumo/
 |   |-- config/
@@ -49,18 +53,28 @@
 |   |-- demand/
 |   |   `-- README.md
 |   `-- networks/
-|       `-- paper_grid/
-|           `-- README.md
+|       |-- paper_grid/
+|       |   `-- README.md
+|       `-- smoke_intersection/
+|           |-- README.md
+|           |-- smoke.con.xml
+|           |-- smoke.edg.xml
+|           |-- smoke.net.xml
+|           |-- smoke.nod.xml
+|           |-- smoke.rou.xml
+|           |-- smoke.sumocfg
+|           `-- smoke.tll.xml
 `-- tests/
     |-- README.md
     |-- test_irbp_routing.py
     |-- test_phase_time.py
     |-- test_pressure.py
+    |-- test_traci_smoke.py
     |-- test_vtr_execution.py
     `-- test_vtr.py
 ```
 
-The control, domain, and routing modules now implement the pure-Python BP/VTR and IR-BP milestones. Simulation and SUMO folders retain package or asset boundaries only.
+The control, domain, and routing modules implement the pure-Python BP/VTR and IR-BP milestones. `simulation/traci_smoke.py` is a deliberately narrow live adapter for the one-intersection gate; it does not own or reimplement policy equations.
 
 ## 2. Planned module ownership
 
@@ -93,12 +107,13 @@ Add these files only when implementing their corresponding behavior. Avoid empty
 ## 3. SUMO asset ownership
 
 - `sumo/networks/paper_grid/`: editable source nodes, edges, connections, routes, and generated `.net.xml`.
+- `sumo/networks/smoke_intersection/`: deterministic adapter-test sources and the generated one-intersection `.net.xml`; this is not the paper network.
 - `sumo/demand/`: demand-generation settings and generated route files suitable for committing when small and deterministic.
 - `sumo/config/`: `.sumocfg` files and output declarations.
 - `experiments/configs/`: policy and experiment parameters independent of raw SUMO XML.
 - `experiments/outputs/`: generated results; ignored except `.gitkeep`.
 
-Generated network files must record the source files and command that created them. Never hand-edit a generated `.net.xml` without documenting why.
+Generated network files must record the source files and command that created them. Never hand-edit a generated `.net.xml`; rebuild it from PlainXML with `scripts/build_smoke_network.py`.
 
 ## 4. Dependency strategy
 
@@ -113,11 +128,13 @@ The paper names SUMO but does not state a version. The reconstruction pins CPyth
 
 ## 5. Intended commands
 
-The first three commands are active. Later commands become active after their corresponding modules exist:
+The first five commands are active. Later commands become active after their corresponding modules exist:
 
 ```powershell
 uv sync --extra dev --frozen
 uv run python scripts/verify_environment.py
+uv run python scripts/build_smoke_network.py --check
+uv run python scripts/run_sumo_smoke.py
 uv run python -m unittest discover -s tests -p "test_*.py" -v
 python -m irbp_replica.cli validate-network experiments/configs/paper_baseline.toml
 python -m irbp_replica.cli run experiments/configs/paper_baseline.toml --seed 1

@@ -66,7 +66,7 @@ For the baseline interpretation of equation (8), `remaining_distance_m` is the l
 - `eta_remaining_m: float`
 - `destination_position_m: tuple[float, float]`
 
-`destination_position_m` is the exact configured trip arrival position, not an assumed destination-edge endpoint. The later adapter owns the relationship among destination edge, `arrivalPos`, and this coordinate.
+`destination_position_m` is the exact configured trip arrival position, not an assumed destination-edge endpoint. The smoke adapter resolves its declared `arrivalPos="max"` to the destination-lane endpoint; later general adapters own arbitrary arrival-position geometry.
 
 ### `RoutingCandidateState`
 
@@ -152,14 +152,14 @@ This is the narrowest deterministic interpretation of Algorithm 2's prose. It mu
 - Uses `g_c(k) = distance_travelled_m + candidate.length_m` in (12) and the Euclidean distance from the candidate downstream node to the trip's exact configured arrival position for `h_c(k)`.
 - Evaluates (15) through the algebraically equivalent detour excess `local_cost - minimum_local_cost <= eta`, avoiding cancellation by the common travelled-distance term.
 - Keeps at least one candidate eligible because every minimum distance-cost candidate has zero detour excess.
-- Uses a separate defensive topology precheck to reconstruct `R_ij` from legal and destination-reachable inputs; an empty set raises `NoRouteError` carrying the exclusion scores. The later adapter should normally supply only valid `R_ij` members.
+- Uses a separate defensive topology precheck to reconstruct `R_ij` from legal and destination-reachable inputs; an empty set raises `NoRouteError` carrying the exclusion scores. The smoke adapter supplies direct, non-internal, destination-reachable `R_ij` members; later paper-network adapters must preserve this contract.
 - Selects the largest pressure weight only among eligible candidates, which is equivalent to (16) while preventing an ineligible zero from winning a zero-weight tie.
 - Breaks pressure ties by stable edge ID within declared floating-point tolerances.
 - Returns the updated per-trip detour budget from (17), distance limits, and a trace for every supplied candidate. Failed candidate-set reconstruction exposes its precheck-only trace on `NoRouteError`. Traces contain precheck status and reason, the equation (8) controlling vehicle, `g`, `h`, `f`, detour excess, eligibility mask, and masked weight as applicable.
 - Leaves eta unchanged in the input; the TraCI caller commits the returned value once, only after route mutation succeeds.
 - Keeps the vehicle-position tolerance separate from the route-cost tolerance used by equations (15) and (17).
 
-## 5. Planned SUMO controller execution order
+## 5. SUMO controller execution order
 
 At each SUMO step:
 
@@ -170,9 +170,9 @@ At each SUMO step:
 5. Update queue and downstream-capacity snapshots.
 6. Call `advance_after_step` with the post-step queue leader; at a phase boundary, extend or release the token from that observation.
 7. At a completed VTR cycle boundary, compute the next weights, station order, and initial durations from the post-step snapshot.
-8. Record metrics and decision traces, including nominal service budget, actual cycle duration, total HDV extension, clearance time, and any extension-cap event.
+8. Record phase, routing, and safety decision traces. The later experiment runner must additionally record nominal service budget, actual cycle duration, total HDV extension, clearance time, extension-cap events, and network metrics.
 
-The algorithm layer must not call TraCI. The simulation adapter owns subscriptions, route mutations, and virtual phase enforcement.
+The one-intersection smoke adapter implements steps 1-7 and the smoke-level trace portion of step 8. Full experiment telemetry remains future work. The algorithm layer does not call TraCI; the simulation adapter owns subscriptions, route mutations, and virtual phase enforcement.
 
 ## 6. SUMO representation
 
@@ -203,23 +203,23 @@ These are implementation defaults, not paper facts. The exact Phase 1 values, ra
 |---|---|---|
 | A-01 | Simulation step `1.0 s` | Selected reconstruction default; pending sensitivity test. |
 | A-02 | Queue means vehicles with speed at or below `0.1 m/s` | Selected reconstruction default; compare against SUMO halting-number and queue-length metrics. |
-| A-03 | Queue and remaining capacity use vehicle-equivalent slots | Selected reconstruction unit; effective slot calculation is validated during SUMO integration. |
+| A-03 | Queue and remaining capacity use vehicle-equivalent slots | Selected reconstruction unit; the smoke adapter records its explicit `7.5 m` effective slot length. Paper-network calibration remains pending. |
 | A-04 | Empty candidate road uses `edge_length / CAV_desired_speed` in (8) | Implemented because the paper leaves the empty maximum undefined; SUMO sensitivity remains pending. |
 | A-05 | Speed floor `0.1 m/s` in (8) | Implemented for the CAV and observed road vehicles; sensitivity remains pending. |
 | A-06 | Duration quantization uses stable largest remainder subject to a one-step lower bound for each positive phase | Preserves the integer cycle-step budget without silently deleting a positive equation (5) duration; second-valued sums use floating tolerance. |
 | A-07 | HDV-priority group is clockwise-stable; remaining group is weight-descending with clockwise tie-break | Derived from prose around Algorithm 2. |
-| A-08 | Virtual TLS acts as the VTR enforcement mechanism | Validate collision freedom and no overlapping active phases. |
-| A-09 | `g_c(k)` equals completed distance to the current intersection plus the candidate edge length | Implemented in the pure routing layer; the later adapter must supply the completed-distance snapshot once per decision. |
-| A-10 | Each CAV starts a trip with `eta = 500 m`; budget depletes by (17) and does not reset until the next trip | Implemented as immutable input/output state; the later adapter commits eta only after successful route mutation. |
+| A-08 | Virtual TLS acts as the VTR enforcement mechanism | Smoke-tested with runtime controlled-link discovery, mutually exclusive phase commands, and no collision or teleport. Full-network validation remains pending. |
+| A-09 | `g_c(k)` equals completed distance to the current intersection plus the candidate edge length | Implemented in the pure routing layer; the smoke adapter supplies the full incoming-edge distance at its route-split decision node rather than a mid-edge observation distance. |
+| A-10 | Each CAV starts a trip with `eta = 500 m`; budget depletes by (17) and does not reset until the next trip | Implemented as immutable input/output state; the smoke adapter commits eta once after SUMO accepts and echoes the replacement route. |
 | A-11 | Experiment horizon `7200 s` | Inferred from figures. |
 | A-12 | Fixed random seeds and multiple replications | Original seeds are unavailable; report mean and dispersion. |
 | A-13 | Cycle `T = 30 s`, HDV increment `1 s`, duration resolution `1 s`, and no extension cap | The first three are reconstruction defaults; the uncapped extension follows Algorithm 1. A `30 s` cap is reserved for a separately reported safety variant. |
 | A-14 | Paper-method clearance `0 s`; safety-variant clearance `1 s` | The paper does not define clearance. Positive clearance is excluded from Algorithm 2 allocation and equations (6)-(7). |
 | A-15 | Algorithm 1 reads the queue leader after the corresponding SUMO step | Prevents a pre-step observation from controlling a post-step phase boundary. |
 | A-16 | Every zero-duration station is omitted and never becomes a token holder; an all-zero cycle is therefore idle and preserves the previous holder | Algorithm 2 includes HDV-priority stations even when equation (5) gives zero time, but the paper does not define whether an instantaneous holder changes the next-cycle anchor. This reconstruction recognizes only positive-duration holders. |
-| A-17 | Equation (12) uses the candidate downstream-node coordinate and the trip's exact configured arrival-position coordinate | The later adapter must derive the destination coordinate from the destination edge and `arrivalPos`; both coordinates are in meters, and heuristic admissibility must be verified on the reconstructed network. |
+| A-17 | Equation (12) uses the candidate downstream-node coordinate and the trip's exact configured arrival-position coordinate | The smoke adapter derives `arrivalPos="max"`, keeps both coordinates in meters, and validates its fixture heuristic against reachable route distance. General paper-network validation remains pending. |
 | A-18 | Position bounds and route-cost comparisons use separate `1e-9 m` absolute tolerances and a shared `1e-12` relative tolerance; pressure ties use `1e-12 m/s` absolute tolerance | This prevents future TraCI position allowances from relaxing the distance budget while preserving deterministic eligibility and ties. |
-| A-19 | A defensive topology precheck reconstructs `R_ij` from supplied `is_legal` and `destination_reachable` evidence | This precheck is outside equations (8)-(17). Pure selection is implemented; live topology discovery and SUMO route legality remain integration work. |
+| A-19 | A defensive topology precheck reconstructs `R_ij` from supplied `is_legal` and `destination_reachable` evidence | This precheck is outside equations (8)-(17). The smoke adapter discovers live outgoing candidates, checks reachable SUMO suffixes, and verifies the committed route. General-network integration remains future work. |
 | A-20 | Equation (8)'s baseline distance term is literal remaining distance, mapped from TraCI as `edge_length - lanePosition` | The paper prose and formula support conflicting coordinate readings. An upstream-lane-position sensitivity run is required before numerical-fidelity claims. |
 
 All assumptions belong in experiment configuration and run metadata.
@@ -278,7 +278,7 @@ Each run must write:
 
 1. Pure domain models and equations (equations (1)-(7) complete).
 2. Algorithms 1-3 and pure unit tests (complete).
-3. One-intersection TraCI adapter.
+3. One-intersection TraCI adapter (complete).
 4. Reconstructed 20-intersection network.
 5. Demand generation and metrics.
 6. IR-BP experiment runner.

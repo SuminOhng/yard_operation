@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- generated on 2026-08-30T17:38:56.392479+09:00 by Eclipse SUMO netconvert 1.27.1
+<netconvertConfiguration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/netconvertConfiguration.xsd">
+
+    <input>
+        <node-files value="smoke.nod.xml"/>
+        <edge-files value="smoke.edg.xml"/>
+        <connection-files value="smoke.con.xml"/>
+        <tllogic-files value="smoke.tll.xml"/>
+    </input>
+
+    <output>
+        <output-file value="smoke.net.xml"/>
+    </output>
+
+    <junctions>
+        <no-turnarounds value="true"/>
+        <junctions.corner-detail value="0"/>
+    </junctions>
+
+</netconvertConfiguration>
+-->
+
+<net version="1.20" limitTurnSpeed="5.50" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/net_file.xsd">
+
+    <location netOffset="150.00,200.00" convBoundary="0.00,0.00,300.00,350.00" origBoundary="-150.00,-200.00,150.00,150.00" projParameter="!"/>
+
+    <edge id=":bypass_east_0" function="internal">
+        <lane id=":bypass_east_0_0" index="0" speed="3.90" length="2.58" shape="250.00,-1.60 250.70,-1.50 251.20,-1.20 251.50,-0.70 251.60,0.00"/>
+    </edge>
+    <edge id=":bypass_west_0" function="internal">
+        <lane id=":bypass_west_0_0" index="0" speed="3.90" length="2.58" shape="48.40,0.00 48.50,-0.70 48.80,-1.20 49.30,-1.50 50.00,-1.60"/>
+    </edge>
+    <edge id=":junction_0" function="internal">
+        <lane id=":junction_0_0" index="0" speed="10.00" length="11.20" shape="151.60,192.80 151.60,204.00"/>
+    </edge>
+    <edge id=":junction_1" function="internal">
+        <lane id=":junction_1_0" index="0" speed="10.00" length="11.20" shape="146.00,198.40 157.20,198.40"/>
+    </edge>
+    <edge id=":north_0" function="internal">
+        <lane id=":north_0_0" index="0" speed="10.00" length="0.10" shape="151.60,300.00 151.60,300.00"/>
+    </edge>
+    <edge id=":route_merge_0" function="internal">
+        <lane id=":route_merge_0_0" index="0" speed="6.51" length="9.03" shape="251.60,192.80 251.95,195.25 253.00,197.00 254.75,198.05 257.20,198.40"/>
+    </edge>
+    <edge id=":route_merge_1" function="internal">
+        <lane id=":route_merge_1_0" index="0" speed="10.00" length="11.20" shape="246.00,198.40 257.20,198.40"/>
+    </edge>
+    <edge id=":route_split_0" function="internal">
+        <lane id=":route_split_0_0" index="0" speed="6.51" length="9.03" shape="42.80,198.40 45.25,198.05 47.00,197.00 48.05,195.25 48.40,192.80"/>
+    </edge>
+    <edge id=":route_split_1" function="internal">
+        <lane id=":route_split_1_0" index="0" speed="10.00" length="11.20" shape="42.80,198.40 54.00,198.40"/>
+    </edge>
+    <edge id=":south_0" function="internal">
+        <lane id=":south_0_0" index="0" speed="10.00" length="0.10" shape="151.60,100.00 151.60,100.00"/>
+    </edge>
+
+    <edge id="bypass_e" from="bypass_east" to="route_merge" priority="1">
+        <lane id="bypass_e_0" index="0" speed="10.00" length="192.80" shape="251.60,0.00 251.60,192.80"/>
+    </edge>
+    <edge id="bypass_s" from="bypass_west" to="bypass_east" priority="1">
+        <lane id="bypass_s_0" index="0" speed="10.00" length="200.00" shape="50.00,-1.60 250.00,-1.60"/>
+    </edge>
+    <edge id="bypass_w" from="route_split" to="bypass_west" priority="1">
+        <lane id="bypass_w_0" index="0" speed="10.00" length="192.80" shape="48.40,192.80 48.40,0.00"/>
+    </edge>
+    <edge id="cav_dst" from="route_merge" to="cav_destination" priority="1">
+        <lane id="cav_dst_0" index="0" speed="10.00" length="42.80" shape="257.20,198.40 300.00,198.40"/>
+    </edge>
+    <edge id="cav_src" from="cav_origin" to="route_split" priority="1">
+        <lane id="cav_src_0" index="0" speed="10.00" length="42.80" shape="0.00,198.40 42.80,198.40"/>
+    </edge>
+    <edge id="e_out" from="junction" to="route_merge" priority="2">
+        <lane id="e_out_0" index="0" speed="10.00" length="88.80" shape="157.20,198.40 246.00,198.40"/>
+    </edge>
+    <edge id="n_out" from="junction" to="north" priority="2">
+        <lane id="n_out_0" index="0" speed="10.00" length="96.00" shape="151.60,204.00 151.60,300.00"/>
+    </edge>
+    <edge id="s_in" from="south" to="junction" priority="2">
+        <lane id="s_in_0" index="0" speed="10.00" length="92.80" shape="151.60,100.00 151.60,192.80"/>
+    </edge>
+    <edge id="truck_dst" from="north" to="truck_destination" priority="1">
+        <lane id="truck_dst_0" index="0" speed="10.00" length="50.00" shape="151.60,300.00 151.60,350.00"/>
+    </edge>
+    <edge id="truck_src" from="truck_origin" to="south" priority="1">
+        <lane id="truck_src_0" index="0" speed="10.00" length="50.00" shape="151.60,50.00 151.60,100.00"/>
+    </edge>
+    <edge id="w_in" from="route_split" to="junction" priority="2">
+        <lane id="w_in_0" index="0" speed="10.00" length="92.00" shape="54.00,198.40 146.00,198.40"/>
+    </edge>
+
+    <tlLogic id="junction" type="static" programID="smoke" offset="0">
+        <phase duration="180" state="rr" name="bootstrap_all_red"/>
+    </tlLogic>
+
+    <junction id="bypass_east" type="priority" x="250.00" y="0.00" incLanes="bypass_s_0" intLanes=":bypass_east_0_0" shape="250.00,0.00 253.20,0.00 250.00,-3.20">
+        <request index="0" response="0" foes="0" cont="0"/>
+    </junction>
+    <junction id="bypass_west" type="priority" x="50.00" y="0.00" incLanes="bypass_w_0" intLanes=":bypass_west_0_0" shape="46.80,0.00 50.00,0.00 50.00,-3.20">
+        <request index="0" response="0" foes="0" cont="0"/>
+    </junction>
+    <junction id="cav_destination" type="dead_end" x="300.00" y="200.00" incLanes="cav_dst_0" intLanes="" shape="300.00,196.80 300.00,200.00"/>
+    <junction id="cav_origin" type="dead_end" x="0.00" y="200.00" incLanes="" intLanes="" shape="0.00,200.00 0.00,196.80"/>
+    <junction id="junction" type="traffic_light" x="150.00" y="200.00" incLanes="s_in_0 w_in_0" intLanes=":junction_0_0 :junction_1_0" shape="150.00,204.00 153.20,204.00 157.20,200.00 157.20,196.80 153.20,192.80 150.00,192.80 146.00,196.80 146.00,200.00">
+        <request index="0" response="00" foes="10" cont="0"/>
+        <request index="1" response="01" foes="01" cont="0"/>
+    </junction>
+    <junction id="north" type="priority" x="150.00" y="300.00" incLanes="n_out_0" intLanes=":north_0_0" shape="150.00,300.00 153.20,300.00 150.00,300.00">
+        <request index="0" response="0" foes="0" cont="0"/>
+    </junction>
+    <junction id="route_merge" type="priority" x="250.00" y="200.00" incLanes="bypass_e_0 e_out_0" intLanes=":route_merge_0_0 :route_merge_1_0" shape="257.20,200.00 257.20,196.80 253.20,192.80 250.00,192.80 246.00,196.80 246.00,200.00">
+        <request index="0" response="10" foes="10" cont="0"/>
+        <request index="1" response="00" foes="01" cont="0"/>
+    </junction>
+    <junction id="route_split" type="priority" x="50.00" y="200.00" incLanes="cav_src_0" intLanes=":route_split_0_0 :route_split_1_0" shape="54.00,200.00 54.00,196.80 50.00,192.80 46.80,192.80 42.80,196.80 42.80,200.00">
+        <request index="0" response="00" foes="00" cont="0"/>
+        <request index="1" response="00" foes="00" cont="0"/>
+    </junction>
+    <junction id="south" type="priority" x="150.00" y="100.00" incLanes="truck_src_0" intLanes=":south_0_0" shape="150.00,100.00 153.20,100.00 150.00,100.00">
+        <request index="0" response="0" foes="0" cont="0"/>
+    </junction>
+    <junction id="truck_destination" type="dead_end" x="150.00" y="350.00" incLanes="truck_dst_0" intLanes="" shape="153.20,350.00 150.00,350.00"/>
+    <junction id="truck_origin" type="dead_end" x="150.00" y="50.00" incLanes="" intLanes="" shape="150.00,50.00 153.20,50.00"/>
+
+    <connection from="bypass_e" to="cav_dst" fromLane="0" toLane="0" via=":route_merge_0_0" dir="r" state="m"/>
+    <connection from="bypass_s" to="bypass_e" fromLane="0" toLane="0" via=":bypass_east_0_0" dir="l" state="M"/>
+    <connection from="bypass_w" to="bypass_s" fromLane="0" toLane="0" via=":bypass_west_0_0" dir="l" state="M"/>
+    <connection from="cav_src" to="bypass_w" fromLane="0" toLane="0" via=":route_split_0_0" dir="r" state="M"/>
+    <connection from="cav_src" to="w_in" fromLane="0" toLane="0" via=":route_split_1_0" dir="s" state="M"/>
+    <connection from="e_out" to="cav_dst" fromLane="0" toLane="0" via=":route_merge_1_0" dir="s" state="M"/>
+    <connection from="n_out" to="truck_dst" fromLane="0" toLane="0" via=":north_0_0" dir="s" state="M"/>
+    <connection from="s_in" to="n_out" fromLane="0" toLane="0" via=":junction_0_0" tl="junction" linkIndex="1" dir="s" state="O"/>
+    <connection from="truck_src" to="s_in" fromLane="0" toLane="0" via=":south_0_0" dir="s" state="M"/>
+    <connection from="w_in" to="e_out" fromLane="0" toLane="0" via=":junction_1_0" tl="junction" linkIndex="0" dir="s" state="o"/>
+
+    <connection from=":bypass_east_0" to="bypass_e" fromLane="0" toLane="0" dir="l" state="M"/>
+    <connection from=":bypass_west_0" to="bypass_s" fromLane="0" toLane="0" dir="l" state="M"/>
+    <connection from=":junction_0" to="n_out" fromLane="0" toLane="0" dir="s" state="M"/>
+    <connection from=":junction_1" to="e_out" fromLane="0" toLane="0" dir="s" state="M"/>
+    <connection from=":north_0" to="truck_dst" fromLane="0" toLane="0" dir="s" state="M"/>
+    <connection from=":route_merge_0" to="cav_dst" fromLane="0" toLane="0" dir="r" state="M"/>
+    <connection from=":route_merge_1" to="cav_dst" fromLane="0" toLane="0" dir="s" state="M"/>
+    <connection from=":route_split_0" to="bypass_w" fromLane="0" toLane="0" dir="r" state="M"/>
+    <connection from=":route_split_1" to="w_in" fromLane="0" toLane="0" dir="s" state="M"/>
+    <connection from=":south_0" to="s_in" fromLane="0" toLane="0" dir="s" state="M"/>
+
+</net>

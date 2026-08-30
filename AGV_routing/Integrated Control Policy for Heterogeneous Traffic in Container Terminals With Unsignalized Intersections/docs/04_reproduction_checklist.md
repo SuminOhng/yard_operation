@@ -33,6 +33,7 @@ Legend: `[x]` complete, `[ ]` pending, `[!]` blocked by unpublished information 
 - [ ] Validate exactly one active phase per intersection.
 - [ ] Validate all OD pairs are connected.
 - [ ] Save source `.nod.xml`, `.edg.xml`, `.con.xml`, and generation command.
+- [x] Build the separate one-intersection smoke network from committed PlainXML and verify its generated topology.
 
 ## 4. Vehicle and demand model
 
@@ -64,7 +65,7 @@ Legend: `[x]` complete, `[ ]` pending, `[!]` blocked by unpublished information 
 - [x] Implement descending-weight ordering for remaining phases.
 - [x] Implement uncapped paper-fidelity HDV duration extension and an optional traced safety cap.
 - [x] Use post-step queue-leader observations at Algorithm 1 boundaries.
-- [x] Split zero-clearance paper fidelity from optional deterministic safety clearance; TraCI enforcement remains pending.
+- [x] Split zero-clearance paper fidelity from optional deterministic safety clearance; enforce the zero-clearance profile in the smoke adapter.
 - [x] Omit zero-duration holders and preserve the previous holder for an all-zero idle cycle.
 - [x] Prove no duplicate station and no overlapping active phase in the pure controller.
 - [x] Prove repeated-cycle holder handoff adds no duplicate leading clearance.
@@ -74,7 +75,7 @@ Legend: `[x]` complete, `[ ]` pending, `[!]` blocked by unpublished information 
 ## 6. IR-BP CAV routing
 
 - [x] Transcribe equations (8)-(17) and Algorithm 3.
-- [ ] Implement candidate downstream-edge discovery.
+- [x] Implement live candidate downstream-edge discovery for the smoke adapter; general paper-network discovery remains future work.
 - [x] Implement occupied-road travel-time estimate using the paper prose's literal remaining-distance interpretation.
 - [!] Resolve equation (8)'s remaining-distance versus upstream-lane-position contradiction through a sensitivity test before claiming numerical fidelity.
 - [x] Implement empty-road behavior for equation (8) as configured free-flow time.
@@ -87,17 +88,17 @@ Legend: `[x]` complete, `[ ]` pending, `[!]` blocked by unpublished information 
 - [x] Implement deterministic tie-breaking.
 - [x] Implement eta depletion as immutable per-trip input/output state.
 - [x] Apply a traced legality/reachability precheck when reconstructing the Algorithm 3 candidate set.
-- [ ] Verify TraCI-applied routes remain SUMO-legal and reach the destination.
+- [x] Verify the smoke TraCI route begins on the current edge, uses a reachable SUMO suffix, is accepted, and reaches the destination.
 - [x] Verify eta never becomes negative.
 
 ## 7. SUMO integration
 
-- [ ] Build one-intersection smoke scenario.
-- [ ] Implement TraCI subscriptions for vehicles, lanes, and signals.
-- [ ] Implement virtual TLS enforcement of VTR phases.
-- [ ] Implement legal CAV route replacement before intersection entry.
-- [ ] Record phase and routing decisions.
-- [ ] Verify fixed seed gives identical decision traces.
+- [x] Build one-intersection smoke scenario.
+- [x] Implement TraCI subscriptions for vehicles, lanes, and signals in the smoke adapter.
+- [x] Implement virtual TLS enforcement of VTR phases in the smoke adapter.
+- [x] Implement legal CAV route replacement before the route split.
+- [x] Record phase and routing decisions in a deterministic smoke trace.
+- [x] Verify two fixed-seed smoke runs give identical normalized traces.
 - [ ] Run the full 20-intersection scenario without collision or deadlock.
 
 ## 8. Metrics
@@ -125,8 +126,8 @@ Legend: `[x]` complete, `[ ]` pending, `[!]` blocked by unpublished information 
 ## 10. Validation and reporting
 
 - [x] Unit tests for equations (1)-(17), Algorithms 1-3, and selected declared edge cases.
-- [x] Pure-Python integration test for one BP/VTR intersection cycle; SUMO integration remains pending.
-- [ ] End-to-end deterministic smoke test.
+- [x] Pure-Python integration test for one BP/VTR intersection cycle.
+- [x] End-to-end deterministic SUMO/TraCI smoke test.
 - [ ] Confirm larger eta tends to reduce queueing and increase distance.
 - [ ] Confirm travel-time response can be non-monotonic.
 - [ ] Compare reconstructed results with Figs. 7-14.

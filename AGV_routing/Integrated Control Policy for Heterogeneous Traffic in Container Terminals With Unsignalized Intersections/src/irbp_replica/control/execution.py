@@ -9,7 +9,6 @@ from typing import Literal
 from irbp_replica.control.vtr import TokenSlot
 from irbp_replica.domain.models import VehicleKind
 
-
 ExecutionMode = Literal["ACTIVE", "CLEARANCE", "COMPLETE"]
 BoundaryOutcome = Literal[
     "extended",

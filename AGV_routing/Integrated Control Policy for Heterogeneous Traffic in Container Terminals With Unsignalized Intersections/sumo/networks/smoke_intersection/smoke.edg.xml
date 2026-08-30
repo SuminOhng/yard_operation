@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<edges xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:noNamespaceSchemaLocation="https://sumo.dlr.de/xsd/edges_file.xsd">
+    <edge id="cav_src" from="cav_origin" to="route_split" numLanes="1" speed="10.0" priority="1"/>
+    <edge id="w_in" from="route_split" to="junction" numLanes="1" speed="10.0" priority="2"/>
+    <edge id="e_out" from="junction" to="route_merge" numLanes="1" speed="10.0" priority="2"/>
+    <edge id="cav_dst" from="route_merge" to="cav_destination" numLanes="1" speed="10.0" priority="1"/>
+
+    <edge id="truck_src" from="truck_origin" to="south" numLanes="1" speed="10.0" priority="1"/>
+    <edge id="s_in" from="south" to="junction" numLanes="1" speed="10.0" priority="2"/>
+    <edge id="n_out" from="junction" to="north" numLanes="1" speed="10.0" priority="2"/>
+    <edge id="truck_dst" from="north" to="truck_destination" numLanes="1" speed="10.0" priority="1"/>
+
+    <edge id="bypass_w" from="route_split" to="bypass_west" numLanes="1" speed="10.0" priority="1"/>
+    <edge id="bypass_s" from="bypass_west" to="bypass_east" numLanes="1" speed="10.0" priority="1"/>
+    <edge id="bypass_e" from="bypass_east" to="route_merge" numLanes="1" speed="10.0" priority="1"/>
+</edges>

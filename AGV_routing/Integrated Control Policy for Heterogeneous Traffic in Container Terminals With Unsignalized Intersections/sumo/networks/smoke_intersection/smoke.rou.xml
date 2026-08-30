@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="https://sumo.dlr.de/xsd/routes_file.xsd">
+    <vType id="cav" vClass="passenger" length="4.0" minGap="2.5"
+           accel="2.0" decel="4.5" sigma="0.0" maxSpeed="10.0" speedDev="0.0"/>
+    <vType id="truck" vClass="truck" length="12.0" minGap="2.5"
+           accel="2.0" decel="4.5" sigma="0.0" maxSpeed="10.0" speedDev="0.0"/>
+    <vType id="slow_hdv" vClass="truck" length="12.0" minGap="2.5"
+           accel="1.0" decel="4.5" sigma="0.0" maxSpeed="2.0" speedDev="0.0"/>
+
+    <route id="cav_direct" edges="cav_src w_in e_out cav_dst"/>
+    <route id="cav_bypass" edges="cav_src bypass_w bypass_s bypass_e cav_dst"/>
+    <route id="truck_crossing" edges="truck_src s_in n_out truck_dst"/>
+    <route id="blocker_direct" edges="w_in e_out cav_dst"/>
+
+    <vehicle id="blocker_0" type="slow_hdv" route="blocker_direct" depart="0"
+             departLane="0" departPos="0" departSpeed="0" arrivalPos="max"/>
+    <vehicle id="cav_0" type="cav" route="cav_direct" depart="0"
+             departLane="0" departPos="0" departSpeed="0" arrivalPos="max"/>
+    <vehicle id="truck_0" type="truck" route="truck_crossing" depart="0"
+             departLane="0" departPos="0" departSpeed="0" arrivalPos="max"/>
+</routes>
