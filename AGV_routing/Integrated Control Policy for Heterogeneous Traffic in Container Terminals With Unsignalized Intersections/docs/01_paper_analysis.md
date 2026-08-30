@@ -192,7 +192,7 @@ Algorithm 3 is the direct evaluation of (12)-(17) at every CAV routing decision.
 - Demand levels: 1600, 2000, and 2400 vehicles/h.
 - Demand is described as progressively loaded at five-minute intervals; the exact generation process is not published.
 - HDV ODs connect a gate and an internal road in either direction.
-- CAV ODs connect terminal roads.
+- CAV ODs connect different, randomly selected terminal roads.
 - HDVs use shortest routing but choose an alternative with probability 20% at each intersection.
 - HDV maximum speed is sampled between 9 and 12 m/s.
 - CAV maximum speed is 14 m/s.

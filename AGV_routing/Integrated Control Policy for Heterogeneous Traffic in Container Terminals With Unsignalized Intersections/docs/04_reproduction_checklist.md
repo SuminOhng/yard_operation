@@ -32,7 +32,7 @@ Legend: `[x]` complete, `[ ]` pending, `[!]` blocked by unpublished information 
 - [x] Declare reconstruction coordinates, directions, lengths, gate-count convention, and their non-paper status.
 - [x] Define legal non-U-turn movements and one-incoming-approach virtual phases for all intersections.
 - [x] Validate each controlled link belongs to exactly one phase, no phase mixes incoming approaches, and no active movement pair is marked as foes by SUMO.
-- [x] Validate strong connectivity of the directed network; demand-specific OD sampling remains pending.
+- [x] Validate strong connectivity of the directed network and reachability of every demand-generator OD candidate.
 - [x] Save manifest, source `.nod.xml`, `.edg.xml`, `.con.xml`, `.tll.xml`, metadata, and generation command.
 - [x] Verify deterministic rebuild equality for the 20-intersection/54-road network.
 - [x] Build the separate one-intersection smoke network from committed PlainXML and verify its generated topology.
@@ -44,12 +44,16 @@ Legend: `[x]` complete, `[ ]` pending, `[!]` blocked by unpublished information 
 - [x] Record demand levels 1600, 2000, and 2400 vehicles/h.
 - [x] Record HDV alternative-route probability 20%.
 - [x] Record main HDV penetration 10% and sweep 20%, 30%, and 50%.
-- [!] Define five-minute progressive loading process; paper description is incomplete.
+- [!] Reconstruct the authors' five-minute progressive loading process; paper description and original demand files are incomplete.
 - [!] Choose unpublished acceleration, deceleration, length, gap, and car-following parameters.
-- [ ] Implement deterministic OD generator with explicit seed.
-- [ ] Implement gate-to-internal and internal-to-gate HDV trips.
-- [ ] Implement internal-to-internal CAV trips.
-- [ ] Verify generated demand rate and penetration numerically.
+- [x] Implement deterministic OD generator with explicit baseline seed `1`.
+- [x] Implement gate-to-internal and internal-to-gate HDV trips with balanced OD gate/direction quotas.
+- [x] Implement distinct internal-to-internal CAV trips.
+- [x] Implement 24 exact cumulative-floor loading bins with evenly spaced midpoint departures.
+- [x] Verify generated aggregate count, bin quotas, class counts, penetration, speed-type balance, OD constraints, reachability, and initial shortest routes numerically.
+- [x] Save deterministic route assets and metadata with configuration, network, and output hashes.
+- [ ] Verify observed departure rate and penetration in a full live SUMO run.
+- [ ] Apply and verify the HDV 20% alternative-road choice at each intersection at runtime.
 
 ## 5. BP/VTR intersection control
 
@@ -103,7 +107,9 @@ Legend: `[x]` complete, `[ ]` pending, `[!]` blocked by unpublished information 
 - [x] Record phase and routing decisions in a deterministic smoke trace.
 - [x] Verify two fixed-seed smoke runs give identical normalized traces.
 - [x] Build and structurally validate the full 20-intersection SUMO network.
+- [x] Build and statically validate seeded baseline demand for the full network.
 - [ ] Run the full 20-intersection scenario without collision or deadlock.
+- [ ] Continue beyond the `7200 s` departure horizon until the network drains, with a declared timeout and incomplete-run failure.
 
 ## 8. Metrics
 
@@ -129,7 +135,7 @@ Legend: `[x]` complete, `[ ]` pending, `[!]` blocked by unpublished information 
 
 ## 10. Validation and reporting
 
-- [x] Unit tests for equations (1)-(17), Algorithms 1-3, and selected declared edge cases.
+- [x] Unit tests for equations (1)-(17), Algorithms 1-3, seeded demand generation, and selected declared edge cases.
 - [x] Pure-Python integration test for one BP/VTR intersection cycle.
 - [x] End-to-end deterministic SUMO/TraCI smoke test.
 - [ ] Confirm larger eta tends to reduce queueing and increase distance.

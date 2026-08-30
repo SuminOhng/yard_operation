@@ -1,0 +1,529 @@
+{
+  "assumptions": [
+    "The 7200 s departure horizon is inferred from figure axes, not published as a parameter.",
+    "CAV endpoints are strict-internal; shortest routes may use gate-incident grid roads because the reconstructed gates add no external connectors.",
+    "HDV gate counts describe OD categories; crossing an intermediate gate-labeled junction does not exit because this reconstruction has no gate connector edges.",
+    "HDV maximum speeds use four exactly balanced discrete types at 9, 10, 11, and 12 m/s.",
+    "Unpublished vehicle dynamics retain SUMO defaults.",
+    "Static routes are distance-shortest; HDV 20% alternatives belong to the runtime controller."
+  ],
+  "bins": [
+    {
+      "baseline_class_counts": {
+        "cav": 148,
+        "hdv": 18,
+        "vehicles": 166
+      },
+      "end_s": 300,
+      "index": 0,
+      "quota_by_loading_level_vph": {
+        "1600": 133,
+        "2000": 166,
+        "2400": 200
+      },
+      "start_s": 0
+    },
+    {
+      "baseline_class_counts": {
+        "cav": 153,
+        "hdv": 14,
+        "vehicles": 167
+      },
+      "end_s": 600,
+      "index": 1,
+      "quota_by_loading_level_vph": {
+        "1600": 133,
+        "2000": 167,
+        "2400": 200
+      },
+      "start_s": 300
+    },
+    {
+      "baseline_class_counts": {
+        "cav": 153,
+        "hdv": 14,
+        "vehicles": 167
+      },
+      "end_s": 900,
+      "index": 2,
+      "quota_by_loading_level_vph": {
+        "1600": 134,
+        "2000": 167,
+        "2400": 200
+      },
+      "start_s": 600
+    },
+    {
+      "baseline_class_counts": {
+        "cav": 154,
+        "hdv": 12,
+        "vehicles": 166
+      },
+      "end_s": 1200,
+      "index": 3,
+      "quota_by_loading_level_vph": {
+        "1600": 133,
+        "2000": 166,
+        "2400": 200
+      },
+      "start_s": 900
+    },
+    {
+      "baseline_class_counts": {
+        "cav": 148,
+        "hdv": 19,
+        "vehicles": 167
+      },
+      "end_s": 1500,
+      "index": 4,
+      "quota_by_loading_level_vph": {
+        "1600": 133,
+        "2000": 167,
+        "2400": 200
+      },
+      "start_s": 1200
+    },
+    {
+      "baseline_class_counts": {
+        "cav": 148,
+        "hdv": 19,
+        "vehicles": 167
+      },
+      "end_s": 1800,
+      "index": 5,
+      "quota_by_loading_level_vph": {
+        "1600": 134,
+        "2000": 167,
+        "2400": 200
+      },
+      "start_s": 1500
+    },
+    {
+      "baseline_class_counts": {
+        "cav": 144,
+        "hdv": 22,
+        "vehicles": 166
+      },
+      "end_s": 2100,
+      "index": 6,
+      "quota_by_loading_level_vph": {
+        "1600": 133,
+        "2000": 166,
+        "2400": 200
+      },
+      "start_s": 1800
+    },
+    {
+      "baseline_class_counts": {
+        "cav": 147,
+        "hdv": 20,
+        "vehicles": 167
+      },
+      "end_s": 2400,
+      "index": 7,
+      "quota_by_loading_level_vph": {
+        "1600": 133,
+        "2000": 167,
+        "2400": 200
+      },
+      "start_s": 2100
+    },
+    {
+      "baseline_class_counts": {
+        "cav": 147,
+        "hdv": 20,
+        "vehicles": 167
+      },
+      "end_s": 2700,
+      "index": 8,
+      "quota_by_loading_level_vph": {
+        "1600": 134,
+        "2000": 167,
+        "2400": 200
+      },
+      "start_s": 2400
+    },
+    {
+      "baseline_class_counts": {
+        "cav": 155,
+        "hdv": 11,
+        "vehicles": 166
+      },
+      "end_s": 3000,
+      "index": 9,
+      "quota_by_loading_level_vph": {
+        "1600": 133,
+        "2000": 166,
+        "2400": 200
+      },
+      "start_s": 2700
+    },
+    {
+      "baseline_class_counts": {
+        "cav": 149,
+        "hdv": 18,
+        "vehicles": 167
+      },
+      "end_s": 3300,
+      "index": 10,
+      "quota_by_loading_level_vph": {
+        "1600": 133,
+        "2000": 167,
+        "2400": 200
+      },
+      "start_s": 3000
+    },
+    {
+      "baseline_class_counts": {
+        "cav": 153,
+        "hdv": 14,
+        "vehicles": 167
+      },
+      "end_s": 3600,
+      "index": 11,
+      "quota_by_loading_level_vph": {
+        "1600": 134,
+        "2000": 167,
+        "2400": 200
+      },
+      "start_s": 3300
+    },
+    {
+      "baseline_class_counts": {
+        "cav": 151,
+        "hdv": 15,
+        "vehicles": 166
+      },
+      "end_s": 3900,
+      "index": 12,
+      "quota_by_loading_level_vph": {
+        "1600": 133,
+        "2000": 166,
+        "2400": 200
+      },
+      "start_s": 3600
+    },
+    {
+      "baseline_class_counts": {
+        "cav": 157,
+        "hdv": 10,
+        "vehicles": 167
+      },
+      "end_s": 4200,
+      "index": 13,
+      "quota_by_loading_level_vph": {
+        "1600": 133,
+        "2000": 167,
+        "2400": 200
+      },
+      "start_s": 3900
+    },
+    {
+      "baseline_class_counts": {
+        "cav": 154,
+        "hdv": 13,
+        "vehicles": 167
+      },
+      "end_s": 4500,
+      "index": 14,
+      "quota_by_loading_level_vph": {
+        "1600": 134,
+        "2000": 167,
+        "2400": 200
+      },
+      "start_s": 4200
+    },
+    {
+      "baseline_class_counts": {
+        "cav": 147,
+        "hdv": 19,
+        "vehicles": 166
+      },
+      "end_s": 4800,
+      "index": 15,
+      "quota_by_loading_level_vph": {
+        "1600": 133,
+        "2000": 166,
+        "2400": 200
+      },
+      "start_s": 4500
+    },
+    {
+      "baseline_class_counts": {
+        "cav": 145,
+        "hdv": 22,
+        "vehicles": 167
+      },
+      "end_s": 5100,
+      "index": 16,
+      "quota_by_loading_level_vph": {
+        "1600": 133,
+        "2000": 167,
+        "2400": 200
+      },
+      "start_s": 4800
+    },
+    {
+      "baseline_class_counts": {
+        "cav": 146,
+        "hdv": 21,
+        "vehicles": 167
+      },
+      "end_s": 5400,
+      "index": 17,
+      "quota_by_loading_level_vph": {
+        "1600": 134,
+        "2000": 167,
+        "2400": 200
+      },
+      "start_s": 5100
+    },
+    {
+      "baseline_class_counts": {
+        "cav": 150,
+        "hdv": 16,
+        "vehicles": 166
+      },
+      "end_s": 5700,
+      "index": 18,
+      "quota_by_loading_level_vph": {
+        "1600": 133,
+        "2000": 166,
+        "2400": 200
+      },
+      "start_s": 5400
+    },
+    {
+      "baseline_class_counts": {
+        "cav": 154,
+        "hdv": 13,
+        "vehicles": 167
+      },
+      "end_s": 6000,
+      "index": 19,
+      "quota_by_loading_level_vph": {
+        "1600": 133,
+        "2000": 167,
+        "2400": 200
+      },
+      "start_s": 5700
+    },
+    {
+      "baseline_class_counts": {
+        "cav": 145,
+        "hdv": 22,
+        "vehicles": 167
+      },
+      "end_s": 6300,
+      "index": 20,
+      "quota_by_loading_level_vph": {
+        "1600": 134,
+        "2000": 167,
+        "2400": 200
+      },
+      "start_s": 6000
+    },
+    {
+      "baseline_class_counts": {
+        "cav": 153,
+        "hdv": 13,
+        "vehicles": 166
+      },
+      "end_s": 6600,
+      "index": 21,
+      "quota_by_loading_level_vph": {
+        "1600": 133,
+        "2000": 166,
+        "2400": 200
+      },
+      "start_s": 6300
+    },
+    {
+      "baseline_class_counts": {
+        "cav": 147,
+        "hdv": 20,
+        "vehicles": 167
+      },
+      "end_s": 6900,
+      "index": 22,
+      "quota_by_loading_level_vph": {
+        "1600": 133,
+        "2000": 167,
+        "2400": 200
+      },
+      "start_s": 6600
+    },
+    {
+      "baseline_class_counts": {
+        "cav": 152,
+        "hdv": 15,
+        "vehicles": 167
+      },
+      "end_s": 7200,
+      "index": 23,
+      "quota_by_loading_level_vph": {
+        "1600": 134,
+        "2000": 167,
+        "2400": 200
+      },
+      "start_s": 6900
+    }
+  ],
+  "candidate_counts": {
+    "cav": {
+      "destination_edges": 42,
+      "origin_edges": 42,
+      "possible_distinct_pairs": 1722,
+      "reachable_pairs": 1722
+    },
+    "external_edges": 54,
+    "hdv": {
+      "gate1_inbound": {
+        "destination_edges": 42,
+        "origin_edges": 3,
+        "possible_pairs": 126,
+        "reachable_pairs": 126
+      },
+      "gate1_outbound": {
+        "destination_edges": 3,
+        "origin_edges": 42,
+        "possible_pairs": 126,
+        "reachable_pairs": 126
+      },
+      "gate2_inbound": {
+        "destination_edges": 42,
+        "origin_edges": 3,
+        "possible_pairs": 126,
+        "reachable_pairs": 126
+      },
+      "gate2_outbound": {
+        "destination_edges": 3,
+        "origin_edges": 42,
+        "possible_pairs": 126,
+        "reachable_pairs": 126
+      }
+    },
+    "strict_internal_edges": 42
+  },
+  "counts": {
+    "bins": 24,
+    "cav": 3600,
+    "hdv": 400,
+    "vehicles": 4000,
+    "vtypes": 5
+  },
+  "gate_nodes": [
+    "j_0_1",
+    "j_0_3"
+  ],
+  "generator": "scripts/build_paper_grid_demand.py",
+  "hashes": {
+    "config_sha256": "e1466a85af0173d90d23c96b89861ff172f89ab5122a989c4442da30187d75ff",
+    "network_sha256": "92c555cbce01f8cb2c5d9ea47594036ddf44bf42398a037d60bf3b475bcb4349",
+    "route_sha256": "972badb03706ab9604f9e7ce284d9ff0bf03cb02704f26ac65f7fa17b7e43e1a",
+    "source_sha256": {
+      "scripts/build_paper_grid_demand.py": "2048584317e5bfff2d038e68c16e041fc73807e0dfd54fb588df6d7e16b5724a",
+      "sumo/networks/paper_grid/paper_grid.con.xml": "122c2e3aba57918507b335623efaba17ef5a07ecb2dc68dc46787423409d4395",
+      "sumo/networks/paper_grid/paper_grid.manifest.toml": "022f88b2620cd551c632dab4f3cf567844ac1e179cdfdb3417e2733e1d6ffdbb",
+      "uv.lock": "874c37d855a4a661004081e0427d625f8bb051cd5a7f991dd4ca20bf36da54f4"
+    }
+  },
+  "hdv_alternative_route": {
+    "application": "runtime_per_intersection_only",
+    "baked_into_static_routes": false,
+    "probability": 0.2
+  },
+  "hdv_od_direction_counts": {
+    "hdv_categories": {
+      "gate1_inbound": 100,
+      "gate1_outbound": 100,
+      "gate2_inbound": 100,
+      "gate2_outbound": 100
+    },
+    "hdv_inbound": 200,
+    "hdv_outbound": 200
+  },
+  "hdv_od_gate_counts": {
+    "gate1": 200,
+    "gate2": 200
+  },
+  "paper_facts": {
+    "cav_maximum_speed_mps": 14,
+    "cav_od_rule": "random_distinct_terminal_road_pair",
+    "hdv_alternative_route_probability": 0.2,
+    "hdv_maximum_speed_range_mps": [
+      9,
+      12
+    ],
+    "hdv_od_rule": "gate_to_internal_or_internal_to_gate",
+    "loading_interval_s": 300,
+    "loading_levels_vehicles_per_hour": [
+      1600,
+      2000,
+      2400
+    ],
+    "main_comparison_hdv_penetration": 0.1
+  },
+  "reconstruction": {
+    "aggregate_total_rounding": "decimal_half_up",
+    "baseline_vehicles_per_hour": 2000,
+    "bin_quota_rule": "cumulative_floor",
+    "cav_pair_rule": "distinct_ordered_strict_internal_edges",
+    "cav_route_scope_rule": "full_grid_shortest_path_gate_incident_edges_allowed",
+    "departure_decimal_places": 9,
+    "departure_horizon_basis": "inferred_from_figure_axes_not_published_as_parameter",
+    "departure_horizon_s": 7200,
+    "departure_rule": "evenly_spaced_bin_midpoints",
+    "hdv_category_order": [
+      "gate1_inbound",
+      "gate2_inbound",
+      "gate1_outbound",
+      "gate2_outbound"
+    ],
+    "hdv_category_rule": "four_globally_balanced_categories_then_seeded_shuffle",
+    "hdv_inbound_rule": "origin_edge_leaves_gate_destination_is_strict_internal",
+    "hdv_outbound_rule": "origin_is_strict_internal_destination_edge_enters_gate",
+    "hdv_quota_rule": "exact_global_decimal_half_up_then_seeded_shuffle",
+    "hdv_route_scope_rule": "full_grid_shortest_path_intermediate_gate_nodes_do_not_exit",
+    "initial_route_rule": "sumolib_shortest_distance_no_internal_edges",
+    "pair_sampling_rule": "uniform_over_reachable_pairs",
+    "random_seed": 1,
+    "static_hdv_alternative_routes": false,
+    "strict_internal_edge_rule": "both_endpoints_are_non_gate_nodes",
+    "vehicle_arrival_position": "max",
+    "vehicle_depart_lane": "best",
+    "vehicle_depart_position": "base",
+    "vehicle_depart_speed": "max"
+  },
+  "route_edge_count_distribution": {
+    "10": 139,
+    "11": 63,
+    "12": 18,
+    "13": 12,
+    "14": 6,
+    "2": 160,
+    "3": 326,
+    "4": 513,
+    "5": 623,
+    "6": 727,
+    "7": 678,
+    "8": 456,
+    "9": 279
+  },
+  "schema_version": 1,
+  "speed_counts": {
+    "cav_14": 3600,
+    "hdv": {
+      "10": 100,
+      "11": 100,
+      "12": 100,
+      "9": 100
+    }
+  },
+  "toolchain": {
+    "sumo_distribution": "eclipse-sumo",
+    "sumo_version": "1.27.1",
+    "sumolib_distribution": "sumolib",
+    "sumolib_version": "1.27.1"
+  }
+}

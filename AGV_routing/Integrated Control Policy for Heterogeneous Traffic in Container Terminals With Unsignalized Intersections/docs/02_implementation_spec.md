@@ -190,10 +190,16 @@ Use hidden/virtual SUMO traffic-light logic as an enforcement mechanism while pr
 
 ### Vehicle types
 
-- `CAV`: maximum speed 14 m/s, dynamic routing enabled.
-- `HDV`: maximum speed sampled in [9, 12] m/s, CAV routing disabled, 20% random alternative choice in the base behavior model.
+- `CAV`: maximum speed `14 m/s`; generated OD uses distinct strict-internal edge pairs.
+- `HDV`: maximum speed assigned from globally balanced `9`, `10`, `11`, and `12 m/s` types; generated OD balances both gates and gate-to-internal/internal-to-gate directions.
 
 Unpublished acceleration, deceleration, car-following, vehicle-length, and gap parameters remain configuration fields.
+
+### Seeded demand assets
+
+The deterministic demand builder reads the resolved experiment configuration and generated paper-grid network. It divides the inferred `7200 s` departure horizon into 24 `300 s` bins, uses cumulative-floor aggregate quotas, places departures at evenly spaced bin midpoints, and assigns an exact global HDV quota. Seeded uniform sampling operates only over class-valid reachable OD pairs, and every vehicle begins on a shortest-distance non-internal SUMO route. The future runner must continue beyond the last departure until the network drains under a separately declared timeout.
+
+The committed baseline is `2000 vehicles/h`, `10%` HDV, and seed `1`: exactly `4000` vehicles, of which `400` are HDVs. The paper's `20%` HDV alternative choice is not a static-demand feature; it must be applied and traced per intersection by the later TraCI runner. Generated metadata records resolved inputs, counts, assumptions, and dependency/output hashes.
 
 ## 7. Assumption register
 
@@ -211,8 +217,8 @@ These are implementation defaults, not paper facts. The exact Phase 1 values, ra
 | A-08 | Virtual TLS acts as the VTR enforcement mechanism | Smoke-tested with runtime controlled-link discovery, mutually exclusive phase commands, and no collision or teleport. Full-network validation remains pending. |
 | A-09 | `g_c(k)` equals completed distance to the current intersection plus the candidate edge length | Implemented in the pure routing layer; the smoke adapter supplies the full incoming-edge distance at its route-split decision node rather than a mid-edge observation distance. |
 | A-10 | Each CAV starts a trip with `eta = 500 m`; budget depletes by (17) and does not reset until the next trip | Implemented as immutable input/output state; the smoke adapter commits eta once after SUMO accepts and echoes the replacement route. |
-| A-11 | Experiment horizon `7200 s` | Inferred from figures. |
-| A-12 | Fixed random seeds and multiple replications | Original seeds are unavailable; report mean and dispersion. |
+| A-11 | Demand departure horizon `7200 s` | Inferred from figures and implemented by the demand builder; not a published simulation parameter or a full-run termination time. |
+| A-12 | Baseline seed `1`; later experiments use multiple declared seeds | Original seeds are unavailable. The committed demand asset is deterministic; multi-seed runs must report mean and dispersion. |
 | A-13 | Cycle `T = 30 s`, HDV increment `1 s`, duration resolution `1 s`, and no extension cap | The first three are reconstruction defaults; the uncapped extension follows Algorithm 1. A `30 s` cap is reserved for a separately reported safety variant. |
 | A-14 | Paper-method clearance `0 s`; safety-variant clearance `1 s` | The paper does not define clearance. Positive clearance is excluded from Algorithm 2 allocation and equations (6)-(7). |
 | A-15 | Algorithm 1 reads the queue leader after the corresponding SUMO step | Prevents a pre-step observation from controlling a post-step phase boundary. |
@@ -259,6 +265,9 @@ Each run must write:
 - Equations (8)-(17) match occupied-road, empty-road, distance-mask, and eta hand calculations.
 - An ineligible high-pressure road is never selected, and pressure ties are independent of candidate input order.
 - Empty usable candidate sets, duplicate edges, invalid measurements, and state mismatches fail explicitly.
+- Generated demand has exact aggregate, bin, class, penetration, HDV OD gate/direction, and HDV speed-type quotas.
+- Every generated OD follows its vehicle-class rule, is reachable, and receives a connected shortest-distance initial route.
+- A clean fixed-seed demand rebuild is byte-identical to committed route and metadata assets.
 
 ### Integration gate
 
@@ -279,8 +288,8 @@ Each run must write:
 1. Pure domain models and equations (equations (1)-(7) complete).
 2. Algorithms 1-3 and pure unit tests (complete).
 3. One-intersection TraCI adapter (complete).
-4. Reconstructed 20-intersection network.
-5. Demand generation and metrics.
-6. IR-BP experiment runner.
+4. Reconstructed 20-intersection network (complete).
+5. Deterministic seeded demand generation (complete).
+6. Full IR-BP TraCI runner and metrics.
 7. MCSR-like comparison baseline.
 8. Calibration and sensitivity analysis.

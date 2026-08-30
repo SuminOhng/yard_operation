@@ -42,7 +42,7 @@ All roads have one lane. The two bidirectional boundary rows and five bidirectio
 
 ## 4. Gates and future demand ownership
 
-`j_0_1` and `j_0_3` are metadata-level gate portals, not extra SUMO junctions or roads. Future demand code will use them to construct HDV gate-to-internal and internal-to-gate trips. CAV trips will remain internal. This decision is reversible: if stronger evidence later shows separate gate connectors, a new explicitly versioned network variant must change both topology and the 54-road count convention.
+`j_0_1` and `j_0_3` are metadata-level gate portals, not extra SUMO junctions or roads. Demand code uses them to construct HDV gate-to-internal and internal-to-gate trips. CAV OD endpoints remain on strict-internal roads. Their shortest paths may traverse grid roads incident to a gate portal because this reconstruction has no outside connector edge; they still remain inside the modeled terminal graph. This decision is reversible: if stronger evidence later shows separate gate connectors, a new explicitly versioned network variant must change both topology and the 54-road count convention.
 
 ## 5. Movements and virtual VTR phases
 

@@ -14,7 +14,6 @@ traci_version = "1.27.1"
 sumolib_version = "1.27.1"
 
 [simulation]
-duration_s = 7200 # Inferred from figure axes; not stated as a parameter.
 random_seed = 1
 step_length_s = 1.0 # Reconstruction default; not published by the paper.
 
@@ -52,16 +51,53 @@ sumo_tls_role = "virtual_traci_actuator_for_unsignalized_vtr"
 
 [vehicles.cav]
 maximum_speed_mps = 14
+speed_deviation = 0
 
 [vehicles.hdv]
 minimum_maximum_speed_mps = 9
 maximum_maximum_speed_mps = 12
+maximum_speed_choices_mps = [9, 10, 11, 12]
+maximum_speed_distribution = "uniform_discrete_balanced"
+speed_deviation = 0
 alternative_route_probability = 0.20
+alternative_route_application = "runtime_per_intersection_only"
 
 [demand]
-vehicles_per_hour = 2000
+paper_loading_levels_vehicles_per_hour = [1600, 2000, 2400]
+baseline_vehicles_per_hour = 2000
 hdv_penetration = 0.10
 loading_interval_s = 300
+paper_hdv_od_rule = "gate_to_internal_or_internal_to_gate"
+paper_cav_od_rule = "random_distinct_terminal_road_pair"
+
+[demand.reconstruction]
+departure_horizon_s = 7200 # Inferred from figure axes; not stated as a parameter.
+departure_horizon_basis = "inferred_from_figure_axes_not_published_as_parameter"
+aggregate_total_rounding = "decimal_half_up"
+bin_quota_rule = "cumulative_floor"
+departure_rule = "evenly_spaced_bin_midpoints"
+departure_decimal_places = 9
+strict_internal_edge_rule = "both_endpoints_are_non_gate_nodes"
+hdv_quota_rule = "exact_global_decimal_half_up_then_seeded_shuffle"
+hdv_category_order = [
+  "gate1_inbound",
+  "gate2_inbound",
+  "gate1_outbound",
+  "gate2_outbound",
+]
+hdv_category_rule = "four_globally_balanced_categories_then_seeded_shuffle"
+hdv_inbound_rule = "origin_edge_leaves_gate_destination_is_strict_internal"
+hdv_outbound_rule = "origin_is_strict_internal_destination_edge_enters_gate"
+hdv_route_scope_rule = "full_grid_shortest_path_intermediate_gate_nodes_do_not_exit"
+cav_pair_rule = "distinct_ordered_strict_internal_edges"
+cav_route_scope_rule = "full_grid_shortest_path_gate_incident_edges_allowed"
+pair_sampling_rule = "uniform_over_reachable_pairs"
+initial_route_rule = "sumolib_shortest_distance_no_internal_edges"
+static_hdv_alternative_routes = false
+vehicle_depart_lane = "best"
+vehicle_depart_position = "base"
+vehicle_depart_speed = "max"
+vehicle_arrival_position = "max"
 
 [routing]
 initial_eta_m = 500
@@ -100,8 +136,8 @@ items = [
   "vehicles.length_m",
   "vehicles.minimum_gap_m",
   "vehicles.car_follow_model",
-  "demand.loading_process",
   "metrics.queue_length_definition",
+  "simulation.drain_timeout_s",
   "network.original_coordinates",
   "network.original_edge_lengths",
   "network.original_gate_connectors",
