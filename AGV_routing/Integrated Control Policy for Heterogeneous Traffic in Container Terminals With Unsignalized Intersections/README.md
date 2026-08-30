@@ -10,7 +10,7 @@ Phase 0 is complete. The pure-algorithm milestone now includes equations (1)-(17
 
 The paper-method fidelity profile uses no clearance interval and no HDV extension cap. A separate safety variant may add all-red clearance and a finite extension cap, but its results must not be reported as the paper method. The configured cycle length `T` is the nominal phase-service budget; HDV extension and optional clearance increase actual elapsed cycle time.
 
-The selected deterministic BP/VTR and IR-BP unit gates pass. Equation (8) still requires a documented sensitivity test because the paper's prose and formula admit conflicting physical interpretations. Live downstream-candidate discovery, TraCI route mutation, SUMO integration, and the reconstructed terminal network are not implemented yet.
+The selected deterministic BP/VTR and IR-BP unit gates pass. The project environment is pinned to CPython 3.13.13 and SUMO/traci/sumolib 1.27.1 through `uv.lock`. Equation (8) still requires a documented sensitivity test because the paper's prose and formula admit conflicting physical interpretations. Live downstream-candidate discovery, TraCI route mutation, SUMO integration, and the reconstructed terminal network are not implemented yet.
 
 ## Documents
 
@@ -19,6 +19,7 @@ The selected deterministic BP/VTR and IR-BP unit gates pass. Equation (8) still 
 - [Project structure](docs/03_project_structure.md)
 - [Reproduction checklist](docs/04_reproduction_checklist.md)
 - [Phase 1 reconstruction decisions](docs/05_phase1_assumptions.md)
+- [Reproducible SUMO environment](docs/06_environment.md)
 
 ## Repository policy
 
@@ -26,13 +27,14 @@ The IEEE PDF is local reference material and is excluded by `.gitignore`. Commit
 
 ## Verification
 
-Run the dependency-free Phase 1 test gate from this directory:
+Create and verify the locked environment, then run the Phase 1 test gate:
 
 ```powershell
-$env:PYTHONPATH = "src"
-python -m unittest discover -s tests -p "test_*.py" -v
+uv sync --extra dev --frozen
+uv run python scripts/verify_environment.py
+uv run python -m unittest discover -s tests -p "test_*.py" -v
 ```
 
 ## Next milestone
 
-Pin the SUMO/Python environment, then build a one-intersection TraCI smoke scenario that connects the verified pure control and routing policies to simulation state.
+Build a one-intersection TraCI smoke scenario that connects the verified pure control and routing policies to simulation state.

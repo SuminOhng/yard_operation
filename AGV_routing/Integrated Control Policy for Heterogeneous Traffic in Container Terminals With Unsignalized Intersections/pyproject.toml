@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools"]
+requires = ["setuptools==84.0.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -7,11 +7,20 @@ name = "irbp-replica"
 version = "0.1.0"
 description = "Reproduction of BP-based VTR control and IR-BP routing for heterogeneous container-terminal traffic"
 readme = "README.md"
-requires-python = ">=3.11"
-dependencies = []
+requires-python = "==3.13.13"
+dependencies = [
+    "eclipse-sumo==1.27.1",
+    "sumo-data==1.27.1",
+    "sumolib==1.27.1",
+    "traci==1.27.1",
+]
 
 [project.optional-dependencies]
-dev = ["pytest", "ruff"]
+dev = [
+    "pytest",
+    "ruff",
+    "setuptools==84.0.0",
+]
 
 [tool.setuptools.packages.find]
 where = ["src"]
@@ -22,4 +31,7 @@ addopts = "-ra"
 
 [tool.ruff]
 line-length = 100
-target-version = "py311"
+target-version = "py313"
+
+[tool.uv]
+required-version = "==0.11.16"

@@ -2,6 +2,17 @@
 paper_doi = "10.1109/TITS.2025.3560067"
 fidelity = "paper-method-reconstruction"
 
+[environment]
+python_version = "3.13.13"
+uv_version = "0.11.16"
+operating_system = "Windows"
+architecture = "AMD64"
+sumo_version = "1.27.1"
+sumo_distribution = "eclipse-sumo-win_amd64-wheel"
+sumo_data_version = "1.27.1"
+traci_version = "1.27.1"
+sumolib_version = "1.27.1"
+
 [simulation]
 duration_s = 7200 # Inferred from figure axes; not stated as a parameter.
 random_seed = 1
@@ -61,7 +72,6 @@ phase_tie_break_rule = "clockwise"
 
 [unresolved]
 items = [
-  "simulation.sumo_version",
   "vehicles.acceleration_mps2",
   "vehicles.deceleration_mps2",
   "vehicles.length_m",

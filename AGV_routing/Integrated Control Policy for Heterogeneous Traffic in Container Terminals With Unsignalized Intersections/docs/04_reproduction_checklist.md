@@ -12,11 +12,13 @@ Legend: `[x]` complete, `[ ]` pending, `[!]` blocked by unpublished information 
 
 ## 2. Environment
 
-- [!] Select SUMO version; paper does not publish one.
-- [ ] Install SUMO and confirm `sumo --version` and `sumo-gui --version`.
-- [ ] Create Python virtual environment.
-- [ ] Install matching `traci` and `sumolib`.
-- [ ] Add and lock Python dependencies after first end-to-end run.
+- [x] Select SUMO 1.27.1 as an explicit reconstruction version; the paper does not publish one.
+- [x] Install the official SUMO application wheel and confirm `sumo`, `sumo-gui`, `netconvert`, and `netgenerate` report 1.27.1.
+- [x] Create a project-local CPython 3.13.13 virtual environment with `uv`.
+- [x] Install matching `sumo-data`, `traci`, and `sumolib` 1.27.1.
+- [x] Commit the exact `uv.lock` dependency and artifact hashes.
+- [x] Pin the setuptools build backend used for the editable project install.
+- [x] Add a verifier for Windows AMD64, Python, uv, lock hash, packages, binaries, import ownership, and conflicting `SUMO_HOME` values.
 - [ ] Save Python, SUMO, OS, and dependency versions with every experiment.
 
 ## 3. Network reconstruction

@@ -226,7 +226,7 @@ All assumptions belong in experiment configuration and run metadata.
 
 ## 8. Configuration contract
 
-`experiments/configs/paper_baseline.toml` stores paper-known values, explicit reconstruction defaults for the paper-method fidelity profile, and remaining unresolved fields under `unresolved.items`. Safety-variant overrides must be resolved into a separate run configuration. Later implementation must reject unresolved fields rather than silently inventing them.
+`experiments/configs/paper_baseline.toml` stores paper-known values, exact reconstruction-environment versions, explicit reconstruction defaults for the paper-method fidelity profile, and remaining unresolved fields under `unresolved.items`. `uv.lock` owns dependency artifacts and hashes. `scripts/verify_environment.py` must pass before a SUMO run. Safety-variant overrides must be resolved into a separate run configuration. Later implementation must reject unresolved fields rather than silently inventing them.
 
 Each run must write:
 

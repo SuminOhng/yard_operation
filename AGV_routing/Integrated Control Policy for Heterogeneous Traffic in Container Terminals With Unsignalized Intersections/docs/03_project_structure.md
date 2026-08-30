@@ -5,14 +5,17 @@
 ```text
 .
 |-- .gitignore
+|-- .python-version
 |-- README.md
 |-- pyproject.toml
+|-- uv.lock
 |-- docs/
 |   |-- 01_paper_analysis.md
 |   |-- 02_implementation_spec.md
 |   |-- 03_project_structure.md
 |   |-- 04_reproduction_checklist.md
-|   `-- 05_phase1_assumptions.md
+|   |-- 05_phase1_assumptions.md
+|   `-- 06_environment.md
 |-- experiments/
 |   |-- configs/
 |   |   |-- README.md
@@ -38,6 +41,8 @@
 |       |   `-- travel_time.py
 |       `-- simulation/
 |           `-- __init__.py
+|-- scripts/
+|   `-- verify_environment.py
 |-- sumo/
 |   |-- config/
 |   |   `-- README.md
@@ -97,20 +102,23 @@ Generated network files must record the source files and command that created th
 
 ## 4. Dependency strategy
 
-The paper names SUMO but does not state a version. Do not pin a guessed version in this scaffold. During environment setup:
+The paper names SUMO but does not state a version. The reconstruction pins CPython 3.13.13 and SUMO, `traci`, and `sumolib` 1.27.1 as explicit non-paper assumptions:
 
-1. Choose and record a SUMO version.
-2. Match `traci` and `sumolib` to that installation.
-3. Add numerical, tabular, plotting, and YAML packages only when their first use is implemented.
-4. Produce a lock file after the end-to-end scenario runs.
+1. `.python-version` selects the exact Python patch release.
+2. `pyproject.toml` pins all three SUMO distributions to one version.
+3. `uv.lock` pins transitive artifacts and hashes.
+4. `.venv` contains the official application wheel and is excluded from Git.
+5. `scripts/verify_environment.py` rejects interpreter, package, binary, or `SUMO_HOME` mismatches.
+6. Add numerical, tabular, plotting, and other packages only when their first use is implemented, then refresh and review the lock.
 
 ## 5. Intended commands
 
-The first command is active. Later commands become active after their corresponding modules exist:
+The first three commands are active. Later commands become active after their corresponding modules exist:
 
 ```powershell
-$env:PYTHONPATH = "src"
-python -m unittest discover -s tests -p "test_*.py" -v
+uv sync --extra dev --frozen
+uv run python scripts/verify_environment.py
+uv run python -m unittest discover -s tests -p "test_*.py" -v
 python -m irbp_replica.cli validate-network experiments/configs/paper_baseline.toml
 python -m irbp_replica.cli run experiments/configs/paper_baseline.toml --seed 1
 python -m irbp_replica.cli summarize experiments/outputs/<run-id>
