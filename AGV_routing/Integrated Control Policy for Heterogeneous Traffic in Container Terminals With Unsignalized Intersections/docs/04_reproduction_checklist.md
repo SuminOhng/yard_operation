@@ -73,17 +73,20 @@ Legend: `[x]` complete, `[ ]` pending, `[!]` blocked by unpublished information 
 
 - [x] Transcribe equations (8)-(17) and Algorithm 3.
 - [ ] Implement candidate downstream-edge discovery.
-- [ ] Implement travel-time estimate for occupied roads.
-- [x] Define empty-road behavior for equation (8) as free-flow time; implementation remains pending.
-- [x] Define zero-speed floor `0.1 m/s` for equation (8); implementation remains pending.
-- [ ] Implement pressure weight.
-- [ ] Implement Euclidean heuristic.
-- [ ] Implement cumulative actual-distance cost.
-- [ ] Implement eta eligibility mask.
-- [ ] Implement deterministic tie-breaking.
-- [ ] Implement eta depletion and per-trip lifecycle.
-- [ ] Verify routes remain legal and reach destination.
-- [ ] Verify eta never becomes negative.
+- [x] Implement occupied-road travel-time estimate using the paper prose's literal remaining-distance interpretation.
+- [!] Resolve equation (8)'s remaining-distance versus upstream-lane-position contradiction through a sensitivity test before claiming numerical fidelity.
+- [x] Implement empty-road behavior for equation (8) as configured free-flow time.
+- [x] Implement zero-speed floor `0.1 m/s` for equation (8).
+- [x] Implement pressure weight.
+- [x] Implement Euclidean heuristic against the configured trip arrival position.
+- [ ] Verify that the Euclidean heuristic is admissible for reconstructed edge lengths and arrival positions.
+- [x] Implement cumulative actual-distance cost.
+- [x] Implement eta eligibility mask.
+- [x] Implement deterministic tie-breaking.
+- [x] Implement eta depletion as immutable per-trip input/output state.
+- [x] Apply a traced legality/reachability precheck when reconstructing the Algorithm 3 candidate set.
+- [ ] Verify TraCI-applied routes remain SUMO-legal and reach the destination.
+- [x] Verify eta never becomes negative.
 
 ## 7. SUMO integration
 
@@ -119,7 +122,7 @@ Legend: `[x]` complete, `[ ]` pending, `[!]` blocked by unpublished information 
 
 ## 10. Validation and reporting
 
-- [ ] Unit tests for every equation group and edge case.
+- [x] Unit tests for equations (1)-(17), Algorithms 1-3, and selected declared edge cases.
 - [x] Pure-Python integration test for one BP/VTR intersection cycle; SUMO integration remains pending.
 - [ ] End-to-end deterministic smoke test.
 - [ ] Confirm larger eta tends to reduce queueing and increase distance.

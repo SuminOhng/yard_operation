@@ -32,7 +32,10 @@
 |       |   |-- __init__.py
 |       |   `-- models.py
 |       |-- routing/
-|       |   `-- __init__.py
+|       |   |-- __init__.py
+|       |   |-- distance.py
+|       |   |-- irbp.py
+|       |   `-- travel_time.py
 |       `-- simulation/
 |           `-- __init__.py
 |-- sumo/
@@ -45,20 +48,21 @@
 |           `-- README.md
 `-- tests/
     |-- README.md
+    |-- test_irbp_routing.py
     |-- test_phase_time.py
     |-- test_pressure.py
     |-- test_vtr_execution.py
     `-- test_vtr.py
 ```
 
-The control and domain modules now implement the pure-Python BP/VTR milestone. Routing, simulation, and SUMO folders retain package or asset boundaries only.
+The control, domain, and routing modules now implement the pure-Python BP/VTR and IR-BP milestones. Simulation and SUMO folders retain package or asset boundaries only.
 
 ## 2. Planned module ownership
 
 ```text
 src/irbp_replica/
 |-- domain/
-|   |-- models.py        # Current Phase 1 roads and phases
+|   |-- models.py        # Current roads, phases, vehicles, trips, and routing candidates
 |   |-- network.py       # Later directed-network topology
 |   |-- state.py         # Immutable traffic snapshots
 |   `-- vehicles.py      # CAV/HDV and per-trip routing state
@@ -68,9 +72,9 @@ src/irbp_replica/
 |   |-- vtr.py           # Algorithm 2 and mutual-exclusion validation
 |   `-- execution.py     # Discrete token, extension, and clearance lifecycle
 |-- routing/
-|   |-- travel_time.py   # Equations (8)-(10)
-|   |-- distance.py      # Equations (12)-(15)
-|   `-- irbp.py          # Equations (16)-(17), Algorithm 3
+|   |-- travel_time.py   # Current equations (8)-(10)
+|   |-- distance.py      # Current equations (12)-(15)
+|   `-- irbp.py          # Current equations (11), (16)-(17), Algorithm 3
 |-- simulation/
 |   |-- traci_adapter.py # SUMO state reads and commands
 |   |-- runner.py        # Step loop and lifecycle

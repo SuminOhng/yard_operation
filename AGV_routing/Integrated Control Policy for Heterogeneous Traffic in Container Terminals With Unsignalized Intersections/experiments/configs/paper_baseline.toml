@@ -33,7 +33,18 @@ loading_interval_s = 300
 initial_eta_m = 500
 tie_break_rule = "stable_edge_id"
 empty_road_rule = "free_flow_time"
+empty_road_speed_mps = 14
 speed_floor_mps = 0.1
+equation_8_distance_term = "literal_remaining_distance"
+equation_8_sensitivity_alternative = "upstream_lane_position"
+destination_position_rule = "trip_arrival_position"
+heuristic_admissibility_check = "required_before_sumo_runs"
+cumulative_distance_rule = "completed_to_intersection_plus_candidate_edge"
+eta_commit_rule = "after_successful_route_mutation"
+position_absolute_tolerance_m = 1e-9
+cost_absolute_tolerance_m = 1e-9
+pressure_absolute_tolerance_mps = 1e-12
+relative_tolerance = 1e-12
 
 [control]
 execution_profile = "paper_method_fidelity"

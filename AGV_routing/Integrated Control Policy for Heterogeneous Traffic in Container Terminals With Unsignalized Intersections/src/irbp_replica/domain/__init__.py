@@ -1,5 +1,21 @@
 """Traffic-network and vehicle domain models."""
 
-from irbp_replica.domain.models import PhaseState, RoadState, VehicleKind
+from irbp_replica.domain.models import (
+    PhaseState,
+    PositionM,
+    RoadState,
+    RoutingCandidateState,
+    VehicleKind,
+    VehicleRoutingState,
+    VehicleState,
+)
 
-__all__ = ["PhaseState", "RoadState", "VehicleKind"]
+__all__ = [
+    "PhaseState",
+    "PositionM",
+    "RoadState",
+    "RoutingCandidateState",
+    "VehicleKind",
+    "VehicleRoutingState",
+    "VehicleState",
+]

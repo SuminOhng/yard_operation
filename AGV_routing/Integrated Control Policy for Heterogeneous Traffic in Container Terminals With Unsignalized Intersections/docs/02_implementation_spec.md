@@ -39,6 +39,8 @@ Phase 1 deliberately keeps only quantities required by equations (1)-(4). Networ
 - `remaining_distance_m: float`
 - `destination_edge_id: str`
 
+For the baseline interpretation of equation (8), `remaining_distance_m` is the literal remaining distance named in the paper prose. A TraCI adapter would derive it as `edge_length - lanePosition`. The formula also admits an upstream-lane-position interpretation, so both mappings require a later sensitivity comparison.
+
 ### `PhaseState`
 
 - `phase_id: str`
@@ -62,6 +64,21 @@ Phase 1 deliberately keeps only quantities required by equations (1)-(4). Networ
 - `destination_edge_id: str`
 - `distance_travelled_m: float`
 - `eta_remaining_m: float`
+- `destination_position_m: tuple[float, float]`
+
+`destination_position_m` is the exact configured trip arrival position, not an assumed destination-edge endpoint. The later adapter owns the relationship among destination edge, `arrivalPos`, and this coordinate.
+
+### `RoutingCandidateState`
+
+- `edge_id: str`
+- `downstream_node_id: str`
+- `length_m: float`
+- `downstream_position_m: tuple[float, float]`
+- `vehicles: tuple[VehicleState, ...]`
+- `is_legal: bool`
+- `destination_reachable: bool`
+
+The two Boolean flags are defensive topology-precheck evidence. They reconstruct membership in the candidate set `R_ij` before equations (8)-(17); they are not new Algorithm 3 equations.
 
 Use immutable snapshots for calculation. Keep TraCI objects outside the algorithm modules.
 
@@ -119,23 +136,30 @@ This is the narrowest deterministic interpretation of Algorithm 2's prose. It mu
 - Returns the final token holder for the next cycle's clockwise traversal.
 - Reports the nominal service budget separately from actual elapsed cycle time and records each boundary outcome, including `extension_cap_hit`, with its boundary phase and station IDs.
 
-### `estimate_candidate_travel_time(cav, edge, edge_vehicles) -> float`
+### `estimate_candidate_travel_time(cav, candidate, timing...) -> float`
 
 - Implements (8) when vehicles occupy the candidate road.
-- Uses configured free-flow time when the road is empty.
-- Applies a positive speed floor before division.
+- Uses `candidate.length_m / empty_road_speed_mps` only when the road is empty.
+- Applies the configured positive speed floor to both the CAV and every observed road vehicle before division.
+- Uses the maximum occupied-road estimate exactly as written in (8); it does not mix in the empty-road estimate.
+- Retains the vehicle ID attaining that maximum in the detailed evaluation trace; equal maxima use stable vehicle-ID order.
+- Rejects non-finite inputs and remaining distances outside the candidate length tolerance.
 - Returns a positive finite value.
 
-### `select_next_edge(cav, candidates, eta_remaining_m) -> RoutingDecision`
+### `select_next_edge(cav, trip, candidates, timing...) -> RoutingDecision`
 
-- Calculates (9)-(16).
-- At least one candidate remains eligible because the minimum distance-cost candidate satisfies (15).
-- Selects the largest eligible pressure weight.
-- Breaks ties by stable edge ID unless a later experiment proves another rule.
-- Updates the per-trip detour budget with (17).
-- Never returns a disconnected or prohibited edge.
+- Calculates (9)-(17) and Algorithm 3 without mutating the CAV or trip state.
+- Uses `g_c(k) = distance_travelled_m + candidate.length_m` in (12) and the Euclidean distance from the candidate downstream node to the trip's exact configured arrival position for `h_c(k)`.
+- Evaluates (15) through the algebraically equivalent detour excess `local_cost - minimum_local_cost <= eta`, avoiding cancellation by the common travelled-distance term.
+- Keeps at least one candidate eligible because every minimum distance-cost candidate has zero detour excess.
+- Uses a separate defensive topology precheck to reconstruct `R_ij` from legal and destination-reachable inputs; an empty set raises `NoRouteError` carrying the exclusion scores. The later adapter should normally supply only valid `R_ij` members.
+- Selects the largest pressure weight only among eligible candidates, which is equivalent to (16) while preventing an ineligible zero from winning a zero-weight tie.
+- Breaks pressure ties by stable edge ID within declared floating-point tolerances.
+- Returns the updated per-trip detour budget from (17), distance limits, and a trace for every supplied candidate. Failed candidate-set reconstruction exposes its precheck-only trace on `NoRouteError`. Traces contain precheck status and reason, the equation (8) controlling vehicle, `g`, `h`, `f`, detour excess, eligibility mask, and masked weight as applicable.
+- Leaves eta unchanged in the input; the TraCI caller commits the returned value once, only after route mutation succeeds.
+- Keeps the vehicle-position tolerance separate from the route-cost tolerance used by equations (15) and (17).
 
-## 5. Controller execution order
+## 5. Planned SUMO controller execution order
 
 At each SUMO step:
 
@@ -180,19 +204,23 @@ These are implementation defaults, not paper facts. The exact Phase 1 values, ra
 | A-01 | Simulation step `1.0 s` | Selected reconstruction default; pending sensitivity test. |
 | A-02 | Queue means vehicles with speed at or below `0.1 m/s` | Selected reconstruction default; compare against SUMO halting-number and queue-length metrics. |
 | A-03 | Queue and remaining capacity use vehicle-equivalent slots | Selected reconstruction unit; effective slot calculation is validated during SUMO integration. |
-| A-04 | Empty candidate road uses `edge_length / CAV_desired_speed` in (8) | Required because the paper leaves the empty maximum undefined. |
-| A-05 | Speed floor `0.1 m/s` in (8) | Prevents division by zero; sensitivity required. |
+| A-04 | Empty candidate road uses `edge_length / CAV_desired_speed` in (8) | Implemented because the paper leaves the empty maximum undefined; SUMO sensitivity remains pending. |
+| A-05 | Speed floor `0.1 m/s` in (8) | Implemented for the CAV and observed road vehicles; sensitivity remains pending. |
 | A-06 | Duration quantization uses stable largest remainder subject to a one-step lower bound for each positive phase | Preserves the integer cycle-step budget without silently deleting a positive equation (5) duration; second-valued sums use floating tolerance. |
 | A-07 | HDV-priority group is clockwise-stable; remaining group is weight-descending with clockwise tie-break | Derived from prose around Algorithm 2. |
 | A-08 | Virtual TLS acts as the VTR enforcement mechanism | Validate collision freedom and no overlapping active phases. |
-| A-09 | `g_c(k)` equals actual distance already travelled plus the candidate edge length | Keeps rerouted path cost consistent. |
-| A-10 | Each CAV starts a trip with `eta = 500 m`; budget depletes by (17) and does not reset until the next trip | Derived from equation form; lifecycle not stated. |
+| A-09 | `g_c(k)` equals completed distance to the current intersection plus the candidate edge length | Implemented in the pure routing layer; the later adapter must supply the completed-distance snapshot once per decision. |
+| A-10 | Each CAV starts a trip with `eta = 500 m`; budget depletes by (17) and does not reset until the next trip | Implemented as immutable input/output state; the later adapter commits eta only after successful route mutation. |
 | A-11 | Experiment horizon `7200 s` | Inferred from figures. |
 | A-12 | Fixed random seeds and multiple replications | Original seeds are unavailable; report mean and dispersion. |
 | A-13 | Cycle `T = 30 s`, HDV increment `1 s`, duration resolution `1 s`, and no extension cap | The first three are reconstruction defaults; the uncapped extension follows Algorithm 1. A `30 s` cap is reserved for a separately reported safety variant. |
 | A-14 | Paper-method clearance `0 s`; safety-variant clearance `1 s` | The paper does not define clearance. Positive clearance is excluded from Algorithm 2 allocation and equations (6)-(7). |
 | A-15 | Algorithm 1 reads the queue leader after the corresponding SUMO step | Prevents a pre-step observation from controlling a post-step phase boundary. |
 | A-16 | Every zero-duration station is omitted and never becomes a token holder; an all-zero cycle is therefore idle and preserves the previous holder | Algorithm 2 includes HDV-priority stations even when equation (5) gives zero time, but the paper does not define whether an instantaneous holder changes the next-cycle anchor. This reconstruction recognizes only positive-duration holders. |
+| A-17 | Equation (12) uses the candidate downstream-node coordinate and the trip's exact configured arrival-position coordinate | The later adapter must derive the destination coordinate from the destination edge and `arrivalPos`; both coordinates are in meters, and heuristic admissibility must be verified on the reconstructed network. |
+| A-18 | Position bounds and route-cost comparisons use separate `1e-9 m` absolute tolerances and a shared `1e-12` relative tolerance; pressure ties use `1e-12 m/s` absolute tolerance | This prevents future TraCI position allowances from relaxing the distance budget while preserving deterministic eligibility and ties. |
+| A-19 | A defensive topology precheck reconstructs `R_ij` from supplied `is_legal` and `destination_reachable` evidence | This precheck is outside equations (8)-(17). Pure selection is implemented; live topology discovery and SUMO route legality remain integration work. |
+| A-20 | Equation (8)'s baseline distance term is literal remaining distance, mapped from TraCI as `edge_length - lanePosition` | The paper prose and formula support conflicting coordinate readings. An upstream-lane-position sensitivity run is required before numerical-fidelity claims. |
 
 All assumptions belong in experiment configuration and run metadata.
 
@@ -228,6 +256,9 @@ Each run must write:
 - Post-step HDV observations, extension-cap events, and optional clearance produce deterministic decision traces.
 - Consecutive cycles preserve holder order and add no duplicate leading clearance.
 - Nominal service budget and actual elapsed cycle duration are reported separately.
+- Equations (8)-(17) match occupied-road, empty-road, distance-mask, and eta hand calculations.
+- An ineligible high-pressure road is never selected, and pressure ties are independent of candidate input order.
+- Empty usable candidate sets, duplicate edges, invalid measurements, and state mismatches fail explicitly.
 
 ### Integration gate
 
@@ -246,7 +277,7 @@ Each run must write:
 ## 10. Implementation sequence
 
 1. Pure domain models and equations (equations (1)-(7) complete).
-2. Algorithms 1-3 and unit tests (Algorithms 1-2 and one-cycle execution complete; Algorithm 3 pending).
+2. Algorithms 1-3 and pure unit tests (complete).
 3. One-intersection TraCI adapter.
 4. Reconstructed 20-intersection network.
 5. Demand generation and metrics.
