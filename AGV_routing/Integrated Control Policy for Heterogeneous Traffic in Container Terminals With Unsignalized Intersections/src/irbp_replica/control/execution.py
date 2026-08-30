@@ -11,6 +11,12 @@ from irbp_replica.domain.models import VehicleKind
 
 
 ExecutionMode = Literal["ACTIVE", "CLEARANCE", "COMPLETE"]
+BoundaryOutcome = Literal[
+    "extended",
+    "cav_leader",
+    "queue_empty",
+    "extension_cap_hit",
+]
 
 
 def _positive_finite(value: float, field_name: str) -> float:
@@ -44,16 +50,22 @@ class ExecutionSnapshot:
     slot_index: int | None
     time_remaining_s: float
     extension_used_s: float
+    cycle_extension_used_s: float
     last_completed_station_id: str
+    nominal_service_budget_s: float
+    actual_cycle_duration_s: float | None
+    boundary_outcome: BoundaryOutcome | None
+    boundary_phase_id: str | None
+    boundary_station_id: str | None
 
 
 class VTRCycleExecutor:
     """Execute one Algorithm 2 plan on a deterministic discrete clock.
 
-    ``advance`` consumes exactly one simulation step. The supplied queue leader
-    is evaluated only when the current activation duration expires, matching
-    Algorithm 1. Clearance is reconstruction safety behavior and holds no active
-    phase or token-holding station.
+    ``advance_after_step`` records one already-completed simulation step. Its
+    queue leader must therefore come from the post-step state and is evaluated
+    only when the activation expires, matching Algorithm 1. Positive clearance
+    is a reconstruction safety variant outside equations (6)-(7).
     """
 
     def __init__(
@@ -63,8 +75,8 @@ class VTRCycleExecutor:
         *,
         step_length_s: float,
         extension_increment_s: float,
-        maximum_extension_s: float,
-        clearance_time_s: float,
+        maximum_extension_s: float | None = None,
+        clearance_time_s: float = 0.0,
     ) -> None:
         if not previous_station_id:
             raise ValueError("previous_station_id must not be empty")
@@ -73,10 +85,12 @@ class VTRCycleExecutor:
             extension_increment_s,
             "extension_increment_s",
         )
-        self._maximum_extension_s = _nonnegative_finite(
-            maximum_extension_s,
-            "maximum_extension_s",
-        )
+        self._maximum_extension_s = None
+        if maximum_extension_s is not None:
+            self._maximum_extension_s = _nonnegative_finite(
+                maximum_extension_s,
+                "maximum_extension_s",
+            )
         self._clearance_time_s = _nonnegative_finite(
             clearance_time_s,
             "clearance_time_s",
@@ -113,7 +127,15 @@ class VTRCycleExecutor:
         self._elapsed_in_state_s = 0.0
         self._active_target_s = 0.0
         self._extension_used_s = 0.0
+        self._cycle_extension_used_s = 0.0
+        self._boundary_outcome: BoundaryOutcome | None = None
+        self._boundary_phase_id: str | None = None
+        self._boundary_station_id: str | None = None
         self._last_completed_station_id = previous_station_id
+        self._nominal_service_budget_s = round(
+            sum(slot.initial_duration_s for slot in self._plan),
+            12,
+        )
         self._start_next_slot()
 
     @property
@@ -123,6 +145,16 @@ class VTRCycleExecutor:
     @property
     def last_completed_station_id(self) -> str:
         return self._last_completed_station_id
+
+    @property
+    def nominal_service_budget_s(self) -> float:
+        return self._nominal_service_budget_s
+
+    @property
+    def actual_cycle_duration_s(self) -> float | None:
+        if not self.is_complete:
+            return None
+        return self._time_s
 
     def snapshot(self) -> ExecutionSnapshot:
         if self._mode == "ACTIVE":
@@ -138,7 +170,13 @@ class VTRCycleExecutor:
                     12,
                 ),
                 extension_used_s=self._extension_used_s,
+                cycle_extension_used_s=self._cycle_extension_used_s,
                 last_completed_station_id=self._last_completed_station_id,
+                nominal_service_budget_s=self._nominal_service_budget_s,
+                actual_cycle_duration_s=None,
+                boundary_outcome=self._boundary_outcome,
+                boundary_phase_id=self._boundary_phase_id,
+                boundary_station_id=self._boundary_station_id,
             )
         if self._mode == "CLEARANCE":
             remaining = self._clearance_time_s - self._elapsed_in_state_s
@@ -150,7 +188,13 @@ class VTRCycleExecutor:
                 slot_index=None,
                 time_remaining_s=round(remaining, 12),
                 extension_used_s=self._extension_used_s,
+                cycle_extension_used_s=self._cycle_extension_used_s,
                 last_completed_station_id=self._last_completed_station_id,
+                nominal_service_budget_s=self._nominal_service_budget_s,
+                actual_cycle_duration_s=None,
+                boundary_outcome=self._boundary_outcome,
+                boundary_phase_id=self._boundary_phase_id,
+                boundary_station_id=self._boundary_station_id,
             )
         return ExecutionSnapshot(
             time_s=self._time_s,
@@ -160,16 +204,32 @@ class VTRCycleExecutor:
             slot_index=None,
             time_remaining_s=0.0,
             extension_used_s=0.0,
+            cycle_extension_used_s=self._cycle_extension_used_s,
             last_completed_station_id=self._last_completed_station_id,
+            nominal_service_budget_s=self._nominal_service_budget_s,
+            actual_cycle_duration_s=self._time_s,
+            boundary_outcome=self._boundary_outcome,
+            boundary_phase_id=self._boundary_phase_id,
+            boundary_station_id=self._boundary_station_id,
         )
 
-    def advance(self, queue_leader: VehicleKind | None) -> ExecutionSnapshot:
-        """Advance one step and return the resulting controller snapshot."""
+    def advance_after_step(
+        self,
+        *,
+        post_step_queue_leader: VehicleKind | None,
+    ) -> ExecutionSnapshot:
+        """Record one simulation step using its post-step queue observation."""
 
         if self.is_complete:
             raise RuntimeError("cannot advance a completed VTR cycle")
-        if queue_leader not in (None, "CAV", "HDV"):
-            raise ValueError("queue_leader must be 'CAV', 'HDV', or None")
+        if post_step_queue_leader not in (None, "CAV", "HDV"):
+            raise ValueError(
+                "post_step_queue_leader must be 'CAV', 'HDV', or None"
+            )
+
+        self._boundary_outcome = None
+        self._boundary_phase_id = None
+        self._boundary_station_id = None
 
         self._time_s = round(self._time_s + self._step_length_s, 12)
         self._elapsed_in_state_s = round(
@@ -183,21 +243,37 @@ class VTRCycleExecutor:
             rel_tol=0.0,
             abs_tol=1e-9,
         ):
-            can_extend = (
-                queue_leader == "HDV"
-                and self._extension_used_s + self._extension_increment_s
-                <= self._maximum_extension_s + 1e-12
-            )
-            if can_extend:
-                self._extension_used_s = round(
-                    self._extension_used_s + self._extension_increment_s,
-                    12,
+            boundary_slot = self._plan[self._slot_index]
+            self._boundary_phase_id = boundary_slot.phase_id
+            self._boundary_station_id = boundary_slot.station_id
+            if post_step_queue_leader == "HDV":
+                extension_candidate = (
+                    self._extension_used_s + self._extension_increment_s
                 )
-                self._active_target_s = round(
-                    self._active_target_s + self._extension_increment_s,
-                    12,
+                cap_allows_extension = (
+                    self._maximum_extension_s is None
+                    or extension_candidate <= self._maximum_extension_s + 1e-12
                 )
+                if cap_allows_extension:
+                    self._extension_used_s = round(extension_candidate, 12)
+                    self._cycle_extension_used_s = round(
+                        self._cycle_extension_used_s + self._extension_increment_s,
+                        12,
+                    )
+                    self._active_target_s = round(
+                        self._active_target_s + self._extension_increment_s,
+                        12,
+                    )
+                    self._boundary_outcome = "extended"
+                else:
+                    self._boundary_outcome = "extension_cap_hit"
+                    self._finish_active_slot()
             else:
+                self._boundary_outcome = (
+                    "cav_leader"
+                    if post_step_queue_leader == "CAV"
+                    else "queue_empty"
+                )
                 self._finish_active_slot()
         elif self._mode == "CLEARANCE" and isclose(
             self._elapsed_in_state_s,
@@ -228,7 +304,6 @@ class VTRCycleExecutor:
                 self._active_target_s = slot.initial_duration_s
                 self._extension_used_s = 0.0
                 return
-            self._last_completed_station_id = slot.station_id
             self._slot_index += 1
         self._mode = "COMPLETE"
         self._elapsed_in_state_s = 0.0

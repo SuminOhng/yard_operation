@@ -1,12 +1,14 @@
 """BP phase control and virtual token ring scheduling."""
 
 from irbp_replica.control.execution import (
+    BoundaryOutcome,
     ExecutionMode,
     ExecutionSnapshot,
     VTRCycleExecutor,
 )
 from irbp_replica.control.phase_time import (
     allocate_phase_durations,
+    compute_proportional_phase_durations,
     extend_phase_for_hdv,
 )
 from irbp_replica.control.pressure import (
@@ -25,6 +27,7 @@ from irbp_replica.control.vtr import (
 )
 
 __all__ = [
+    "BoundaryOutcome",
     "ExecutionMode",
     "ExecutionSnapshot",
     "TokenSlot",
@@ -32,6 +35,7 @@ __all__ = [
     "allocate_phase_durations",
     "build_cycle_plan",
     "clockwise_phases_after",
+    "compute_proportional_phase_durations",
     "compute_phase_weight",
     "extend_phase_for_hdv",
     "movement_pressure",

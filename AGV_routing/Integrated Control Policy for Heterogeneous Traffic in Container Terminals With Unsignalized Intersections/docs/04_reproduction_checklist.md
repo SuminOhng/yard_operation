@@ -54,13 +54,19 @@ Legend: `[x]` complete, `[ ]` pending, `[!]` blocked by unpublished information 
 - [x] Select reconstruction HDV extension increment `tau_bar = 1 s`; the paper does not provide it.
 - [x] Implement compatible queue and downstream-capacity units.
 - [x] Implement phase pressure and weights.
-- [x] Implement duration allocation and deterministic rounding.
+- [x] Separate continuous equation (5) durations from discrete execution quantization.
+- [x] Implement duration allocation with deterministic rounding and a one-step minimum for every positive phase.
+- [x] Reject cycles with fewer steps than positive-weight phases.
 - [x] Implement clockwise ring state from previous token holder.
 - [x] Implement HDV-led priority.
 - [x] Implement descending-weight ordering for remaining phases.
-- [x] Implement HDV duration extension.
-- [x] Implement deterministic safety clearance in the pure controller; TraCI enforcement remains pending.
+- [x] Implement uncapped paper-fidelity HDV duration extension and an optional traced safety cap.
+- [x] Use post-step queue-leader observations at Algorithm 1 boundaries.
+- [x] Split zero-clearance paper fidelity from optional deterministic safety clearance; TraCI enforcement remains pending.
+- [x] Omit zero-duration holders and preserve the previous holder for an all-zero idle cycle.
 - [x] Prove no duplicate station and no overlapping active phase in the pure controller.
+- [x] Prove repeated-cycle holder handoff adds no duplicate leading clearance.
+- [x] Report nominal service budget separately from actual elapsed cycle time.
 - [x] Reproduce paper example `{1/3, 1/2, 1/6}`, `T=30`, durations `{10,15,5}`.
 
 ## 6. IR-BP CAV routing

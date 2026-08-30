@@ -1,6 +1,6 @@
 [metadata]
 paper_doi = "10.1109/TITS.2025.3560067"
-fidelity = "method-first"
+fidelity = "paper-method-reconstruction"
 
 [simulation]
 duration_s = 7200 # Inferred from figure axes; not stated as a parameter.
@@ -36,11 +36,14 @@ empty_road_rule = "free_flow_time"
 speed_floor_mps = 0.1
 
 [control]
+execution_profile = "paper_method_fidelity"
 cycle_length_s = 30.0 # Published only in Example 1.
 hdv_extension_increment_s = 1.0
+hdv_extension_limit_mode = "unbounded"
 duration_resolution_s = 1.0
-maximum_hdv_extension_s = 30.0 # Non-termination safety guard.
-clearance_time_s = 1.0 # Reserved for the later TraCI adapter.
+duration_quantization_rule = "positive_minimum_largest_remainder"
+clearance_time_s = 0.0 # The paper does not define an all-red interval.
+boundary_observation_timing = "post_step"
 queue_unit = "vehicle_slots"
 queue_speed_threshold_mps = 0.1
 phase_tie_break_rule = "clockwise"

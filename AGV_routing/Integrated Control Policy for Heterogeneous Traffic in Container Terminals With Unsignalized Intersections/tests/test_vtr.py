@@ -52,6 +52,19 @@ class VirtualTokenRingTests(unittest.TestCase):
         )
         self.assertEqual(order, ("s_nj", "s_mj", "s_ij"))
 
+    def test_multiple_hdv_phases_keep_clockwise_priority_order(self) -> None:
+        phases = (
+            PhaseState("p_ij", "s_ij", "l_ij", ("l_jk",), 0, "HDV"),
+            PhaseState("p_nj", "s_nj", "l_nj", ("l_jn",), 1, "HDV"),
+            PhaseState("p_mj", "s_mj", "l_mj", ("l_jm",), 2, "CAV"),
+        )
+        order = order_token_stations(
+            phases,
+            {"p_ij": 1, "p_nj": 0.1, "p_mj": 10},
+            "s_ij",
+        )
+        self.assertEqual(order, ("s_nj", "s_ij", "s_mj"))
+
     def test_zero_weight_non_hdv_station_is_omitted(self) -> None:
         order = order_token_stations(
             paper_phases(),
@@ -73,6 +86,29 @@ class VirtualTokenRingTests(unittest.TestCase):
         self.assertEqual(tuple(slot.station_id for slot in plan), ("s_ij", "s_nj", "s_mj"))
         self.assertEqual(tuple(slot.initial_duration_s for slot in plan), (10, 15, 5))
         self.assertEqual(sum(slot.initial_duration_s for slot in plan), 30)
+
+    def test_zero_duration_slots_are_omitted_from_cycle_plan(self) -> None:
+        roads = {
+            "l_ij": RoadState("l_ij", 100, 2, 0),
+            "l_nj": RoadState("l_nj", 100, 3, 0),
+            "l_mj": RoadState("l_mj", 100, 0, 0),
+            "l_jk": RoadState("l_jk", 100, 0, 0),
+            "l_jn": RoadState("l_jn", 100, 0, 10),
+            "l_jm": RoadState("l_jm", 100, 0, 10),
+        }
+        plan = build_cycle_plan(paper_phases(), roads, "s_ij", 30, 1)
+        self.assertEqual(tuple(slot.station_id for slot in plan), ("s_nj",))
+
+    def test_all_zero_weights_build_empty_plan_even_with_hdv_head(self) -> None:
+        roads = {
+            "l_ij": RoadState("l_ij", 100, 0, 0),
+            "l_nj": RoadState("l_nj", 100, 0, 0),
+            "l_mj": RoadState("l_mj", 100, 0, 0),
+            "l_jk": RoadState("l_jk", 100, 0, 10),
+            "l_jn": RoadState("l_jn", 100, 0, 10),
+            "l_jm": RoadState("l_jm", 100, 0, 10),
+        }
+        self.assertEqual(build_cycle_plan(paper_phases(), roads, "s_ij", 30, 1), ())
 
     def test_duplicate_station_is_rejected(self) -> None:
         phases = paper_phases()

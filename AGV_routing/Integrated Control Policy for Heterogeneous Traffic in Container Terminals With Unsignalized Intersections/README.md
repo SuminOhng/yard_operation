@@ -6,9 +6,11 @@ The first target is a method-faithful implementation of the BP-based virtual tok
 
 ## Current phase
 
-Phase 0 is complete. Phase 1 now includes a pure-Python implementation of equations (1)-(7), HDV-aware phase extension (Algorithm 1), deterministic BP/VTR scheduling (Algorithm 2), and a discrete one-cycle executor with clearance states.
+Phase 0 is complete. Phase 1 now includes a pure-Python implementation of equations (1)-(7), HDV-aware phase extension (Algorithm 1), deterministic BP/VTR scheduling (Algorithm 2), and a discrete one-cycle executor.
 
-The pure one-intersection trace gate passes. IR-BP routing, TraCI integration, and the reconstructed SUMO network are not implemented yet.
+The paper-method fidelity profile uses no clearance interval and no HDV extension cap. A separate safety variant may add all-red clearance and a finite extension cap, but its results must not be reported as the paper method. The configured cycle length `T` is the nominal phase-service budget; HDV extension and optional clearance increase actual elapsed cycle time.
+
+The hardened pure one-intersection trace gate passes. IR-BP routing, TraCI integration, and the reconstructed SUMO network are not implemented yet.
 
 ## Documents
 

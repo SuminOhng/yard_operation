@@ -110,7 +110,7 @@ def build_cycle_plan(
     durations = allocate_phase_durations(weights, cycle_length_s, resolution_s)
     station_order = order_token_stations(phases, weights, last_station_id)
     phase_by_station = {phase.station_id: phase for phase in phases}
-    return tuple(
+    slots = tuple(
         TokenSlot(
             phase_id=phase_by_station[station_id].phase_id,
             station_id=station_id,
@@ -120,6 +120,7 @@ def build_cycle_plan(
         )
         for station_id in station_order
     )
+    return tuple(slot for slot in slots if slot.initial_duration_s > 0)
 
 
 def validate_single_activation(
@@ -127,7 +128,7 @@ def validate_single_activation(
     active_phase_ids: Iterable[str],
     token_station_ids: Iterable[str],
 ) -> None:
-    """Enforce equations (6)-(7) and phase/station correspondence."""
+    """Enforce equations (6)-(7) during an ACTIVE controller state."""
 
     phases = _validate_phases(phases)
     active_phase_ids = tuple(active_phase_ids)

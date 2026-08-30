@@ -3,9 +3,9 @@
 Implemented Phase 1 tests:
 
 - `test_pressure.py`: equations (1)-(4), normalization, zero weights, and validation.
-- `test_phase_time.py`: equation (5), largest-remainder rounding, and Algorithm 1 stop/cap behavior.
-- `test_vtr.py`: Algorithm 2 ordering, uniqueness, HDV priority, clockwise ties, the paper duration example, and equations (6)-(7).
-- `test_vtr_execution.py`: one-cycle token execution, Algorithm 1 boundary checks, clearance, safety cap, zero-duration stations, and a deterministic one-intersection trace.
+- `test_phase_time.py`: continuous equation (5), positive-preserving step quantization, stable largest-remainder allocation, and uncapped/capped Algorithm 1 behavior.
+- `test_vtr.py`: Algorithm 2 ordering, uniqueness, multiple-HDV priority, clockwise ties, all-zero plans, the paper duration example, and equations (6)-(7).
+- `test_vtr_execution.py`: post-step Algorithm 1 boundaries, paper-fidelity execution, optional safety clearance and cap events, zero-duration stations, nominal versus actual cycle time, and repeated-cycle handoff.
 
 Later milestones will add:
 
