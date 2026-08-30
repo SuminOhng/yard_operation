@@ -6,9 +6,9 @@ The first target is a method-faithful implementation of the BP-based virtual tok
 
 ## Current phase
 
-Phase 0 is complete: paper analysis, implementation specification, project layout, and reproduction checklist.
+Phase 0 is complete. Phase 1 now includes a pure-Python implementation of equations (1)-(7), HDV-aware phase extension (Algorithm 1), deterministic BP/VTR scheduling (Algorithm 2), and a discrete one-cycle executor with clearance states.
 
-No control algorithm or SUMO scenario is implemented yet.
+The pure one-intersection trace gate passes. IR-BP routing, TraCI integration, and the reconstructed SUMO network are not implemented yet.
 
 ## Documents
 
@@ -16,11 +16,21 @@ No control algorithm or SUMO scenario is implemented yet.
 - [Implementation specification](docs/02_implementation_spec.md)
 - [Project structure](docs/03_project_structure.md)
 - [Reproduction checklist](docs/04_reproduction_checklist.md)
+- [Phase 1 reconstruction decisions](docs/05_phase1_assumptions.md)
 
 ## Repository policy
 
 The IEEE PDF is local reference material and is excluded by `.gitignore`. Commit only original code, configuration, reconstructed SUMO assets, and generated summaries that are suitable for redistribution.
 
+## Verification
+
+Run the dependency-free Phase 1 test gate from this directory:
+
+```powershell
+$env:PYTHONPATH = "src"
+python -m unittest discover -s tests -p "test_*.py" -v
+```
+
 ## Next milestone
 
-Implement pure-Python equations and Algorithms 1-3 with unit tests before connecting them to TraCI.
+Implement equations (8)-(17) and Algorithm 3 for IR-BP CAV routing before connecting either policy to TraCI.

@@ -5,6 +5,7 @@ fidelity = "method-first"
 [simulation]
 duration_s = 7200 # Inferred from figure axes; not stated as a parameter.
 random_seed = 1
+step_length_s = 1.0 # Reconstruction default; not published by the paper.
 
 [network]
 intersections = 20
@@ -31,22 +32,27 @@ loading_interval_s = 300
 [routing]
 initial_eta_m = 500
 tie_break_rule = "stable_edge_id"
+empty_road_rule = "free_flow_time"
+speed_floor_mps = 0.1
+
+[control]
+cycle_length_s = 30.0 # Published only in Example 1.
+hdv_extension_increment_s = 1.0
+duration_resolution_s = 1.0
+maximum_hdv_extension_s = 30.0 # Non-termination safety guard.
+clearance_time_s = 1.0 # Reserved for the later TraCI adapter.
+queue_unit = "vehicle_slots"
+queue_speed_threshold_mps = 0.1
+phase_tie_break_rule = "clockwise"
 
 [unresolved]
 items = [
   "simulation.sumo_version",
-  "simulation.step_length_s",
   "vehicles.acceleration_mps2",
   "vehicles.deceleration_mps2",
   "vehicles.length_m",
   "vehicles.minimum_gap_m",
   "vehicles.car_follow_model",
   "demand.loading_process",
-  "control.cycle_length_s",
-  "control.hdv_extension_increment_s",
-  "control.clearance_time_s",
-  "control.duration_resolution_s",
-  "routing.empty_road_rule",
-  "routing.speed_floor_mps",
   "metrics.queue_length_definition",
 ]

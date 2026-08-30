@@ -11,7 +11,8 @@
 |   |-- 01_paper_analysis.md
 |   |-- 02_implementation_spec.md
 |   |-- 03_project_structure.md
-|   `-- 04_reproduction_checklist.md
+|   |-- 04_reproduction_checklist.md
+|   `-- 05_phase1_assumptions.md
 |-- experiments/
 |   |-- configs/
 |   |   |-- README.md
@@ -22,9 +23,14 @@
 |   `-- irbp_replica/
 |       |-- __init__.py
 |       |-- control/
-|       |   `-- __init__.py
+|       |   |-- __init__.py
+|       |   |-- execution.py
+|       |   |-- phase_time.py
+|       |   |-- pressure.py
+|       |   `-- vtr.py
 |       |-- domain/
-|       |   `-- __init__.py
+|       |   |-- __init__.py
+|       |   `-- models.py
 |       |-- routing/
 |       |   `-- __init__.py
 |       `-- simulation/
@@ -38,23 +44,29 @@
 |       `-- paper_grid/
 |           `-- README.md
 `-- tests/
-    `-- README.md
+    |-- README.md
+    |-- test_phase_time.py
+    |-- test_pressure.py
+    |-- test_vtr_execution.py
+    `-- test_vtr.py
 ```
 
-The source package is intentionally empty except for package boundaries. This phase defines ownership before algorithm code is added.
+The control and domain modules now implement the pure-Python BP/VTR milestone. Routing, simulation, and SUMO folders retain package or asset boundaries only.
 
 ## 2. Planned module ownership
 
 ```text
 src/irbp_replica/
 |-- domain/
-|   |-- network.py       # Directed roads, phases, stations, intersections
+|   |-- models.py        # Current Phase 1 roads and phases
+|   |-- network.py       # Later directed-network topology
 |   |-- state.py         # Immutable traffic snapshots
 |   `-- vehicles.py      # CAV/HDV and per-trip routing state
 |-- control/
-|   |-- pressure.py      # Equations (1)-(5)
-|   |-- phase_time.py    # Duration allocation and Algorithm 1
-|   `-- vtr.py           # Algorithm 2 and token state machine
+|   |-- pressure.py      # Equations (1)-(4)
+|   |-- phase_time.py    # Equation (5) and Algorithm 1
+|   |-- vtr.py           # Algorithm 2 and mutual-exclusion validation
+|   `-- execution.py     # Discrete token, extension, and clearance lifecycle
 |-- routing/
 |   |-- travel_time.py   # Equations (8)-(10)
 |   |-- distance.py      # Equations (12)-(15)
@@ -90,10 +102,11 @@ The paper names SUMO but does not state a version. Do not pin a guessed version 
 
 ## 5. Intended commands
 
-These commands become active after the corresponding modules exist:
+The first command is active. Later commands become active after their corresponding modules exist:
 
 ```powershell
-python -m pytest
+$env:PYTHONPATH = "src"
+python -m unittest discover -s tests -p "test_*.py" -v
 python -m irbp_replica.cli validate-network experiments/configs/paper_baseline.toml
 python -m irbp_replica.cli run experiments/configs/paper_baseline.toml --seed 1
 python -m irbp_replica.cli summarize experiments/outputs/<run-id>

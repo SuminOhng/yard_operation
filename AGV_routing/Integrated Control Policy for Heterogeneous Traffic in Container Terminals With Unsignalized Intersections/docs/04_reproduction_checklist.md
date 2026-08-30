@@ -7,7 +7,7 @@ Legend: `[x]` complete, `[ ]` pending, `[!]` blocked by unpublished information 
 - [x] Record paper title, authors, venue, year, pages, and DOI.
 - [x] Keep the licensed PDF outside Git tracking through `.gitignore`.
 - [x] Separate paper facts from reconstruction assumptions.
-- [ ] Commit this Phase 0 scaffold.
+- [x] Commit this Phase 0 scaffold.
 - [ ] Record every future run's commit SHA and asset hashes.
 
 ## 2. Environment
@@ -50,26 +50,26 @@ Legend: `[x]` complete, `[ ]` pending, `[!]` blocked by unpublished information 
 
 - [x] Transcribe equations (1)-(7).
 - [x] Specify Algorithm 1 and Algorithm 2 interpretation.
-- [!] Select cycle length `T`; paper provides only a 30 s example.
-- [!] Select HDV extension increment `tau_bar`; paper does not provide it.
-- [ ] Implement compatible queue and downstream-capacity units.
-- [ ] Implement phase pressure and weights.
-- [ ] Implement duration allocation and deterministic rounding.
-- [ ] Implement clockwise ring state from previous token holder.
-- [ ] Implement HDV-led priority.
-- [ ] Implement descending-weight ordering for remaining phases.
-- [ ] Implement HDV duration extension.
-- [ ] Implement safety clearance between conflicting phases.
-- [ ] Prove no duplicate station and no overlapping active phase.
-- [ ] Reproduce paper example `{1/3, 1/2, 1/6}`, `T=30`, durations `{10,15,5}`.
+- [x] Select reconstruction cycle length `T = 30 s`; the paper provides this only as an example.
+- [x] Select reconstruction HDV extension increment `tau_bar = 1 s`; the paper does not provide it.
+- [x] Implement compatible queue and downstream-capacity units.
+- [x] Implement phase pressure and weights.
+- [x] Implement duration allocation and deterministic rounding.
+- [x] Implement clockwise ring state from previous token holder.
+- [x] Implement HDV-led priority.
+- [x] Implement descending-weight ordering for remaining phases.
+- [x] Implement HDV duration extension.
+- [x] Implement deterministic safety clearance in the pure controller; TraCI enforcement remains pending.
+- [x] Prove no duplicate station and no overlapping active phase in the pure controller.
+- [x] Reproduce paper example `{1/3, 1/2, 1/6}`, `T=30`, durations `{10,15,5}`.
 
 ## 6. IR-BP CAV routing
 
 - [x] Transcribe equations (8)-(17) and Algorithm 3.
 - [ ] Implement candidate downstream-edge discovery.
 - [ ] Implement travel-time estimate for occupied roads.
-- [!] Define empty-road behavior for equation (8).
-- [!] Define zero-speed floor for equation (8).
+- [x] Define empty-road behavior for equation (8) as free-flow time; implementation remains pending.
+- [x] Define zero-speed floor `0.1 m/s` for equation (8); implementation remains pending.
 - [ ] Implement pressure weight.
 - [ ] Implement Euclidean heuristic.
 - [ ] Implement cumulative actual-distance cost.
@@ -114,7 +114,7 @@ Legend: `[x]` complete, `[ ]` pending, `[!]` blocked by unpublished information 
 ## 10. Validation and reporting
 
 - [ ] Unit tests for every equation group and edge case.
-- [ ] Integration test for one intersection.
+- [x] Pure-Python integration test for one BP/VTR intersection cycle; SUMO integration remains pending.
 - [ ] End-to-end deterministic smoke test.
 - [ ] Confirm larger eta tends to reduce queueing and increase distance.
 - [ ] Confirm travel-time response can be non-monotonic.
@@ -131,4 +131,4 @@ Legend: `[x]` complete, `[ ]` pending, `[!]` blocked by unpublished information 
 - [x] Python/SUMO project boundaries exist.
 - [x] Reproduction checklist exists.
 - [x] Licensed PDF is ignored by the project.
-- [ ] User reviews assumptions before Phase 1 implementation.
+- [x] User reviews and authorizes Phase 1 assumption selection and BP/VTR implementation.

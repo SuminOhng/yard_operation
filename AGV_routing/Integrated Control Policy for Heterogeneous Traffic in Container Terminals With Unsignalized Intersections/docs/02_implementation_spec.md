@@ -24,12 +24,11 @@ Build a deterministic, testable Python implementation of:
 ### `RoadState`
 
 - `edge_id: str`
-- `from_node: str`
-- `to_node: str`
 - `length_m: float`
+- `queue_vehicles: float`
 - `remaining_capacity_vehicles: float`
-- `queued_vehicle_ids: tuple[str, ...]`
-- `vehicle_ids: tuple[str, ...]`
+
+Phase 1 deliberately keeps only quantities required by equations (1)-(4). Network endpoints and vehicle-ID collections belong to the later TraCI snapshot adapter.
 
 ### `VehicleState`
 
@@ -47,7 +46,7 @@ Build a deterministic, testable Python implementation of:
 - `upstream_edge_id: str`
 - `downstream_edge_ids: tuple[str, ...]`
 - `clockwise_index: int`
-- `head_is_hdv: bool`
+- `head_vehicle_kind: Literal["CAV", "HDV"] | None`
 
 ### `IntersectionState`
 
@@ -83,7 +82,7 @@ Use immutable snapshots for calculation. Keep TraCI objects outside the algorith
 - Uses largest-remainder rounding when discrete SUMO steps are required.
 - Returns all zeros when total weight is zero; caller then uses an idle/clearance state.
 
-### `order_token_stations(phases, last_station_id) -> tuple`
+### `order_token_stations(phases, weights, last_station_id) -> tuple`
 
 - Builds clockwise order beginning after the previous holder.
 - Places HDV-led phases first, preserving clockwise order.
@@ -93,12 +92,21 @@ Use immutable snapshots for calculation. Keep TraCI objects outside the algorith
 
 This is the narrowest deterministic interpretation of Algorithm 2's prose. It must be isolated so another interpretation can be tested later.
 
-### `extend_phase_for_hdv(initial_duration_s, queue_observations, increment_s) -> float`
+### `extend_phase_for_hdv(initial_duration_s, queue_observations, increment_s, maximum_extension_s) -> float`
 
 - Implements Algorithm 1.
 - Stops when the queue is empty or a CAV becomes leader.
 - Extends only in whole `increment_s` units.
 - Enforces a configurable safety maximum to prevent non-termination in faulty telemetry.
+
+### `VTRCycleExecutor(plan, previous_station_id, timing...)`
+
+- Executes one Algorithm 2 plan on a deterministic discrete clock.
+- Activates one phase and its matching token station at a time.
+- Re-evaluates the queue leader at each Algorithm 1 extension boundary.
+- Inserts a clearance state with no active phase or token holder between stations.
+- Skips zero-duration stations without activating them.
+- Returns the final token holder for the next cycle's clockwise traversal.
 
 ### `estimate_candidate_travel_time(cav, edge, edge_vehicles) -> float`
 
@@ -152,15 +160,15 @@ Use hidden/virtual SUMO traffic-light logic as an enforcement mechanism while pr
 
 Unpublished acceleration, deceleration, car-following, vehicle-length, and gap parameters remain configuration fields.
 
-## 7. Provisional assumption register
+## 7. Assumption register
 
-These are implementation defaults, not paper facts.
+These are implementation defaults, not paper facts. The exact Phase 1 values, rationale, and validation triggers are locked in [Phase 1 reconstruction decisions](05_phase1_assumptions.md).
 
 | ID | Provisional decision | Status and validation |
 |---|---|---|
-| A-01 | Simulation step `1.0 s` | Pending sensitivity test. |
-| A-02 | Queue means vehicles with speed at or below `0.1 m/s` | Compare against SUMO halting-number and queue-length metrics. |
-| A-03 | Remaining capacity uses effective vehicle slots from lane length, vehicle length, and minimum gap | Must keep units compatible with `q_ij`. |
+| A-01 | Simulation step `1.0 s` | Selected reconstruction default; pending sensitivity test. |
+| A-02 | Queue means vehicles with speed at or below `0.1 m/s` | Selected reconstruction default; compare against SUMO halting-number and queue-length metrics. |
+| A-03 | Queue and remaining capacity use vehicle-equivalent slots | Selected reconstruction unit; effective slot calculation is validated during SUMO integration. |
 | A-04 | Empty candidate road uses `edge_length / CAV_desired_speed` in (8) | Required because the paper leaves the empty maximum undefined. |
 | A-05 | Speed floor `0.1 m/s` in (8) | Prevents division by zero; sensitivity required. |
 | A-06 | Duration rounding uses largest remainder at step resolution | Preserves cycle length. |
@@ -170,12 +178,14 @@ These are implementation defaults, not paper facts.
 | A-10 | Each CAV starts a trip with `eta = 500 m`; budget depletes by (17) and does not reset until the next trip | Derived from equation form; lifecycle not stated. |
 | A-11 | Experiment horizon `7200 s` | Inferred from figures. |
 | A-12 | Fixed random seeds and multiple replications | Original seeds are unavailable; report mean and dispersion. |
+| A-13 | Cycle `T = 30 s`, HDV increment `1 s`, duration resolution `1 s`, and maximum extension `30 s` | Selected reconstruction defaults; timing sensitivity follows the first end-to-end run. |
+| A-14 | Phase clearance `1 s` | Implemented in the pure cycle executor, excluded from Algorithm 2 allocation, and awaiting TraCI enforcement. |
 
 All assumptions belong in experiment configuration and run metadata.
 
 ## 8. Configuration contract
 
-`experiments/configs/paper_baseline.toml` stores paper-known values and lists unresolved required fields under `unresolved.items`. Later implementation must reject those fields rather than silently inventing them.
+`experiments/configs/paper_baseline.toml` stores paper-known values, explicit reconstruction defaults, and remaining unresolved fields under `unresolved.items`. Later implementation must reject unresolved fields rather than silently inventing them.
 
 Each run must write:
 
@@ -199,6 +209,8 @@ Each run must write:
 - Distance mask in (15) always retains the shortest-distance candidate.
 - Eta never becomes negative.
 - Empty-road, zero-speed, empty-queue, all-zero-weight, and tie cases are deterministic.
+- A complete BP/VTR cycle never exposes more than one active phase or token holder.
+- HDV extension and clearance produce a deterministic decision trace.
 
 ### Integration gate
 
@@ -216,8 +228,8 @@ Each run must write:
 
 ## 10. Implementation sequence
 
-1. Pure domain models and equations.
-2. Algorithms 1-3 and unit tests.
+1. Pure domain models and equations (equations (1)-(7) complete).
+2. Algorithms 1-3 and unit tests (Algorithms 1-2 and one-cycle execution complete; Algorithm 3 pending).
 3. One-intersection TraCI adapter.
 4. Reconstructed 20-intersection network.
 5. Demand generation and metrics.
