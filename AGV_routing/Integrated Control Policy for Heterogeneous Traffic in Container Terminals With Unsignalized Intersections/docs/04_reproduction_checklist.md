@@ -8,7 +8,7 @@ Legend: `[x]` complete, `[ ]` pending, `[!]` blocked by unpublished information 
 - [x] Keep the licensed PDF outside Git tracking through `.gitignore`.
 - [x] Separate paper facts from reconstruction assumptions.
 - [x] Commit this Phase 0 scaffold.
-- [ ] Record every future run's commit SHA and asset hashes.
+- [x] Record run commit/dirty state plus input and policy-source hashes in success and incomplete-run evidence.
 
 ## 2. Environment
 
@@ -19,7 +19,7 @@ Legend: `[x]` complete, `[ ]` pending, `[!]` blocked by unpublished information 
 - [x] Commit the exact `uv.lock` dependency and artifact hashes.
 - [x] Pin the setuptools build backend used for the editable project install.
 - [x] Add a verifier for Windows AMD64, Python, uv, lock hash, packages, binaries, import ownership, and conflicting `SUMO_HOME` values.
-- [ ] Save Python, SUMO, OS, and dependency versions with every experiment.
+- [x] Save Python, SUMO, OS, protocol, configuration, and source provenance with full-run evidence.
 
 ## 3. Network reconstruction
 
@@ -53,7 +53,7 @@ Legend: `[x]` complete, `[ ]` pending, `[!]` blocked by unpublished information 
 - [x] Verify generated aggregate count, bin quotas, class counts, penetration, speed-type balance, OD constraints, reachability, and initial shortest routes numerically.
 - [x] Save deterministic route assets and metadata with configuration, network, and output hashes.
 - [ ] Verify observed departure rate and penetration in a full live SUMO run.
-- [ ] Apply and verify the HDV 20% alternative-road choice at each intersection at runtime.
+- [x] Apply and trace the declared seeded reconstruction of the HDV 20% alternative-road choice at each eligible intersection encounter.
 
 ## 5. BP/VTR intersection control
 
@@ -81,7 +81,7 @@ Legend: `[x]` complete, `[ ]` pending, `[!]` blocked by unpublished information 
 ## 6. IR-BP CAV routing
 
 - [x] Transcribe equations (8)-(17) and Algorithm 3.
-- [x] Implement live candidate downstream-edge discovery for the smoke adapter; general paper-network discovery remains future work.
+- [x] Implement live legal and destination-reachable candidate discovery for both the smoke adapter and full paper-grid runner.
 - [x] Implement occupied-road travel-time estimate using the paper prose's literal remaining-distance interpretation.
 - [!] Resolve equation (8)'s remaining-distance versus upstream-lane-position contradiction through a sensitivity test before claiming numerical fidelity.
 - [x] Implement empty-road behavior for equation (8) as configured free-flow time.
@@ -89,7 +89,7 @@ Legend: `[x]` complete, `[ ]` pending, `[!]` blocked by unpublished information 
 - [x] Implement pressure weight.
 - [x] Implement Euclidean heuristic against the configured trip arrival position.
 - [x] Verify reconstructed paper-grid source edge lengths equal Euclidean endpoint distance.
-- [ ] Verify the Euclidean heuristic is admissible for configured trip arrival positions in the full paper-grid runner.
+- [x] Enforce live heuristic admissibility against paper-grid downstream-intersection destination coordinates; retain SUMO `arrivalPos="max"` separately.
 - [x] Implement cumulative actual-distance cost.
 - [x] Implement eta eligibility mask.
 - [x] Implement deterministic tie-breaking.
@@ -108,8 +108,8 @@ Legend: `[x]` complete, `[ ]` pending, `[!]` blocked by unpublished information 
 - [x] Verify two fixed-seed smoke runs give identical normalized traces.
 - [x] Build and structurally validate the full 20-intersection SUMO network.
 - [x] Build and statically validate seeded baseline demand for the full network.
-- [ ] Run the full 20-intersection scenario without collision or deadlock.
-- [ ] Continue beyond the `7200 s` departure horizon until the network drains, with a declared timeout and incomplete-run failure.
+- [!] Run the full 20-intersection scenario without collision or deadlock. The current seed-1 paper-fidelity reconstruction reaches physical gridlock after 670 arrivals; no collision or teleport was observed before the diagnostic cap.
+- [x] Implement continuation beyond the `7200 s` departure horizon, a declared `3600 s` drain timeout, and explicit incomplete-run failure evidence.
 
 ## 8. Metrics
 

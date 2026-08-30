@@ -18,7 +18,8 @@
 |   |-- 06_environment.md
 |   |-- 07_traci_smoke.md
 |   |-- 08_paper_grid_reconstruction.md
-|   `-- 09_seeded_demand.md
+|   |-- 09_seeded_demand.md
+|   `-- 10_paper_grid_runner.md
 |-- experiments/
 |   |-- configs/
 |   |   |-- README.md
@@ -44,16 +45,20 @@
 |       |   `-- travel_time.py
 |       `-- simulation/
 |           |-- __init__.py
+|           |-- paper_grid_runner.py
+|           |-- traci_adapter.py
 |           `-- traci_smoke.py
 |-- scripts/
 |   |-- build_paper_grid_demand.py
 |   |-- build_paper_grid_network.py
 |   |-- build_smoke_network.py
+|   |-- run_paper_grid.py
 |   |-- run_sumo_smoke.py
 |   `-- verify_environment.py
 |-- sumo/
 |   |-- config/
-|   |   `-- README.md
+|   |   |-- README.md
+|   |   `-- paper_baseline.sumocfg
 |   |-- demand/
 |   |   |-- README.md
 |   |   |-- paper_baseline.metadata.json
@@ -82,6 +87,8 @@
     |-- test_irbp_routing.py
     |-- test_paper_grid_demand.py
     |-- test_paper_grid_network.py
+    |-- test_paper_grid_runner.py
+    |-- test_paper_baseline_config.py
     |-- test_phase_time.py
     |-- test_pressure.py
     |-- test_traci_smoke.py
@@ -89,7 +96,7 @@
     `-- test_vtr.py
 ```
 
-The control, domain, and routing modules implement the pure-Python BP/VTR and IR-BP milestones. `simulation/traci_smoke.py` is a deliberately narrow live adapter for the one-intersection gate; it does not own or reimplement policy equations. `build_paper_grid_demand.py` owns deterministic demand construction over the generated paper-grid network; it does not implement runtime routing policy.
+The control, domain, and routing modules implement the pure-Python BP/VTR and IR-BP milestones. `simulation/traci_adapter.py` owns reusable TraCI boundaries, `traci_smoke.py` keeps the narrow one-intersection proof, and `paper_grid_runner.py` owns the 20-controller lifecycle and reproducibility evidence. None reimplements policy equations. `build_paper_grid_demand.py` owns deterministic demand construction; runtime route decisions remain in the runner through the pure routing module.
 
 ## 2. Planned module ownership
 
@@ -110,8 +117,8 @@ src/irbp_replica/
 |   |-- distance.py      # Current equations (12)-(15)
 |   `-- irbp.py          # Current equations (11), (16)-(17), Algorithm 3
 |-- simulation/
-|   |-- traci_adapter.py # SUMO state reads and commands
-|   |-- runner.py        # Step loop and lifecycle
+|   |-- traci_adapter.py     # Current reusable SUMO state reads and commands
+|   |-- paper_grid_runner.py # Current 20-intersection step loop and evidence
 |   |-- metrics.py       # Queue, trip, speed, waiting metrics
 |   `-- traces.py        # Reproducible decision logs
 `-- cli.py               # Experiment entry point
@@ -143,7 +150,7 @@ The paper names SUMO but does not state a version. The reconstruction pins CPyth
 
 ## 5. Intended commands
 
-The first seven commands are active. Later commands become active after their corresponding modules exist:
+The first eight commands are active. Later commands become active after their corresponding modules exist:
 
 ```powershell
 uv sync --extra dev --frozen
@@ -152,6 +159,7 @@ uv run python scripts/build_smoke_network.py --check
 uv run python scripts/build_paper_grid_network.py --check
 uv run python scripts/build_paper_grid_demand.py --check
 uv run python scripts/run_sumo_smoke.py
+uv run python scripts/run_paper_grid.py
 uv run python -m unittest discover -s tests -p "test_*.py" -v
 python -m irbp_replica.cli validate-network experiments/configs/paper_baseline.toml
 python -m irbp_replica.cli run experiments/configs/paper_baseline.toml --seed 1

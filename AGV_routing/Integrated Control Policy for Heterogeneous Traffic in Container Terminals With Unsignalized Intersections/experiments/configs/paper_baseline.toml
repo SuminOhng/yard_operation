@@ -16,6 +16,7 @@ sumolib_version = "1.27.1"
 [simulation]
 random_seed = 1
 step_length_s = 1.0 # Reconstruction default; not published by the paper.
+drain_timeout_s = 3600 # Reconstruction cap after the inferred 7200 s departure horizon.
 
 [network]
 intersections = 20
@@ -61,6 +62,12 @@ maximum_speed_distribution = "uniform_discrete_balanced"
 speed_deviation = 0
 alternative_route_probability = 0.20
 alternative_route_application = "runtime_per_intersection_only"
+alternative_route_candidate_rule = "legal_destination_reachable_non_uturn_outgoing_excluding_all_shortest_ties"
+alternative_route_draw_rule = "independent_uniform_per_eligible_intersection_choose_when_draw_lt_probability"
+alternative_route_choice_rule = "uniform_over_stable_edge_id_sorted_candidates"
+alternative_route_fallback_rule = "stable_edge_id_shortest_distance"
+alternative_route_random_seed = 1
+alternative_route_random_stream = "dedicated_runtime_hdv_time_then_vehicle_id"
 
 [demand]
 paper_loading_levels_vehicles_per_hour = [1600, 2000, 2400]
@@ -101,13 +108,15 @@ vehicle_arrival_position = "max"
 
 [routing]
 initial_eta_m = 500
+decision_trigger_distance_m = 30.0 # Reconstruction threshold before the downstream intersection.
 tie_break_rule = "stable_edge_id"
 empty_road_rule = "free_flow_time"
 empty_road_speed_mps = 14
 speed_floor_mps = 0.1
 equation_8_distance_term = "literal_remaining_distance"
 equation_8_sensitivity_alternative = "upstream_lane_position"
-destination_position_rule = "trip_arrival_position"
+destination_position_rule = "destination_edge_downstream_intersection"
+destination_position_basis = "Paper equations use road-node coordinates; SUMO arrivalPos=max stops before the junction center."
 heuristic_admissibility_check = "required_before_sumo_runs"
 cumulative_distance_rule = "completed_to_intersection_plus_candidate_edge"
 eta_commit_rule = "after_successful_route_mutation"
@@ -126,6 +135,7 @@ duration_quantization_rule = "positive_minimum_largest_remainder"
 clearance_time_s = 0.0 # The paper does not define an all-red interval.
 boundary_observation_timing = "post_step"
 queue_unit = "vehicle_slots"
+capacity_slot_length_m = 7.5 # Reconstruction value for compatible queue/capacity units.
 queue_speed_threshold_mps = 0.1
 phase_tie_break_rule = "clockwise"
 
@@ -137,7 +147,6 @@ items = [
   "vehicles.minimum_gap_m",
   "vehicles.car_follow_model",
   "metrics.queue_length_definition",
-  "simulation.drain_timeout_s",
   "network.original_coordinates",
   "network.original_edge_lengths",
   "network.original_gate_connectors",

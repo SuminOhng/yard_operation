@@ -14,8 +14,7 @@ import subprocess
 from collections.abc import Iterable, Mapping
 from dataclasses import asdict, dataclass
 from hashlib import sha256
-from importlib.metadata import distribution, version
-from math import hypot
+from importlib.metadata import version
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from typing import Any
@@ -27,10 +26,7 @@ import traci
 from traci import constants as tc
 
 from irbp_replica.control.execution import VTRCycleExecutor
-from irbp_replica.control.vtr import (
-    build_cycle_plan,
-    validate_single_activation,
-)
+from irbp_replica.control.vtr import build_cycle_plan
 from irbp_replica.domain.models import (
     PhaseState,
     RoadState,
@@ -39,6 +35,7 @@ from irbp_replica.domain.models import (
     VehicleState,
 )
 from irbp_replica.routing.irbp import RoutingDecision, select_next_edge
+from irbp_replica.simulation import traci_adapter
 
 EXPECTED_SUMO_VERSION = "1.27.1"
 EXPECTED_TRACI_PROTOCOL = 22
@@ -224,16 +221,10 @@ def _network_directory(project_root: Path) -> Path:
 
 
 def _sumo_installation() -> tuple[Path, Path]:
-    package_version = version("eclipse-sumo")
-    if package_version != EXPECTED_SUMO_VERSION:
-        raise SmokeRunError(
-            f"eclipse-sumo {EXPECTED_SUMO_VERSION} required; found {package_version}"
-        )
-    sumo_home = Path(distribution("eclipse-sumo").locate_file("sumo")).resolve()
-    binary = sumo_home / "bin" / "sumo.exe"
-    if not binary.is_file():
-        raise SmokeRunError(f"wheel SUMO executable not found: {binary}")
-    return sumo_home, binary
+    return traci_adapter.sumo_installation(
+        EXPECTED_SUMO_VERSION,
+        error_type=SmokeRunError,
+    )
 
 
 def _expected_vehicle_ids(route_file: Path) -> tuple[str, ...]:
@@ -271,78 +262,74 @@ def _validate_cav_arrival_position(route_file: Path) -> None:
 
 
 def _edge_lane_ids(network: Any, edge_id: str) -> tuple[str, ...]:
-    return tuple(lane.getID() for lane in network.getEdge(edge_id).getLanes())
+    return traci_adapter.edge_lane_ids(network, edge_id)
 
 
 def _vehicle_subscription_value(connection: Any, vehicle_id: str, variable: int) -> Any:
-    results = connection.vehicle.getSubscriptionResults(vehicle_id)
-    if results is None or variable not in results:
-        raise SmokeRunError(
-            f"vehicle subscription variable {variable} unavailable: {vehicle_id}"
-        )
-    return results[variable]
+    return traci_adapter.vehicle_subscription_value(
+        connection,
+        vehicle_id,
+        variable,
+        error_type=SmokeRunError,
+    )
 
 
 def _vehicle_kind(connection: Any, vehicle_id: str) -> str:
-    type_id = str(_vehicle_subscription_value(connection, vehicle_id, tc.VAR_TYPE))
-    try:
-        return VEHICLE_KIND_BY_TYPE_ID[type_id]
-    except KeyError as exc:
-        raise SmokeRunError(f"unknown vehicle type for kind mapping: {type_id}") from exc
+    return traci_adapter.vehicle_kind(
+        connection,
+        vehicle_id,
+        VEHICLE_KIND_BY_TYPE_ID,
+        error_type=SmokeRunError,
+    )
 
 
 def _vehicles_on_edge(connection: Any, network: Any, edge_id: str) -> tuple[str, ...]:
-    vehicle_ids: set[str] = set()
-    for lane_id in _edge_lane_ids(network, edge_id):
-        results = connection.lane.getSubscriptionResults(lane_id)
-        if results is None or tc.LAST_STEP_VEHICLE_ID_LIST not in results:
-            raise SmokeRunError(f"lane vehicle-ID subscription unavailable: {lane_id}")
-        vehicle_ids.update(results[tc.LAST_STEP_VEHICLE_ID_LIST])
-    return tuple(sorted(vehicle_ids))
+    return traci_adapter.vehicles_on_edge(
+        connection,
+        network,
+        edge_id,
+        error_type=SmokeRunError,
+    )
 
 
 def _queue_vehicle_ids(connection: Any, network: Any, edge_id: str) -> tuple[str, ...]:
-    return tuple(
-        vehicle_id
-        for vehicle_id in _vehicles_on_edge(connection, network, edge_id)
-        if float(_vehicle_subscription_value(connection, vehicle_id, tc.VAR_SPEED))
-        <= QUEUE_SPEED_THRESHOLD_MPS
+    return traci_adapter.queue_vehicle_ids(
+        connection,
+        network,
+        edge_id,
+        QUEUE_SPEED_THRESHOLD_MPS,
+        error_type=SmokeRunError,
     )
 
 
 def _queue_leader_kind(connection: Any, network: Any, edge_id: str) -> str | None:
-    queued = _queue_vehicle_ids(connection, network, edge_id)
-    if not queued:
-        return None
-    leader_id = min(
-        queued,
-        key=lambda vehicle_id: (
-            -float(_vehicle_subscription_value(connection, vehicle_id, tc.VAR_LANEPOSITION)),
-            vehicle_id,
-        ),
+    return traci_adapter.queue_leader_kind(
+        connection,
+        network,
+        edge_id,
+        VEHICLE_KIND_BY_TYPE_ID,
+        QUEUE_SPEED_THRESHOLD_MPS,
+        error_type=SmokeRunError,
     )
-    return _vehicle_kind(connection, leader_id)
 
 
 def _edge_length(connection: Any, network: Any, edge_id: str) -> float:
-    lane_ids = _edge_lane_ids(network, edge_id)
-    if not lane_ids:
-        raise SmokeRunError(f"edge has no lanes: {edge_id}")
-    return max(float(connection.lane.getLength(lane_id)) for lane_id in lane_ids)
+    return traci_adapter.edge_length(
+        connection,
+        network,
+        edge_id,
+        error_type=SmokeRunError,
+    )
 
 
 def _remaining_capacity_slots(connection: Any, network: Any, edge_id: str) -> float:
-    lane_ids = _edge_lane_ids(network, edge_id)
-    total_slots = sum(
-        int(float(connection.lane.getLength(lane_id)) // VEHICLE_SLOT_M) for lane_id in lane_ids
+    return traci_adapter.remaining_capacity_slots(
+        connection,
+        network,
+        edge_id,
+        VEHICLE_SLOT_M,
+        error_type=SmokeRunError,
     )
-    occupied = 0
-    for lane_id in lane_ids:
-        results = connection.lane.getSubscriptionResults(lane_id)
-        if results is None or tc.LAST_STEP_VEHICLE_NUMBER not in results:
-            raise SmokeRunError(f"lane vehicle-count subscription unavailable: {lane_id}")
-        occupied += int(results[tc.LAST_STEP_VEHICLE_NUMBER])
-    return float(max(total_slots - occupied, 0))
 
 
 def _phase_snapshot(connection: Any, network: Any) -> tuple[PhaseState, ...]:
@@ -366,115 +353,48 @@ def _road_snapshot(
     network: Any,
     phases: Iterable[PhaseState],
 ) -> dict[str, RoadState]:
-    phases = tuple(phases)
-    edge_ids = {
-        edge_id
-        for phase in phases
-        for edge_id in (phase.upstream_edge_id, *phase.downstream_edge_ids)
-    }
-    roads: dict[str, RoadState] = {}
-    upstream_ids = {phase.upstream_edge_id for phase in phases}
-    for edge_id in sorted(edge_ids):
-        roads[edge_id] = RoadState(
-            edge_id=edge_id,
-            length_m=_edge_length(connection, network, edge_id),
-            queue_vehicles=float(
-                len(_queue_vehicle_ids(connection, network, edge_id))
-                if edge_id in upstream_ids
-                else 0
-            ),
-            remaining_capacity_vehicles=_remaining_capacity_slots(
-                connection,
-                network,
-                edge_id,
-            ),
-        )
-    return roads
+    return traci_adapter.road_snapshot(
+        connection,
+        network,
+        phases,
+        vehicle_slot_m=VEHICLE_SLOT_M,
+        queue_speed_threshold_mps=QUEUE_SPEED_THRESHOLD_MPS,
+        error_type=SmokeRunError,
+    )
 
 
 def _controlled_link_indexes(connection: Any) -> tuple[dict[str, tuple[int, ...]], int]:
-    groups = tuple(connection.trafficlight.getControlledLinks(TLS_ID))
-    if not groups:
-        raise SmokeRunError(f"traffic light has no controlled links: {TLS_ID}")
-    indexes: dict[str, list[int]] = {}
-    for link_index, group in enumerate(groups):
-        if not group:
-            continue
-        incoming_edges = {connection.lane.getEdgeID(link[0]) for link in group}
-        if len(incoming_edges) != 1:
-            raise SmokeRunError(f"controlled link index {link_index} has multiple incoming edges")
-        incoming_edge = incoming_edges.pop()
-        indexes.setdefault(incoming_edge, []).append(link_index)
-    missing = sorted(set(PHASE_BY_EDGE) - set(indexes))
-    if missing:
-        raise SmokeRunError(f"traffic light omits controlled incoming edges: {missing}")
-    return (
-        {edge_id: tuple(values) for edge_id, values in sorted(indexes.items())},
-        len(groups),
+    return traci_adapter.controlled_link_indexes(
+        connection,
+        TLS_ID,
+        PHASE_BY_EDGE,
+        error_type=SmokeRunError,
     )
 
 
 def _subscribe_normal_lanes(connection: Any, network: Any) -> tuple[str, ...]:
-    lane_ids = tuple(
-        sorted(
-            lane.getID()
-            for edge in network.getEdges(withInternal=False)
-            for lane in edge.getLanes()
-        )
+    return traci_adapter.subscribe_normal_lanes(
+        connection,
+        network,
+        error_type=SmokeRunError,
+        empty_network_message="smoke network has no normal lanes",
     )
-    if not lane_ids:
-        raise SmokeRunError("smoke network has no normal lanes")
-    for lane_id in lane_ids:
-        connection.lane.subscribe(
-            lane_id,
-            (
-                tc.LAST_STEP_VEHICLE_ID_LIST,
-                tc.LAST_STEP_VEHICLE_NUMBER,
-            ),
-        )
-    return lane_ids
 
 
 def _validate_lane_subscriptions(connection: Any, lane_ids: Iterable[str]) -> None:
-    for lane_id in lane_ids:
-        results = connection.lane.getSubscriptionResults(lane_id)
-        if results is None:
-            raise SmokeRunError(f"missing lane subscription result: {lane_id}")
-        if tc.LAST_STEP_VEHICLE_ID_LIST not in results:
-            raise SmokeRunError(f"lane vehicle-ID subscription missing: {lane_id}")
-        if tc.LAST_STEP_VEHICLE_NUMBER not in results:
-            raise SmokeRunError(f"lane vehicle-count subscription missing: {lane_id}")
-        subscribed_ids = tuple(sorted(results[tc.LAST_STEP_VEHICLE_ID_LIST]))
-        direct_ids = tuple(sorted(connection.lane.getLastStepVehicleIDs(lane_id)))
-        subscribed_count = int(results[tc.LAST_STEP_VEHICLE_NUMBER])
-        direct_count = int(connection.lane.getLastStepVehicleNumber(lane_id))
-        if subscribed_ids != direct_ids:
-            raise SmokeRunError(f"lane vehicle-ID subscription mismatch: {lane_id}")
-        if subscribed_count != direct_count or subscribed_count != len(subscribed_ids):
-            raise SmokeRunError(f"lane vehicle-count subscription mismatch: {lane_id}")
+    traci_adapter.validate_lane_subscriptions(
+        connection,
+        lane_ids,
+        error_type=SmokeRunError,
+    )
 
 
 def _validate_vehicle_subscriptions(connection: Any, vehicle_ids: Iterable[str]) -> int:
-    vehicle_ids = tuple(sorted(vehicle_ids))
-    for vehicle_id in vehicle_ids:
-        expected = {
-            tc.VAR_ROAD_ID: connection.vehicle.getRoadID(vehicle_id),
-            tc.VAR_SPEED: connection.vehicle.getSpeed(vehicle_id),
-            tc.VAR_LANEPOSITION: connection.vehicle.getLanePosition(vehicle_id),
-            tc.VAR_TYPE: connection.vehicle.getTypeID(vehicle_id),
-            tc.VAR_LANE_ID: connection.vehicle.getLaneID(vehicle_id),
-        }
-        for variable, direct_value in expected.items():
-            subscribed_value = _vehicle_subscription_value(
-                connection,
-                vehicle_id,
-                variable,
-            )
-            if subscribed_value != direct_value:
-                raise SmokeRunError(
-                    f"vehicle subscription mismatch for {vehicle_id}, variable {variable}"
-                )
-    return len(vehicle_ids)
+    return traci_adapter.validate_vehicle_subscriptions(
+        connection,
+        vehicle_ids,
+        error_type=SmokeRunError,
+    )
 
 
 def _signal_state(
@@ -483,18 +403,13 @@ def _signal_state(
     link_indexes: Mapping[str, tuple[int, ...]],
     state_length: int,
 ) -> str:
-    states = ["r"] * state_length
-    if active_phase_id is None:
-        return "".join(states)
-    phase_by_id = {phase.phase_id: phase for phase in phases}
-    try:
-        phase = phase_by_id[active_phase_id]
-    except KeyError as exc:
-        raise SmokeRunError(f"unknown active phase: {active_phase_id}") from exc
-    validate_single_activation(phases, (active_phase_id,), (phase.station_id,))
-    for link_index in link_indexes[phase.upstream_edge_id]:
-        states[link_index] = "G"
-    return "".join(states)
+    return traci_adapter.signal_state(
+        active_phase_id,
+        phases,
+        link_indexes,
+        state_length,
+        error_type=SmokeRunError,
+    )
 
 
 def _build_executor(
@@ -541,21 +456,14 @@ def _reachable_stage(
     simulation_time_s: float,
     arrival_position_m: float,
 ) -> Any | None:
-    try:
-        stage = connection.simulation.findRoute(
-            candidate_edge_id,
-            destination_edge_id,
-            vType=vehicle_type_id,
-            depart=simulation_time_s,
-            departPos=0.0,
-            arrivalPos=arrival_position_m,
-        )
-    except traci.TraCIException:
-        return None
-    edges = tuple(stage.edges)
-    if not edges or edges[0] != candidate_edge_id or edges[-1] != destination_edge_id:
-        return None
-    return stage
+    return traci_adapter.reachable_stage(
+        connection,
+        candidate_edge_id,
+        destination_edge_id,
+        vehicle_type_id,
+        simulation_time_s,
+        arrival_position_m,
+    )
 
 
 def _candidate_snapshot(
@@ -568,73 +476,18 @@ def _candidate_snapshot(
     arrival_position_m: float,
     destination_position_m: tuple[float, float],
 ) -> tuple[RoutingCandidateState, Any | None]:
-    edge_id = candidate_edge.getID()
-    lane_ids = _edge_lane_ids(network, edge_id)
-    length_m = max(float(connection.lane.getLength(lane_id)) for lane_id in lane_ids)
-    observed_vehicles: list[VehicleState] = []
-    for vehicle_id in _vehicles_on_edge(connection, network, edge_id):
-        lane_id = str(_vehicle_subscription_value(connection, vehicle_id, tc.VAR_LANE_ID))
-        remaining_m = max(
-            float(connection.lane.getLength(lane_id))
-            - float(
-                _vehicle_subscription_value(
-                    connection,
-                    vehicle_id,
-                    tc.VAR_LANEPOSITION,
-                )
-            ),
-            0.0,
-        )
-        observed_vehicles.append(
-            VehicleState(
-                vehicle_id=vehicle_id,
-                vehicle_kind=_vehicle_kind(connection, vehicle_id),
-                edge_id=edge_id,
-                speed_mps=max(
-                    float(
-                        _vehicle_subscription_value(
-                            connection,
-                            vehicle_id,
-                            tc.VAR_SPEED,
-                        )
-                    ),
-                    0.0,
-                ),
-                remaining_distance_m=min(remaining_m, length_m),
-                destination_edge_id=connection.vehicle.getRoute(vehicle_id)[-1],
-            )
-        )
-    stage = _reachable_stage(
+    return traci_adapter.candidate_snapshot(
         connection,
-        edge_id,
-        destination_edge_id,
-        str(_vehicle_subscription_value(connection, cav.vehicle_id, tc.VAR_TYPE)),
+        network,
+        cav.vehicle_id,
+        candidate_edge,
         simulation_time_s,
+        destination_edge_id,
         arrival_position_m,
+        destination_position_m,
+        VEHICLE_KIND_BY_TYPE_ID,
+        error_type=SmokeRunError,
     )
-    downstream_node = candidate_edge.getToNode()
-    downstream_position_m = tuple(float(value) for value in downstream_node.getCoord())
-    if stage is not None:
-        heuristic_m = hypot(
-            destination_position_m[0] - downstream_position_m[0],
-            destination_position_m[1] - downstream_position_m[1],
-        )
-        reachable_suffix_m = max(float(stage.length) - length_m, 0.0)
-        if heuristic_m > reachable_suffix_m + 1e-6:
-            raise SmokeRunError(
-                f"Euclidean heuristic exceeds reachable suffix for {edge_id}: "
-                f"{heuristic_m} > {reachable_suffix_m}"
-            )
-    candidate = RoutingCandidateState(
-        edge_id=edge_id,
-        downstream_node_id=downstream_node.getID(),
-        length_m=length_m,
-        downstream_position_m=downstream_position_m,
-        vehicles=tuple(observed_vehicles),
-        is_legal=True,
-        destination_reachable=stage is not None,
-    )
-    return candidate, stage
 
 
 def _route_cav_once(
@@ -650,12 +503,7 @@ def _route_cav_once(
     destination_edge_id = original_route[-1]
     current_edge = network.getEdge(current_edge_id)
     destination_edge = network.getEdge(destination_edge_id)
-    outgoing_edges = tuple(
-        sorted(
-            (edge for edge in current_edge.getOutgoing() if not edge.getID().startswith(":")),
-            key=lambda edge: edge.getID(),
-        )
-    )
+    outgoing_edges = traci_adapter.outgoing_edges(network, current_edge_id)
     if not outgoing_edges:
         raise SmokeRunError(f"no routing candidates from {current_edge_id}")
     candidate_edge_ids = tuple(edge.getID() for edge in outgoing_edges)
@@ -736,23 +584,17 @@ def _route_cav_once(
     if selected_stage is None:
         raise SmokeRunError("selected route has no destination-reachable suffix")
     suffix = tuple(selected_stage.edges)
-    new_route = (current_edge_id, *suffix)
-
     # Transaction boundary: eta is returned only after SUMO accepts and echoes
     # the entire current-edge-first route.
-    connection.vehicle.setRoute(CAV_ID, new_route)
-    committed_route = tuple(connection.vehicle.getRoute(CAV_ID))
-    if committed_route != new_route:
-        raise SmokeRunError(
-            f"SUMO route verification failed: expected {new_route}, got {committed_route}"
-        )
-    route_index = int(connection.vehicle.getRouteIndex(CAV_ID))
-    if route_index < 0 or committed_route[route_index] != current_edge_id:
-        raise SmokeRunError("SUMO did not retain the CAV on its current edge")
-    if route_index + 1 >= len(committed_route):
-        raise SmokeRunError("committed route has no next edge")
-    if committed_route[route_index + 1] != decision.selected_edge_id:
-        raise SmokeRunError("committed route does not contain selected next edge")
+    committed_route = traci_adapter.commit_route(
+        connection,
+        CAV_ID,
+        current_edge_id,
+        decision.selected_edge_id,
+        suffix,
+        vehicle_label="CAV",
+        error_type=SmokeRunError,
+    )
 
     score_traces = tuple(
         CandidateTrace(
@@ -833,22 +675,16 @@ def _freeze_signal_runs(runs: Iterable[_MutableSignalRun]) -> tuple[SignalRun, .
 
 
 def _validate_server_version(connection: Any) -> tuple[int, str]:
-    protocol, server_version = connection.getVersion()
-    if protocol != EXPECTED_TRACI_PROTOCOL or protocol != tc.TRACI_VERSION:
-        raise SmokeRunError(
-            "TraCI protocol mismatch: "
-            f"expected {EXPECTED_TRACI_PROTOCOL}, client {tc.TRACI_VERSION}, server {protocol}"
-        )
-    if server_version != f"SUMO {EXPECTED_SUMO_VERSION}":
-        raise SmokeRunError(f"SUMO server {EXPECTED_SUMO_VERSION} required; found {server_version}")
-    return protocol, server_version
+    return traci_adapter.validate_server_version(
+        connection,
+        EXPECTED_SUMO_VERSION,
+        EXPECTED_TRACI_PROTOCOL,
+        error_type=SmokeRunError,
+    )
 
 
 def _restore_environment(name: str, old_value: str | None) -> None:
-    if old_value is None:
-        os.environ.pop(name, None)
-    else:
-        os.environ[name] = old_value
+    traci_adapter.restore_environment(name, old_value)
 
 
 def run_sumo_smoke(
@@ -1031,11 +867,9 @@ def run_sumo_smoke(
                 active_subscribed_vehicle_ids = tuple(
                     sorted(set(connection.vehicle.getIDList()) & departed_ids)
                 )
-                validated_vehicle_subscription_observations += (
-                    _validate_vehicle_subscriptions(
-                        connection,
-                        active_subscribed_vehicle_ids,
-                    )
+                validated_vehicle_subscription_observations += _validate_vehicle_subscriptions(
+                    connection,
+                    active_subscribed_vehicle_ids,
                 )
 
                 subscribed_tls = connection.trafficlight.getSubscriptionResults(TLS_ID)
@@ -1128,9 +962,7 @@ def run_sumo_smoke(
         ),
         subscribed_lane_ids=subscribed_lane_ids,
         subscribed_vehicle_ids=tuple(sorted(departed_ids)),
-        validated_vehicle_subscription_observations=(
-            validated_vehicle_subscription_observations
-        ),
+        validated_vehicle_subscription_observations=(validated_vehicle_subscription_observations),
         steps=steps,
         end_time_s=round(end_time_s, 6),
         minimum_expected_remaining=minimum_expected_remaining,
