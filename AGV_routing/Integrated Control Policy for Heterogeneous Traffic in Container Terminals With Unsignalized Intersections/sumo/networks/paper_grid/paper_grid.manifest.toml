@@ -1,0 +1,31 @@
+schema_version = 1
+
+[paper]
+# Values stated in the paper's numerical-experiment description and Figure 6.
+rows = 4
+columns = 5
+intersections = 20
+directed_roads = 54
+road_lane_statement = "most_roads_single_lane"
+road_length_min_m = 45.0
+road_length_max_m = 300.0
+gate_count = 2
+longitudinal_direction = "bidirectional"
+lateral_direction = "mostly_one_way"
+
+[reconstruction]
+# Figure 6 does not publish node coordinates, per-road lengths, gate connector
+# edges, or a machine-readable topology. These entries are explicit replica
+# assumptions, kept separate from the paper facts above.
+basis = "Figure 6 topology and arrow directions; coordinates are figure-proportional assumptions"
+count_convention = "The 54 roads are directed grid edges; the two gate portals are existing intersections and add no edges"
+column_x_m = [0.0, 300.0, 600.0, 900.0, 1200.0]
+row_y_m = [600.0, 400.0, 200.0, 0.0]
+bidirectional_horizontal_rows = [0, 3]
+eastbound_horizontal_rows = [1, 2]
+gate_nodes = ["j_0_1", "j_0_3"]
+lanes_per_road = 1
+speed_m_per_s = 14.0
+phase_order = ["N", "E", "S", "W"]
+phase_duration_s = 3600.0
+phase_next_rule = "self_loop_until_traci_override"

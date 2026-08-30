@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<nodes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://sumo.dlr.de/xsd/nodes_file.xsd">
+    <node id="j_0_0" x="0.0" y="600.0" type="traffic_light" tl="j_0_0" tlType="static" />
+    <node id="j_0_1" x="300.0" y="600.0" type="traffic_light" tl="j_0_1" tlType="static" />
+    <node id="j_0_2" x="600.0" y="600.0" type="traffic_light" tl="j_0_2" tlType="static" />
+    <node id="j_0_3" x="900.0" y="600.0" type="traffic_light" tl="j_0_3" tlType="static" />
+    <node id="j_0_4" x="1200.0" y="600.0" type="traffic_light" tl="j_0_4" tlType="static" />
+    <node id="j_1_0" x="0.0" y="400.0" type="traffic_light" tl="j_1_0" tlType="static" />
+    <node id="j_1_1" x="300.0" y="400.0" type="traffic_light" tl="j_1_1" tlType="static" />
+    <node id="j_1_2" x="600.0" y="400.0" type="traffic_light" tl="j_1_2" tlType="static" />
+    <node id="j_1_3" x="900.0" y="400.0" type="traffic_light" tl="j_1_3" tlType="static" />
+    <node id="j_1_4" x="1200.0" y="400.0" type="traffic_light" tl="j_1_4" tlType="static" />
+    <node id="j_2_0" x="0.0" y="200.0" type="traffic_light" tl="j_2_0" tlType="static" />
+    <node id="j_2_1" x="300.0" y="200.0" type="traffic_light" tl="j_2_1" tlType="static" />
+    <node id="j_2_2" x="600.0" y="200.0" type="traffic_light" tl="j_2_2" tlType="static" />
+    <node id="j_2_3" x="900.0" y="200.0" type="traffic_light" tl="j_2_3" tlType="static" />
+    <node id="j_2_4" x="1200.0" y="200.0" type="traffic_light" tl="j_2_4" tlType="static" />
+    <node id="j_3_0" x="0.0" y="0.0" type="traffic_light" tl="j_3_0" tlType="static" />
+    <node id="j_3_1" x="300.0" y="0.0" type="traffic_light" tl="j_3_1" tlType="static" />
+    <node id="j_3_2" x="600.0" y="0.0" type="traffic_light" tl="j_3_2" tlType="static" />
+    <node id="j_3_3" x="900.0" y="0.0" type="traffic_light" tl="j_3_3" tlType="static" />
+    <node id="j_3_4" x="1200.0" y="0.0" type="traffic_light" tl="j_3_4" tlType="static" />
+</nodes>

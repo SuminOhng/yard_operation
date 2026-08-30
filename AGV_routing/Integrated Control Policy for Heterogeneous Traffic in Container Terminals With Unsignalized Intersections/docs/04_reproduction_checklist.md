@@ -29,10 +29,12 @@ Legend: `[x]` complete, `[ ]` pending, `[!]` blocked by unpublished information 
 - [x] Record two HDV gates and internal CAV-only operating area.
 - [!] Reconstruct exact node coordinates from Fig. 6; original coordinates are unavailable.
 - [!] Reconstruct edge directions and lengths; original edge table is unavailable.
-- [ ] Define conflict-free movements and phases for all intersections.
-- [ ] Validate exactly one active phase per intersection.
-- [ ] Validate all OD pairs are connected.
-- [ ] Save source `.nod.xml`, `.edg.xml`, `.con.xml`, and generation command.
+- [x] Declare reconstruction coordinates, directions, lengths, gate-count convention, and their non-paper status.
+- [x] Define legal non-U-turn movements and one-incoming-approach virtual phases for all intersections.
+- [x] Validate each controlled link belongs to exactly one phase, no phase mixes incoming approaches, and no active movement pair is marked as foes by SUMO.
+- [x] Validate strong connectivity of the directed network; demand-specific OD sampling remains pending.
+- [x] Save manifest, source `.nod.xml`, `.edg.xml`, `.con.xml`, `.tll.xml`, metadata, and generation command.
+- [x] Verify deterministic rebuild equality for the 20-intersection/54-road network.
 - [x] Build the separate one-intersection smoke network from committed PlainXML and verify its generated topology.
 
 ## 4. Vehicle and demand model
@@ -82,7 +84,8 @@ Legend: `[x]` complete, `[ ]` pending, `[!]` blocked by unpublished information 
 - [x] Implement zero-speed floor `0.1 m/s` for equation (8).
 - [x] Implement pressure weight.
 - [x] Implement Euclidean heuristic against the configured trip arrival position.
-- [ ] Verify that the Euclidean heuristic is admissible for reconstructed edge lengths and arrival positions.
+- [x] Verify reconstructed paper-grid source edge lengths equal Euclidean endpoint distance.
+- [ ] Verify the Euclidean heuristic is admissible for configured trip arrival positions in the full paper-grid runner.
 - [x] Implement cumulative actual-distance cost.
 - [x] Implement eta eligibility mask.
 - [x] Implement deterministic tie-breaking.
@@ -99,6 +102,7 @@ Legend: `[x]` complete, `[ ]` pending, `[!]` blocked by unpublished information 
 - [x] Implement legal CAV route replacement before the route split.
 - [x] Record phase and routing decisions in a deterministic smoke trace.
 - [x] Verify two fixed-seed smoke runs give identical normalized traces.
+- [x] Build and structurally validate the full 20-intersection SUMO network.
 - [ ] Run the full 20-intersection scenario without collision or deadlock.
 
 ## 8. Metrics

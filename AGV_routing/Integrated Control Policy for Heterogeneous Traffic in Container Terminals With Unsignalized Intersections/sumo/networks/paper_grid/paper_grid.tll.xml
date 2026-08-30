@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tlLogics xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://sumo.dlr.de/xsd/tllogic_file.xsd">
+    <tlLogic id="j_0_0" type="static" programID="virtual" offset="0">
+        <phase duration="3600.0" state="Gr" name="approach_E" next="0" />
+        <phase duration="3600.0" state="rG" name="approach_S" next="1" />
+    </tlLogic>
+    <tlLogic id="j_0_1" type="static" programID="virtual" offset="0">
+        <phase duration="3600.0" state="GGrrrr" name="approach_E" next="0" />
+        <phase duration="3600.0" state="rrGGrr" name="approach_S" next="1" />
+        <phase duration="3600.0" state="rrrrGG" name="approach_W" next="2" />
+    </tlLogic>
+    <tlLogic id="j_0_2" type="static" programID="virtual" offset="0">
+        <phase duration="3600.0" state="GGrrrr" name="approach_E" next="0" />
+        <phase duration="3600.0" state="rrGGrr" name="approach_S" next="1" />
+        <phase duration="3600.0" state="rrrrGG" name="approach_W" next="2" />
+    </tlLogic>
+    <tlLogic id="j_0_3" type="static" programID="virtual" offset="0">
+        <phase duration="3600.0" state="GGrrrr" name="approach_E" next="0" />
+        <phase duration="3600.0" state="rrGGrr" name="approach_S" next="1" />
+        <phase duration="3600.0" state="rrrrGG" name="approach_W" next="2" />
+    </tlLogic>
+    <tlLogic id="j_0_4" type="static" programID="virtual" offset="0">
+        <phase duration="3600.0" state="Gr" name="approach_S" next="0" />
+        <phase duration="3600.0" state="rG" name="approach_W" next="1" />
+    </tlLogic>
+    <tlLogic id="j_1_0" type="static" programID="virtual" offset="0">
+        <phase duration="3600.0" state="GGrr" name="approach_N" next="0" />
+        <phase duration="3600.0" state="rrGG" name="approach_S" next="1" />
+    </tlLogic>
+    <tlLogic id="j_1_1" type="static" programID="virtual" offset="0">
+        <phase duration="3600.0" state="GGrrrrr" name="approach_N" next="0" />
+        <phase duration="3600.0" state="rrGGrrr" name="approach_S" next="1" />
+        <phase duration="3600.0" state="rrrrGGG" name="approach_W" next="2" />
+    </tlLogic>
+    <tlLogic id="j_1_2" type="static" programID="virtual" offset="0">
+        <phase duration="3600.0" state="GGrrrrr" name="approach_N" next="0" />
+        <phase duration="3600.0" state="rrGGrrr" name="approach_S" next="1" />
+        <phase duration="3600.0" state="rrrrGGG" name="approach_W" next="2" />
+    </tlLogic>
+    <tlLogic id="j_1_3" type="static" programID="virtual" offset="0">
+        <phase duration="3600.0" state="GGrrrrr" name="approach_N" next="0" />
+        <phase duration="3600.0" state="rrGGrrr" name="approach_S" next="1" />
+        <phase duration="3600.0" state="rrrrGGG" name="approach_W" next="2" />
+    </tlLogic>
+    <tlLogic id="j_1_4" type="static" programID="virtual" offset="0">
+        <phase duration="3600.0" state="Grrr" name="approach_N" next="0" />
+        <phase duration="3600.0" state="rGrr" name="approach_S" next="1" />
+        <phase duration="3600.0" state="rrGG" name="approach_W" next="2" />
+    </tlLogic>
+    <tlLogic id="j_2_0" type="static" programID="virtual" offset="0">
+        <phase duration="3600.0" state="GGrr" name="approach_N" next="0" />
+        <phase duration="3600.0" state="rrGG" name="approach_S" next="1" />
+    </tlLogic>
+    <tlLogic id="j_2_1" type="static" programID="virtual" offset="0">
+        <phase duration="3600.0" state="GGrrrrr" name="approach_N" next="0" />
+        <phase duration="3600.0" state="rrGGrrr" name="approach_S" next="1" />
+        <phase duration="3600.0" state="rrrrGGG" name="approach_W" next="2" />
+    </tlLogic>
+    <tlLogic id="j_2_2" type="static" programID="virtual" offset="0">
+        <phase duration="3600.0" state="GGrrrrr" name="approach_N" next="0" />
+        <phase duration="3600.0" state="rrGGrrr" name="approach_S" next="1" />
+        <phase duration="3600.0" state="rrrrGGG" name="approach_W" next="2" />
+    </tlLogic>
+    <tlLogic id="j_2_3" type="static" programID="virtual" offset="0">
+        <phase duration="3600.0" state="GGrrrrr" name="approach_N" next="0" />
+        <phase duration="3600.0" state="rrGGrrr" name="approach_S" next="1" />
+        <phase duration="3600.0" state="rrrrGGG" name="approach_W" next="2" />
+    </tlLogic>
+    <tlLogic id="j_2_4" type="static" programID="virtual" offset="0">
+        <phase duration="3600.0" state="Grrr" name="approach_N" next="0" />
+        <phase duration="3600.0" state="rGrr" name="approach_S" next="1" />
+        <phase duration="3600.0" state="rrGG" name="approach_W" next="2" />
+    </tlLogic>
+    <tlLogic id="j_3_0" type="static" programID="virtual" offset="0">
+        <phase duration="3600.0" state="Gr" name="approach_N" next="0" />
+        <phase duration="3600.0" state="rG" name="approach_E" next="1" />
+    </tlLogic>
+    <tlLogic id="j_3_1" type="static" programID="virtual" offset="0">
+        <phase duration="3600.0" state="GGrrrr" name="approach_N" next="0" />
+        <phase duration="3600.0" state="rrGGrr" name="approach_E" next="1" />
+        <phase duration="3600.0" state="rrrrGG" name="approach_W" next="2" />
+    </tlLogic>
+    <tlLogic id="j_3_2" type="static" programID="virtual" offset="0">
+        <phase duration="3600.0" state="GGrrrr" name="approach_N" next="0" />
+        <phase duration="3600.0" state="rrGGrr" name="approach_E" next="1" />
+        <phase duration="3600.0" state="rrrrGG" name="approach_W" next="2" />
+    </tlLogic>
+    <tlLogic id="j_3_3" type="static" programID="virtual" offset="0">
+        <phase duration="3600.0" state="GGrrrr" name="approach_N" next="0" />
+        <phase duration="3600.0" state="rrGGrr" name="approach_E" next="1" />
+        <phase duration="3600.0" state="rrrrGG" name="approach_W" next="2" />
+    </tlLogic>
+    <tlLogic id="j_3_4" type="static" programID="virtual" offset="0">
+        <phase duration="3600.0" state="Gr" name="approach_N" next="0" />
+        <phase duration="3600.0" state="rG" name="approach_W" next="1" />
+    </tlLogic>
+    <connection from="e_j_0_1__j_0_0" to="e_j_0_0__j_1_0" fromLane="0" toLane="0" tl="j_0_0" linkIndex="0" />
+    <connection from="e_j_1_0__j_0_0" to="e_j_0_0__j_0_1" fromLane="0" toLane="0" tl="j_0_0" linkIndex="1" />
+    <connection from="e_j_0_2__j_0_1" to="e_j_0_1__j_1_1" fromLane="0" toLane="0" tl="j_0_1" linkIndex="0" />
+    <connection from="e_j_0_2__j_0_1" to="e_j_0_1__j_0_0" fromLane="0" toLane="0" tl="j_0_1" linkIndex="1" />
+    <connection from="e_j_1_1__j_0_1" to="e_j_0_1__j_0_2" fromLane="0" toLane="0" tl="j_0_1" linkIndex="2" />
+    <connection from="e_j_1_1__j_0_1" to="e_j_0_1__j_0_0" fromLane="0" toLane="0" tl="j_0_1" linkIndex="3" />
+    <connection from="e_j_0_0__j_0_1" to="e_j_0_1__j_0_2" fromLane="0" toLane="0" tl="j_0_1" linkIndex="4" />
+    <connection from="e_j_0_0__j_0_1" to="e_j_0_1__j_1_1" fromLane="0" toLane="0" tl="j_0_1" linkIndex="5" />
+    <connection from="e_j_0_3__j_0_2" to="e_j_0_2__j_1_2" fromLane="0" toLane="0" tl="j_0_2" linkIndex="0" />
+    <connection from="e_j_0_3__j_0_2" to="e_j_0_2__j_0_1" fromLane="0" toLane="0" tl="j_0_2" linkIndex="1" />
+    <connection from="e_j_1_2__j_0_2" to="e_j_0_2__j_0_3" fromLane="0" toLane="0" tl="j_0_2" linkIndex="2" />
+    <connection from="e_j_1_2__j_0_2" to="e_j_0_2__j_0_1" fromLane="0" toLane="0" tl="j_0_2" linkIndex="3" />
+    <connection from="e_j_0_1__j_0_2" to="e_j_0_2__j_0_3" fromLane="0" toLane="0" tl="j_0_2" linkIndex="4" />
+    <connection from="e_j_0_1__j_0_2" to="e_j_0_2__j_1_2" fromLane="0" toLane="0" tl="j_0_2" linkIndex="5" />
+    <connection from="e_j_0_4__j_0_3" to="e_j_0_3__j_1_3" fromLane="0" toLane="0" tl="j_0_3" linkIndex="0" />
+    <connection from="e_j_0_4__j_0_3" to="e_j_0_3__j_0_2" fromLane="0" toLane="0" tl="j_0_3" linkIndex="1" />
+    <connection from="e_j_1_3__j_0_3" to="e_j_0_3__j_0_4" fromLane="0" toLane="0" tl="j_0_3" linkIndex="2" />
+    <connection from="e_j_1_3__j_0_3" to="e_j_0_3__j_0_2" fromLane="0" toLane="0" tl="j_0_3" linkIndex="3" />
+    <connection from="e_j_0_2__j_0_3" to="e_j_0_3__j_0_4" fromLane="0" toLane="0" tl="j_0_3" linkIndex="4" />
+    <connection from="e_j_0_2__j_0_3" to="e_j_0_3__j_1_3" fromLane="0" toLane="0" tl="j_0_3" linkIndex="5" />
+    <connection from="e_j_1_4__j_0_4" to="e_j_0_4__j_0_3" fromLane="0" toLane="0" tl="j_0_4" linkIndex="0" />
+    <connection from="e_j_0_3__j_0_4" to="e_j_0_4__j_1_4" fromLane="0" toLane="0" tl="j_0_4" linkIndex="1" />
+    <connection from="e_j_0_0__j_1_0" to="e_j_1_0__j_1_1" fromLane="0" toLane="0" tl="j_1_0" linkIndex="0" />
+    <connection from="e_j_0_0__j_1_0" to="e_j_1_0__j_2_0" fromLane="0" toLane="0" tl="j_1_0" linkIndex="1" />
+    <connection from="e_j_2_0__j_1_0" to="e_j_1_0__j_0_0" fromLane="0" toLane="0" tl="j_1_0" linkIndex="2" />
+    <connection from="e_j_2_0__j_1_0" to="e_j_1_0__j_1_1" fromLane="0" toLane="0" tl="j_1_0" linkIndex="3" />
+    <connection from="e_j_0_1__j_1_1" to="e_j_1_1__j_1_2" fromLane="0" toLane="0" tl="j_1_1" linkIndex="0" />
+    <connection from="e_j_0_1__j_1_1" to="e_j_1_1__j_2_1" fromLane="0" toLane="0" tl="j_1_1" linkIndex="1" />
+    <connection from="e_j_2_1__j_1_1" to="e_j_1_1__j_0_1" fromLane="0" toLane="0" tl="j_1_1" linkIndex="2" />
+    <connection from="e_j_2_1__j_1_1" to="e_j_1_1__j_1_2" fromLane="0" toLane="0" tl="j_1_1" linkIndex="3" />
+    <connection from="e_j_1_0__j_1_1" to="e_j_1_1__j_0_1" fromLane="0" toLane="0" tl="j_1_1" linkIndex="4" />
+    <connection from="e_j_1_0__j_1_1" to="e_j_1_1__j_1_2" fromLane="0" toLane="0" tl="j_1_1" linkIndex="5" />
+    <connection from="e_j_1_0__j_1_1" to="e_j_1_1__j_2_1" fromLane="0" toLane="0" tl="j_1_1" linkIndex="6" />
+    <connection from="e_j_0_2__j_1_2" to="e_j_1_2__j_1_3" fromLane="0" toLane="0" tl="j_1_2" linkIndex="0" />
+    <connection from="e_j_0_2__j_1_2" to="e_j_1_2__j_2_2" fromLane="0" toLane="0" tl="j_1_2" linkIndex="1" />
+    <connection from="e_j_2_2__j_1_2" to="e_j_1_2__j_0_2" fromLane="0" toLane="0" tl="j_1_2" linkIndex="2" />
+    <connection from="e_j_2_2__j_1_2" to="e_j_1_2__j_1_3" fromLane="0" toLane="0" tl="j_1_2" linkIndex="3" />
+    <connection from="e_j_1_1__j_1_2" to="e_j_1_2__j_0_2" fromLane="0" toLane="0" tl="j_1_2" linkIndex="4" />
+    <connection from="e_j_1_1__j_1_2" to="e_j_1_2__j_1_3" fromLane="0" toLane="0" tl="j_1_2" linkIndex="5" />
+    <connection from="e_j_1_1__j_1_2" to="e_j_1_2__j_2_2" fromLane="0" toLane="0" tl="j_1_2" linkIndex="6" />
+    <connection from="e_j_0_3__j_1_3" to="e_j_1_3__j_1_4" fromLane="0" toLane="0" tl="j_1_3" linkIndex="0" />
+    <connection from="e_j_0_3__j_1_3" to="e_j_1_3__j_2_3" fromLane="0" toLane="0" tl="j_1_3" linkIndex="1" />
+    <connection from="e_j_2_3__j_1_3" to="e_j_1_3__j_0_3" fromLane="0" toLane="0" tl="j_1_3" linkIndex="2" />
+    <connection from="e_j_2_3__j_1_3" to="e_j_1_3__j_1_4" fromLane="0" toLane="0" tl="j_1_3" linkIndex="3" />
+    <connection from="e_j_1_2__j_1_3" to="e_j_1_3__j_0_3" fromLane="0" toLane="0" tl="j_1_3" linkIndex="4" />
+    <connection from="e_j_1_2__j_1_3" to="e_j_1_3__j_1_4" fromLane="0" toLane="0" tl="j_1_3" linkIndex="5" />
+    <connection from="e_j_1_2__j_1_3" to="e_j_1_3__j_2_3" fromLane="0" toLane="0" tl="j_1_3" linkIndex="6" />
+    <connection from="e_j_0_4__j_1_4" to="e_j_1_4__j_2_4" fromLane="0" toLane="0" tl="j_1_4" linkIndex="0" />
+    <connection from="e_j_2_4__j_1_4" to="e_j_1_4__j_0_4" fromLane="0" toLane="0" tl="j_1_4" linkIndex="1" />
+    <connection from="e_j_1_3__j_1_4" to="e_j_1_4__j_0_4" fromLane="0" toLane="0" tl="j_1_4" linkIndex="2" />
+    <connection from="e_j_1_3__j_1_4" to="e_j_1_4__j_2_4" fromLane="0" toLane="0" tl="j_1_4" linkIndex="3" />
+    <connection from="e_j_1_0__j_2_0" to="e_j_2_0__j_2_1" fromLane="0" toLane="0" tl="j_2_0" linkIndex="0" />
+    <connection from="e_j_1_0__j_2_0" to="e_j_2_0__j_3_0" fromLane="0" toLane="0" tl="j_2_0" linkIndex="1" />
+    <connection from="e_j_3_0__j_2_0" to="e_j_2_0__j_1_0" fromLane="0" toLane="0" tl="j_2_0" linkIndex="2" />
+    <connection from="e_j_3_0__j_2_0" to="e_j_2_0__j_2_1" fromLane="0" toLane="0" tl="j_2_0" linkIndex="3" />
+    <connection from="e_j_1_1__j_2_1" to="e_j_2_1__j_2_2" fromLane="0" toLane="0" tl="j_2_1" linkIndex="0" />
+    <connection from="e_j_1_1__j_2_1" to="e_j_2_1__j_3_1" fromLane="0" toLane="0" tl="j_2_1" linkIndex="1" />
+    <connection from="e_j_3_1__j_2_1" to="e_j_2_1__j_1_1" fromLane="0" toLane="0" tl="j_2_1" linkIndex="2" />
+    <connection from="e_j_3_1__j_2_1" to="e_j_2_1__j_2_2" fromLane="0" toLane="0" tl="j_2_1" linkIndex="3" />
+    <connection from="e_j_2_0__j_2_1" to="e_j_2_1__j_1_1" fromLane="0" toLane="0" tl="j_2_1" linkIndex="4" />
+    <connection from="e_j_2_0__j_2_1" to="e_j_2_1__j_2_2" fromLane="0" toLane="0" tl="j_2_1" linkIndex="5" />
+    <connection from="e_j_2_0__j_2_1" to="e_j_2_1__j_3_1" fromLane="0" toLane="0" tl="j_2_1" linkIndex="6" />
+    <connection from="e_j_1_2__j_2_2" to="e_j_2_2__j_2_3" fromLane="0" toLane="0" tl="j_2_2" linkIndex="0" />
+    <connection from="e_j_1_2__j_2_2" to="e_j_2_2__j_3_2" fromLane="0" toLane="0" tl="j_2_2" linkIndex="1" />
+    <connection from="e_j_3_2__j_2_2" to="e_j_2_2__j_1_2" fromLane="0" toLane="0" tl="j_2_2" linkIndex="2" />
+    <connection from="e_j_3_2__j_2_2" to="e_j_2_2__j_2_3" fromLane="0" toLane="0" tl="j_2_2" linkIndex="3" />
+    <connection from="e_j_2_1__j_2_2" to="e_j_2_2__j_1_2" fromLane="0" toLane="0" tl="j_2_2" linkIndex="4" />
+    <connection from="e_j_2_1__j_2_2" to="e_j_2_2__j_2_3" fromLane="0" toLane="0" tl="j_2_2" linkIndex="5" />
+    <connection from="e_j_2_1__j_2_2" to="e_j_2_2__j_3_2" fromLane="0" toLane="0" tl="j_2_2" linkIndex="6" />
+    <connection from="e_j_1_3__j_2_3" to="e_j_2_3__j_2_4" fromLane="0" toLane="0" tl="j_2_3" linkIndex="0" />
+    <connection from="e_j_1_3__j_2_3" to="e_j_2_3__j_3_3" fromLane="0" toLane="0" tl="j_2_3" linkIndex="1" />
+    <connection from="e_j_3_3__j_2_3" to="e_j_2_3__j_1_3" fromLane="0" toLane="0" tl="j_2_3" linkIndex="2" />
+    <connection from="e_j_3_3__j_2_3" to="e_j_2_3__j_2_4" fromLane="0" toLane="0" tl="j_2_3" linkIndex="3" />
+    <connection from="e_j_2_2__j_2_3" to="e_j_2_3__j_1_3" fromLane="0" toLane="0" tl="j_2_3" linkIndex="4" />
+    <connection from="e_j_2_2__j_2_3" to="e_j_2_3__j_2_4" fromLane="0" toLane="0" tl="j_2_3" linkIndex="5" />
+    <connection from="e_j_2_2__j_2_3" to="e_j_2_3__j_3_3" fromLane="0" toLane="0" tl="j_2_3" linkIndex="6" />
+    <connection from="e_j_1_4__j_2_4" to="e_j_2_4__j_3_4" fromLane="0" toLane="0" tl="j_2_4" linkIndex="0" />
+    <connection from="e_j_3_4__j_2_4" to="e_j_2_4__j_1_4" fromLane="0" toLane="0" tl="j_2_4" linkIndex="1" />
+    <connection from="e_j_2_3__j_2_4" to="e_j_2_4__j_1_4" fromLane="0" toLane="0" tl="j_2_4" linkIndex="2" />
+    <connection from="e_j_2_3__j_2_4" to="e_j_2_4__j_3_4" fromLane="0" toLane="0" tl="j_2_4" linkIndex="3" />
+    <connection from="e_j_2_0__j_3_0" to="e_j_3_0__j_3_1" fromLane="0" toLane="0" tl="j_3_0" linkIndex="0" />
+    <connection from="e_j_3_1__j_3_0" to="e_j_3_0__j_2_0" fromLane="0" toLane="0" tl="j_3_0" linkIndex="1" />
+    <connection from="e_j_2_1__j_3_1" to="e_j_3_1__j_3_2" fromLane="0" toLane="0" tl="j_3_1" linkIndex="0" />
+    <connection from="e_j_2_1__j_3_1" to="e_j_3_1__j_3_0" fromLane="0" toLane="0" tl="j_3_1" linkIndex="1" />
+    <connection from="e_j_3_2__j_3_1" to="e_j_3_1__j_2_1" fromLane="0" toLane="0" tl="j_3_1" linkIndex="2" />
+    <connection from="e_j_3_2__j_3_1" to="e_j_3_1__j_3_0" fromLane="0" toLane="0" tl="j_3_1" linkIndex="3" />
+    <connection from="e_j_3_0__j_3_1" to="e_j_3_1__j_2_1" fromLane="0" toLane="0" tl="j_3_1" linkIndex="4" />
+    <connection from="e_j_3_0__j_3_1" to="e_j_3_1__j_3_2" fromLane="0" toLane="0" tl="j_3_1" linkIndex="5" />
+    <connection from="e_j_2_2__j_3_2" to="e_j_3_2__j_3_3" fromLane="0" toLane="0" tl="j_3_2" linkIndex="0" />
+    <connection from="e_j_2_2__j_3_2" to="e_j_3_2__j_3_1" fromLane="0" toLane="0" tl="j_3_2" linkIndex="1" />
+    <connection from="e_j_3_3__j_3_2" to="e_j_3_2__j_2_2" fromLane="0" toLane="0" tl="j_3_2" linkIndex="2" />
+    <connection from="e_j_3_3__j_3_2" to="e_j_3_2__j_3_1" fromLane="0" toLane="0" tl="j_3_2" linkIndex="3" />
+    <connection from="e_j_3_1__j_3_2" to="e_j_3_2__j_2_2" fromLane="0" toLane="0" tl="j_3_2" linkIndex="4" />
+    <connection from="e_j_3_1__j_3_2" to="e_j_3_2__j_3_3" fromLane="0" toLane="0" tl="j_3_2" linkIndex="5" />
+    <connection from="e_j_2_3__j_3_3" to="e_j_3_3__j_3_4" fromLane="0" toLane="0" tl="j_3_3" linkIndex="0" />
+    <connection from="e_j_2_3__j_3_3" to="e_j_3_3__j_3_2" fromLane="0" toLane="0" tl="j_3_3" linkIndex="1" />
+    <connection from="e_j_3_4__j_3_3" to="e_j_3_3__j_2_3" fromLane="0" toLane="0" tl="j_3_3" linkIndex="2" />
+    <connection from="e_j_3_4__j_3_3" to="e_j_3_3__j_3_2" fromLane="0" toLane="0" tl="j_3_3" linkIndex="3" />
+    <connection from="e_j_3_2__j_3_3" to="e_j_3_3__j_2_3" fromLane="0" toLane="0" tl="j_3_3" linkIndex="4" />
+    <connection from="e_j_3_2__j_3_3" to="e_j_3_3__j_3_4" fromLane="0" toLane="0" tl="j_3_3" linkIndex="5" />
+    <connection from="e_j_2_4__j_3_4" to="e_j_3_4__j_3_3" fromLane="0" toLane="0" tl="j_3_4" linkIndex="0" />
+    <connection from="e_j_3_3__j_3_4" to="e_j_3_4__j_2_4" fromLane="0" toLane="0" tl="j_3_4" linkIndex="1" />
+</tlLogics>

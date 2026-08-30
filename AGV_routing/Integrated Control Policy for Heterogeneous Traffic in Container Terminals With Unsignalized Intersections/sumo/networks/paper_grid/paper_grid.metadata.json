@@ -1,0 +1,709 @@
+{
+  "counts": {
+    "connections": 102,
+    "controlled_links": 102,
+    "edges": 54,
+    "nodes": 20,
+    "phases": 54,
+    "tls": 20
+  },
+  "edge_groups": {
+    "horizontal_bidirectional": 16,
+    "horizontal_eastbound": 8,
+    "vertical_bidirectional": 30
+  },
+  "gate_nodes": [
+    "j_0_1",
+    "j_0_3"
+  ],
+  "generator": "scripts/build_paper_grid_network.py",
+  "manifest_sha256": "022f88b2620cd551c632dab4f3cf567844ac1e179cdfdb3417e2733e1d6ffdbb",
+  "paper_facts": {
+    "columns": 5,
+    "directed_roads": 54,
+    "gate_count": 2,
+    "intersections": 20,
+    "lateral_direction": "mostly_one_way",
+    "longitudinal_direction": "bidirectional",
+    "road_lane_statement": "most_roads_single_lane",
+    "road_length_max_m": 300.0,
+    "road_length_min_m": 45.0,
+    "rows": 4
+  },
+  "reconstruction": {
+    "basis": "Figure 6 topology and arrow directions; coordinates are figure-proportional assumptions",
+    "bidirectional_horizontal_rows": [
+      0,
+      3
+    ],
+    "column_x_m": [
+      0.0,
+      300.0,
+      600.0,
+      900.0,
+      1200.0
+    ],
+    "count_convention": "The 54 roads are directed grid edges; the two gate portals are existing intersections and add no edges",
+    "eastbound_horizontal_rows": [
+      1,
+      2
+    ],
+    "gate_nodes": [
+      "j_0_1",
+      "j_0_3"
+    ],
+    "lanes_per_road": 1,
+    "phase_duration_s": 3600.0,
+    "phase_next_rule": "self_loop_until_traci_override",
+    "phase_order": [
+      "N",
+      "E",
+      "S",
+      "W"
+    ],
+    "row_y_m": [
+      600.0,
+      400.0,
+      200.0,
+      0.0
+    ],
+    "speed_m_per_s": 14.0
+  },
+  "schema_version": 1,
+  "source_sha256": {
+    "paper_grid.con.xml": "122c2e3aba57918507b335623efaba17ef5a07ecb2dc68dc46787423409d4395",
+    "paper_grid.edg.xml": "f80e69542d9ac35c746652fd8bdd85586b164331b22eda9c176e3183c9496370",
+    "paper_grid.nod.xml": "ce3fc77044e18cd2c07bccd3c6ef43a303f757ae9b4ecd4477729ceb76af7051",
+    "paper_grid.tll.xml": "548632f5376c80d82b8fdccead8787253b9be3908dad7009fe04c2f7e1c8879a"
+  },
+  "tls": {
+    "j_0_0": [
+      {
+        "approach": "E",
+        "incoming_edge": "e_j_0_1__j_0_0",
+        "link_indices": [
+          0
+        ],
+        "name": "approach_E",
+        "phase_index": 0,
+        "state": "Gr"
+      },
+      {
+        "approach": "S",
+        "incoming_edge": "e_j_1_0__j_0_0",
+        "link_indices": [
+          1
+        ],
+        "name": "approach_S",
+        "phase_index": 1,
+        "state": "rG"
+      }
+    ],
+    "j_0_1": [
+      {
+        "approach": "E",
+        "incoming_edge": "e_j_0_2__j_0_1",
+        "link_indices": [
+          0,
+          1
+        ],
+        "name": "approach_E",
+        "phase_index": 0,
+        "state": "GGrrrr"
+      },
+      {
+        "approach": "S",
+        "incoming_edge": "e_j_1_1__j_0_1",
+        "link_indices": [
+          2,
+          3
+        ],
+        "name": "approach_S",
+        "phase_index": 1,
+        "state": "rrGGrr"
+      },
+      {
+        "approach": "W",
+        "incoming_edge": "e_j_0_0__j_0_1",
+        "link_indices": [
+          4,
+          5
+        ],
+        "name": "approach_W",
+        "phase_index": 2,
+        "state": "rrrrGG"
+      }
+    ],
+    "j_0_2": [
+      {
+        "approach": "E",
+        "incoming_edge": "e_j_0_3__j_0_2",
+        "link_indices": [
+          0,
+          1
+        ],
+        "name": "approach_E",
+        "phase_index": 0,
+        "state": "GGrrrr"
+      },
+      {
+        "approach": "S",
+        "incoming_edge": "e_j_1_2__j_0_2",
+        "link_indices": [
+          2,
+          3
+        ],
+        "name": "approach_S",
+        "phase_index": 1,
+        "state": "rrGGrr"
+      },
+      {
+        "approach": "W",
+        "incoming_edge": "e_j_0_1__j_0_2",
+        "link_indices": [
+          4,
+          5
+        ],
+        "name": "approach_W",
+        "phase_index": 2,
+        "state": "rrrrGG"
+      }
+    ],
+    "j_0_3": [
+      {
+        "approach": "E",
+        "incoming_edge": "e_j_0_4__j_0_3",
+        "link_indices": [
+          0,
+          1
+        ],
+        "name": "approach_E",
+        "phase_index": 0,
+        "state": "GGrrrr"
+      },
+      {
+        "approach": "S",
+        "incoming_edge": "e_j_1_3__j_0_3",
+        "link_indices": [
+          2,
+          3
+        ],
+        "name": "approach_S",
+        "phase_index": 1,
+        "state": "rrGGrr"
+      },
+      {
+        "approach": "W",
+        "incoming_edge": "e_j_0_2__j_0_3",
+        "link_indices": [
+          4,
+          5
+        ],
+        "name": "approach_W",
+        "phase_index": 2,
+        "state": "rrrrGG"
+      }
+    ],
+    "j_0_4": [
+      {
+        "approach": "S",
+        "incoming_edge": "e_j_1_4__j_0_4",
+        "link_indices": [
+          0
+        ],
+        "name": "approach_S",
+        "phase_index": 0,
+        "state": "Gr"
+      },
+      {
+        "approach": "W",
+        "incoming_edge": "e_j_0_3__j_0_4",
+        "link_indices": [
+          1
+        ],
+        "name": "approach_W",
+        "phase_index": 1,
+        "state": "rG"
+      }
+    ],
+    "j_1_0": [
+      {
+        "approach": "N",
+        "incoming_edge": "e_j_0_0__j_1_0",
+        "link_indices": [
+          0,
+          1
+        ],
+        "name": "approach_N",
+        "phase_index": 0,
+        "state": "GGrr"
+      },
+      {
+        "approach": "S",
+        "incoming_edge": "e_j_2_0__j_1_0",
+        "link_indices": [
+          2,
+          3
+        ],
+        "name": "approach_S",
+        "phase_index": 1,
+        "state": "rrGG"
+      }
+    ],
+    "j_1_1": [
+      {
+        "approach": "N",
+        "incoming_edge": "e_j_0_1__j_1_1",
+        "link_indices": [
+          0,
+          1
+        ],
+        "name": "approach_N",
+        "phase_index": 0,
+        "state": "GGrrrrr"
+      },
+      {
+        "approach": "S",
+        "incoming_edge": "e_j_2_1__j_1_1",
+        "link_indices": [
+          2,
+          3
+        ],
+        "name": "approach_S",
+        "phase_index": 1,
+        "state": "rrGGrrr"
+      },
+      {
+        "approach": "W",
+        "incoming_edge": "e_j_1_0__j_1_1",
+        "link_indices": [
+          4,
+          5,
+          6
+        ],
+        "name": "approach_W",
+        "phase_index": 2,
+        "state": "rrrrGGG"
+      }
+    ],
+    "j_1_2": [
+      {
+        "approach": "N",
+        "incoming_edge": "e_j_0_2__j_1_2",
+        "link_indices": [
+          0,
+          1
+        ],
+        "name": "approach_N",
+        "phase_index": 0,
+        "state": "GGrrrrr"
+      },
+      {
+        "approach": "S",
+        "incoming_edge": "e_j_2_2__j_1_2",
+        "link_indices": [
+          2,
+          3
+        ],
+        "name": "approach_S",
+        "phase_index": 1,
+        "state": "rrGGrrr"
+      },
+      {
+        "approach": "W",
+        "incoming_edge": "e_j_1_1__j_1_2",
+        "link_indices": [
+          4,
+          5,
+          6
+        ],
+        "name": "approach_W",
+        "phase_index": 2,
+        "state": "rrrrGGG"
+      }
+    ],
+    "j_1_3": [
+      {
+        "approach": "N",
+        "incoming_edge": "e_j_0_3__j_1_3",
+        "link_indices": [
+          0,
+          1
+        ],
+        "name": "approach_N",
+        "phase_index": 0,
+        "state": "GGrrrrr"
+      },
+      {
+        "approach": "S",
+        "incoming_edge": "e_j_2_3__j_1_3",
+        "link_indices": [
+          2,
+          3
+        ],
+        "name": "approach_S",
+        "phase_index": 1,
+        "state": "rrGGrrr"
+      },
+      {
+        "approach": "W",
+        "incoming_edge": "e_j_1_2__j_1_3",
+        "link_indices": [
+          4,
+          5,
+          6
+        ],
+        "name": "approach_W",
+        "phase_index": 2,
+        "state": "rrrrGGG"
+      }
+    ],
+    "j_1_4": [
+      {
+        "approach": "N",
+        "incoming_edge": "e_j_0_4__j_1_4",
+        "link_indices": [
+          0
+        ],
+        "name": "approach_N",
+        "phase_index": 0,
+        "state": "Grrr"
+      },
+      {
+        "approach": "S",
+        "incoming_edge": "e_j_2_4__j_1_4",
+        "link_indices": [
+          1
+        ],
+        "name": "approach_S",
+        "phase_index": 1,
+        "state": "rGrr"
+      },
+      {
+        "approach": "W",
+        "incoming_edge": "e_j_1_3__j_1_4",
+        "link_indices": [
+          2,
+          3
+        ],
+        "name": "approach_W",
+        "phase_index": 2,
+        "state": "rrGG"
+      }
+    ],
+    "j_2_0": [
+      {
+        "approach": "N",
+        "incoming_edge": "e_j_1_0__j_2_0",
+        "link_indices": [
+          0,
+          1
+        ],
+        "name": "approach_N",
+        "phase_index": 0,
+        "state": "GGrr"
+      },
+      {
+        "approach": "S",
+        "incoming_edge": "e_j_3_0__j_2_0",
+        "link_indices": [
+          2,
+          3
+        ],
+        "name": "approach_S",
+        "phase_index": 1,
+        "state": "rrGG"
+      }
+    ],
+    "j_2_1": [
+      {
+        "approach": "N",
+        "incoming_edge": "e_j_1_1__j_2_1",
+        "link_indices": [
+          0,
+          1
+        ],
+        "name": "approach_N",
+        "phase_index": 0,
+        "state": "GGrrrrr"
+      },
+      {
+        "approach": "S",
+        "incoming_edge": "e_j_3_1__j_2_1",
+        "link_indices": [
+          2,
+          3
+        ],
+        "name": "approach_S",
+        "phase_index": 1,
+        "state": "rrGGrrr"
+      },
+      {
+        "approach": "W",
+        "incoming_edge": "e_j_2_0__j_2_1",
+        "link_indices": [
+          4,
+          5,
+          6
+        ],
+        "name": "approach_W",
+        "phase_index": 2,
+        "state": "rrrrGGG"
+      }
+    ],
+    "j_2_2": [
+      {
+        "approach": "N",
+        "incoming_edge": "e_j_1_2__j_2_2",
+        "link_indices": [
+          0,
+          1
+        ],
+        "name": "approach_N",
+        "phase_index": 0,
+        "state": "GGrrrrr"
+      },
+      {
+        "approach": "S",
+        "incoming_edge": "e_j_3_2__j_2_2",
+        "link_indices": [
+          2,
+          3
+        ],
+        "name": "approach_S",
+        "phase_index": 1,
+        "state": "rrGGrrr"
+      },
+      {
+        "approach": "W",
+        "incoming_edge": "e_j_2_1__j_2_2",
+        "link_indices": [
+          4,
+          5,
+          6
+        ],
+        "name": "approach_W",
+        "phase_index": 2,
+        "state": "rrrrGGG"
+      }
+    ],
+    "j_2_3": [
+      {
+        "approach": "N",
+        "incoming_edge": "e_j_1_3__j_2_3",
+        "link_indices": [
+          0,
+          1
+        ],
+        "name": "approach_N",
+        "phase_index": 0,
+        "state": "GGrrrrr"
+      },
+      {
+        "approach": "S",
+        "incoming_edge": "e_j_3_3__j_2_3",
+        "link_indices": [
+          2,
+          3
+        ],
+        "name": "approach_S",
+        "phase_index": 1,
+        "state": "rrGGrrr"
+      },
+      {
+        "approach": "W",
+        "incoming_edge": "e_j_2_2__j_2_3",
+        "link_indices": [
+          4,
+          5,
+          6
+        ],
+        "name": "approach_W",
+        "phase_index": 2,
+        "state": "rrrrGGG"
+      }
+    ],
+    "j_2_4": [
+      {
+        "approach": "N",
+        "incoming_edge": "e_j_1_4__j_2_4",
+        "link_indices": [
+          0
+        ],
+        "name": "approach_N",
+        "phase_index": 0,
+        "state": "Grrr"
+      },
+      {
+        "approach": "S",
+        "incoming_edge": "e_j_3_4__j_2_4",
+        "link_indices": [
+          1
+        ],
+        "name": "approach_S",
+        "phase_index": 1,
+        "state": "rGrr"
+      },
+      {
+        "approach": "W",
+        "incoming_edge": "e_j_2_3__j_2_4",
+        "link_indices": [
+          2,
+          3
+        ],
+        "name": "approach_W",
+        "phase_index": 2,
+        "state": "rrGG"
+      }
+    ],
+    "j_3_0": [
+      {
+        "approach": "N",
+        "incoming_edge": "e_j_2_0__j_3_0",
+        "link_indices": [
+          0
+        ],
+        "name": "approach_N",
+        "phase_index": 0,
+        "state": "Gr"
+      },
+      {
+        "approach": "E",
+        "incoming_edge": "e_j_3_1__j_3_0",
+        "link_indices": [
+          1
+        ],
+        "name": "approach_E",
+        "phase_index": 1,
+        "state": "rG"
+      }
+    ],
+    "j_3_1": [
+      {
+        "approach": "N",
+        "incoming_edge": "e_j_2_1__j_3_1",
+        "link_indices": [
+          0,
+          1
+        ],
+        "name": "approach_N",
+        "phase_index": 0,
+        "state": "GGrrrr"
+      },
+      {
+        "approach": "E",
+        "incoming_edge": "e_j_3_2__j_3_1",
+        "link_indices": [
+          2,
+          3
+        ],
+        "name": "approach_E",
+        "phase_index": 1,
+        "state": "rrGGrr"
+      },
+      {
+        "approach": "W",
+        "incoming_edge": "e_j_3_0__j_3_1",
+        "link_indices": [
+          4,
+          5
+        ],
+        "name": "approach_W",
+        "phase_index": 2,
+        "state": "rrrrGG"
+      }
+    ],
+    "j_3_2": [
+      {
+        "approach": "N",
+        "incoming_edge": "e_j_2_2__j_3_2",
+        "link_indices": [
+          0,
+          1
+        ],
+        "name": "approach_N",
+        "phase_index": 0,
+        "state": "GGrrrr"
+      },
+      {
+        "approach": "E",
+        "incoming_edge": "e_j_3_3__j_3_2",
+        "link_indices": [
+          2,
+          3
+        ],
+        "name": "approach_E",
+        "phase_index": 1,
+        "state": "rrGGrr"
+      },
+      {
+        "approach": "W",
+        "incoming_edge": "e_j_3_1__j_3_2",
+        "link_indices": [
+          4,
+          5
+        ],
+        "name": "approach_W",
+        "phase_index": 2,
+        "state": "rrrrGG"
+      }
+    ],
+    "j_3_3": [
+      {
+        "approach": "N",
+        "incoming_edge": "e_j_2_3__j_3_3",
+        "link_indices": [
+          0,
+          1
+        ],
+        "name": "approach_N",
+        "phase_index": 0,
+        "state": "GGrrrr"
+      },
+      {
+        "approach": "E",
+        "incoming_edge": "e_j_3_4__j_3_3",
+        "link_indices": [
+          2,
+          3
+        ],
+        "name": "approach_E",
+        "phase_index": 1,
+        "state": "rrGGrr"
+      },
+      {
+        "approach": "W",
+        "incoming_edge": "e_j_3_2__j_3_3",
+        "link_indices": [
+          4,
+          5
+        ],
+        "name": "approach_W",
+        "phase_index": 2,
+        "state": "rrrrGG"
+      }
+    ],
+    "j_3_4": [
+      {
+        "approach": "N",
+        "incoming_edge": "e_j_2_4__j_3_4",
+        "link_indices": [
+          0
+        ],
+        "name": "approach_N",
+        "phase_index": 0,
+        "state": "Gr"
+      },
+      {
+        "approach": "W",
+        "incoming_edge": "e_j_3_3__j_3_4",
+        "link_indices": [
+          1
+        ],
+        "name": "approach_W",
+        "phase_index": 1,
+        "state": "rG"
+      }
+    ]
+  }
+}

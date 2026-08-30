@@ -16,7 +16,8 @@
 |   |-- 04_reproduction_checklist.md
 |   |-- 05_phase1_assumptions.md
 |   |-- 06_environment.md
-|   `-- 07_traci_smoke.md
+|   |-- 07_traci_smoke.md
+|   `-- 08_paper_grid_reconstruction.md
 |-- experiments/
 |   |-- configs/
 |   |   |-- README.md
@@ -44,6 +45,7 @@
 |           |-- __init__.py
 |           `-- traci_smoke.py
 |-- scripts/
+|   |-- build_paper_grid_network.py
 |   |-- build_smoke_network.py
 |   |-- run_sumo_smoke.py
 |   `-- verify_environment.py
@@ -54,7 +56,14 @@
 |   |   `-- README.md
 |   `-- networks/
 |       |-- paper_grid/
-|       |   `-- README.md
+|       |   |-- README.md
+|       |   |-- paper_grid.con.xml
+|       |   |-- paper_grid.edg.xml
+|       |   |-- paper_grid.manifest.toml
+|       |   |-- paper_grid.metadata.json
+|       |   |-- paper_grid.net.xml
+|       |   |-- paper_grid.nod.xml
+|       |   `-- paper_grid.tll.xml
 |       `-- smoke_intersection/
 |           |-- README.md
 |           |-- smoke.con.xml
@@ -67,6 +76,7 @@
 `-- tests/
     |-- README.md
     |-- test_irbp_routing.py
+    |-- test_paper_grid_network.py
     |-- test_phase_time.py
     |-- test_pressure.py
     |-- test_traci_smoke.py
@@ -106,14 +116,14 @@ Add these files only when implementing their corresponding behavior. Avoid empty
 
 ## 3. SUMO asset ownership
 
-- `sumo/networks/paper_grid/`: editable source nodes, edges, connections, routes, and generated `.net.xml`.
+- `sumo/networks/paper_grid/`: editable reconstruction manifest, generated PlainXML sources, generated metadata, and generated `.net.xml` for the 20-intersection/54-road topology.
 - `sumo/networks/smoke_intersection/`: deterministic adapter-test sources and the generated one-intersection `.net.xml`; this is not the paper network.
 - `sumo/demand/`: demand-generation settings and generated route files suitable for committing when small and deterministic.
 - `sumo/config/`: `.sumocfg` files and output declarations.
 - `experiments/configs/`: policy and experiment parameters independent of raw SUMO XML.
 - `experiments/outputs/`: generated results; ignored except `.gitkeep`.
 
-Generated network files must record the source files and command that created them. Never hand-edit a generated `.net.xml`; rebuild it from PlainXML with `scripts/build_smoke_network.py`.
+Generated network files must record the source files and command that created them. Never hand-edit a generated `.net.xml`; rebuild the smoke network with `scripts/build_smoke_network.py` and the paper grid with `scripts/build_paper_grid_network.py`.
 
 ## 4. Dependency strategy
 
@@ -128,12 +138,13 @@ The paper names SUMO but does not state a version. The reconstruction pins CPyth
 
 ## 5. Intended commands
 
-The first five commands are active. Later commands become active after their corresponding modules exist:
+The first six commands are active. Later commands become active after their corresponding modules exist:
 
 ```powershell
 uv sync --extra dev --frozen
 uv run python scripts/verify_environment.py
 uv run python scripts/build_smoke_network.py --check
+uv run python scripts/build_paper_grid_network.py --check
 uv run python scripts/run_sumo_smoke.py
 uv run python -m unittest discover -s tests -p "test_*.py" -v
 python -m irbp_replica.cli validate-network experiments/configs/paper_baseline.toml

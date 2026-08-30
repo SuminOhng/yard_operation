@@ -23,9 +23,32 @@ intersections = 20
 directed_roads = 54
 grid_rows = 4
 grid_columns = 5
-lanes_per_road = 1
+reported_lane_pattern = "most_roads_single_lane"
 minimum_road_length_m = 45
 maximum_road_length_m = 300
+reconstruction_manifest = "sumo/networks/paper_grid/paper_grid.manifest.toml"
+
+[network.reconstruction]
+fidelity = "method-faithful-topology-reconstruction"
+node_id_rule = "j_<row>_<column>"
+lanes_per_road = 1
+column_x_m = [0, 300, 600, 900, 1200]
+row_y_m = [600, 400, 200, 0]
+vertical_direction_rule = "bidirectional"
+bidirectional_horizontal_rows = [0, 3]
+eastbound_horizontal_rows = [1, 2]
+source_horizontal_length_m = 300
+source_vertical_length_m = 200
+edge_speed_mps = 14
+gate_nodes = ["j_0_1", "j_0_3"]
+gate_connector_edges = 0
+directed_road_count_includes_only_grid_edges = true
+turn_rule = "all_legal_non_uturn"
+phase_rule = "one_incoming_approach"
+phase_clockwise_order = ["N", "E", "S", "W"]
+bootstrap_phase_duration_s = 3600
+bootstrap_phase_next_rule = "self_loop_until_traci_override"
+sumo_tls_role = "virtual_traci_actuator_for_unsignalized_vtr"
 
 [vehicles.cav]
 maximum_speed_mps = 14
@@ -79,4 +102,8 @@ items = [
   "vehicles.car_follow_model",
   "demand.loading_process",
   "metrics.queue_length_definition",
+  "network.original_coordinates",
+  "network.original_edge_lengths",
+  "network.original_gate_connectors",
+  "network.original_turn_permissions",
 ]
